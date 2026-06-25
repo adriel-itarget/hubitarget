@@ -5,6 +5,7 @@ import { GenericModuleSidebar } from '../../components/GenericModuleSidebar';
 import { useTabNavigation } from '../../components/TabNavigationContext';
 import { TabNavigation } from '../../components/TabNavigation';
 import { QuickAccessMenu } from '../../components/QuickAccessMenu';
+import { HeaderUserMenu } from '../../components/HeaderUserMenu';
 
 const navItems = [
   { to: '/modulo/eventos/dashboard', label: 'Dashboard', icon: Home },
@@ -51,8 +52,9 @@ export function EventosModule({ onLogout }: EventosModuleProps) {
           <div className="flex-1 min-w-0">
             <TabNavigation tabs={tabs} activeTabId={activeTabId || ''} onTabClick={handleTabClick} onTabClose={handleTabClose} />
           </div>
-          <div className="px-4 py-2 border-l border-border flex-shrink-0">
+          <div className="flex items-center gap-2 px-4 py-2 border-l border-border flex-shrink-0">
             <QuickAccessMenu currentModule="eventos" />
+            <HeaderUserMenu onLogout={onLogout} />
           </div>
         </div>
         <main className="flex-1 overflow-y-auto"><Outlet /></main>

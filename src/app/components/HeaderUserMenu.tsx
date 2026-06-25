@@ -156,13 +156,9 @@ export function HeaderUserMenu({ onLogout }: HeaderUserMenuProps) {
       <div ref={menuRef} className="relative">
         <button
           onClick={() => setIsMenuOpen(!isMenuOpen)}
-          className="flex items-center gap-2.5 px-2 py-1.5 rounded-lg hover:bg-accent transition-colors"
+          className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-accent transition-colors"
         >
           <img src={PROFILE_URL} alt="Foto do usuário" className="w-8 h-8 rounded-full object-cover ring-2 ring-border" />
-          <div className="hidden sm:block text-left">
-            <p className="text-sm font-medium leading-tight">Dr. Carlos Eduardo Silva</p>
-            <p className="text-[11px] text-muted-foreground leading-tight">Administrador</p>
-          </div>
           <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${isMenuOpen ? 'rotate-180' : ''}`} />
         </button>
 

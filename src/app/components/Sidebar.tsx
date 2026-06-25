@@ -1,7 +1,6 @@
 import { Users, BarChart3, ChevronLeft, ChevronRight, Package, Wallet } from 'lucide-react';
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { SidebarUserMenu } from './SidebarUserMenu';
 import { ItargetMark } from './ItargetMark';
 import { ItargetLogo } from './ItargetLogo';
 
@@ -88,10 +87,6 @@ export function Sidebar({ onLogout }: SidebarProps) {
         </nav>
       </div>
 
-      {/* Footer */}
-      <div className={`border-t border-border flex-shrink-0 transition-all duration-300 ${isCollapsed ? 'p-2' : 'p-3'}`}>
-        <SidebarUserMenu isCollapsed={isCollapsed} onLogout={onLogout} />
-      </div>
     </aside>
   );
 }

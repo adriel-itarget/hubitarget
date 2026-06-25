@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { ArrowLeft, ChevronLeft, ChevronRight, LucideIcon } from 'lucide-react';
-import { SidebarUserMenu } from './SidebarUserMenu';
 
 export interface NavItem {
   to: string;
@@ -90,9 +89,6 @@ export function GenericModuleSidebar({
         </nav>
       </div>
 
-      <div className={`border-t border-border flex-shrink-0 transition-all duration-300 ${isCollapsed ? 'p-2' : 'p-3'}`}>
-        <SidebarUserMenu isCollapsed={isCollapsed} onLogout={onLogout} />
-      </div>
     </aside>
   );
 }

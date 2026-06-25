@@ -4,7 +4,6 @@ import {
   ChevronDown, ChevronLeft, ChevronRight, ArrowLeft,
 } from 'lucide-react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
-import { SidebarUserMenu } from '../../components/SidebarUserMenu';
 
 // ── Nav structure ──────────────────────────────────────────────────────────────
 interface NavItem  { label: string; to: string }
@@ -275,13 +274,6 @@ export function AssociacaoSidebar({ onLogout }: AssociacaoSidebarProps) {
       </div>
 
       {/* ── Footer ── */}
-      <div
-        className={`border-t border-border flex-shrink-0 transition-all duration-300 ${
-          isCollapsed ? 'p-2' : 'p-3'
-        }`}
-      >
-        <SidebarUserMenu isCollapsed={isCollapsed} onLogout={onLogout} />
-      </div>
     </aside>
   );
 }
