@@ -37,23 +37,43 @@ const MODULE_ICONS: Record<string, React.ComponentType<{ className?: string; sty
 
 export function TabNavigation({ tabs, activeTabId, onTabClick, onTabClose }: TabNavigationProps) {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
   const tabRefs = useRef<Map<string, HTMLDivElement>>(new Map());
+  const prevTabCountRef = useRef(tabs.length);
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(false);
+
+  const getTabContentLeft = useCallback((tabEl: HTMLElement): number => {
+    const wrapper = wrapperRef.current;
+    if (!wrapper) return 0;
+    return tabEl.offsetLeft;
+  }, []);
+
+  const isTabFullyVisible = useCallback((tabEl: HTMLElement): boolean => {
+    const container = scrollContainerRef.current;
+    if (!container) return false;
+    const contentLeft = getTabContentLeft(tabEl);
+    const contentRight = contentLeft + tabEl.offsetWidth;
+    const viewLeft = container.scrollLeft;
+    const viewRight = viewLeft + container.clientWidth;
+    return contentLeft >= viewLeft && contentRight <= viewRight;
+  }, [getTabContentLeft]);
 
   const scrollToTab = useCallback((tabId: string, behavior: ScrollBehavior = 'smooth') => {
     const container = scrollContainerRef.current;
     const tabEl = tabRefs.current.get(tabId);
-    if (container && tabEl) {
-      const containerRect = container.getBoundingClientRect();
-      const tabRect = tabEl.getBoundingClientRect();
-      const isFullyVisible = tabRect.left >= containerRect.left && tabRect.right <= containerRect.right;
-      if (!isFullyVisible) {
-        const offset = tabEl.offsetLeft - container.offsetLeft - container.clientWidth / 2 + tabEl.clientWidth / 2;
-        container.scrollTo({ left: Math.max(0, offset), behavior });
-      }
-    }
-  }, []);
+    if (!container || !tabEl) return;
+
+    const contentLeft = getTabContentLeft(tabEl);
+    const contentRight = contentLeft + tabEl.offsetWidth;
+    const viewLeft = container.scrollLeft;
+    const viewRight = viewLeft + container.clientWidth;
+
+    if (contentLeft >= viewLeft && contentRight <= viewRight) return;
+
+    const target = contentLeft - container.clientWidth / 2 + tabEl.offsetWidth / 2;
+    container.scrollTo({ left: Math.max(0, target), behavior });
+  }, [getTabContentLeft]);
 
   const checkScroll = () => {
     if (scrollContainerRef.current) {
@@ -77,30 +97,41 @@ export function TabNavigation({ tabs, activeTabId, onTabClick, onTabClose }: Tab
   }, [tabs]);
 
   useEffect(() => {
-    if (tabs.length > 0) {
+    const prevCount = prevTabCountRef.current;
+    prevTabCountRef.current = tabs.length;
+    if (tabs.length > prevCount && tabs.length > 0) {
       requestAnimationFrame(() => {
         scrollToTab(tabs[tabs.length - 1].id, 'smooth');
       });
     }
-  }, [tabs.length, scrollToTab]);
+  }, [tabs.length, scrollToTab, tabs]);
+
+  useEffect(() => {
+    if (activeTabId) {
+      requestAnimationFrame(() => {
+        scrollToTab(activeTabId, 'smooth');
+      });
+    }
+  }, [activeTabId, scrollToTab]);
 
   const scroll = (direction: 'left' | 'right') => {
-    if (scrollContainerRef.current) {
-      const container = scrollContainerRef.current;
-      const tabsArr = Array.from(tabRefs.current.keys());
-      const currentIndex = tabsArr.findIndex(id => {
-        const el = tabRefs.current.get(id);
-        if (!el) return false;
-        const rect = el.getBoundingClientRect();
-        const containerRect = container.getBoundingClientRect();
-        return rect.left >= containerRect.left - 10 && rect.left <= containerRect.left + 10;
-      });
-      if (direction === 'right' && currentIndex < tabsArr.length - 1) {
-        scrollToTab(tabsArr[currentIndex + 1]);
-      } else if (direction === 'left' && currentIndex > 0) {
-        scrollToTab(tabsArr[currentIndex - 1]);
-      } else {
-        container.scrollBy({ left: direction === 'left' ? -200 : 200, behavior: 'smooth' });
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    const tabsArr = Array.from(tabRefs.current.values());
+    if (direction === 'right') {
+      for (const el of tabsArr) {
+        if (el.offsetLeft + el.offsetWidth > container.scrollLeft + container.clientWidth) {
+          container.scrollTo({ left: el.offsetLeft - 16, behavior: 'smooth' });
+          return;
+        }
+      }
+    } else {
+      for (let i = tabsArr.length - 1; i >= 0; i--) {
+        if (tabsArr[i].offsetLeft < container.scrollLeft) {
+          container.scrollTo({ left: tabsArr[i].offsetLeft - 16, behavior: 'smooth' });
+          return;
+        }
       }
     }
   };
@@ -123,7 +154,7 @@ export function TabNavigation({ tabs, activeTabId, onTabClick, onTabClose }: Tab
         className="overflow-x-auto px-2"
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
-        <div className="flex items-center gap-0.5 min-w-max">
+        <div ref={wrapperRef} className="flex items-center gap-0.5 min-w-max" style={{ position: 'relative' }}>
           {tabs.map(tab => {
             const isActive = activeTabId === tab.id;
             const color = tab.module ? MODULE_COLORS[tab.module] : null;
@@ -133,7 +164,7 @@ export function TabNavigation({ tabs, activeTabId, onTabClick, onTabClose }: Tab
               <div
                 key={tab.id}
                 ref={(el) => { if (el) tabRefs.current.set(tab.id, el); }}
-                onClick={() => onTabClick(tab.id)}
+                onClick={() => { scrollToTab(tab.id); onTabClick(tab.id); }}
                 className={`group flex items-center gap-2 px-3 py-3 text-sm transition-colors border-b-2 whitespace-nowrap cursor-pointer ${
                   isActive
                     ? 'border-primary text-primary'
