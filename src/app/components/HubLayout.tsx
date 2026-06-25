@@ -12,6 +12,9 @@ interface HubLayoutProps {
 
 const routeTitles: Record<string, string> = {
   '/hub/modulos': 'Departamentos',
+  '/hub/dashboard': 'Departamentos',
+  '/hub/usuarios': 'Usuários e Acesso',
+  '/hub/pagamentos': 'Meios de Pagamento',
 };
 
 export function HubLayout({ onLogout }: HubLayoutProps) {

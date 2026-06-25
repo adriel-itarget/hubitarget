@@ -11,6 +11,8 @@ import { EntityGeral } from './components/EntityGeral';
 import { EntityDiretoria } from './components/EntityDiretoria';
 import { EntityTextosRegras } from './components/EntityTextosRegras';
 import { MyModules } from './components/MyModules';
+import { UsersAccess } from './components/UsersAccess';
+import { PaymentMethods } from './components/PaymentMethods';
 
 // Módulo Associação
 import { AssociacaoModule } from './modules/associacao/AssociacaoModule';
@@ -103,6 +105,9 @@ export default function App() {
           >
             <Route index element={<Navigate to="/hub/modulos" replace />} />
             <Route path="modulos" element={<MyModules />} />
+            <Route path="dashboard" element={<MyModules />} />
+            <Route path="usuarios" element={<UsersAccess />} />
+            <Route path="pagamentos" element={<PaymentMethods />} />
           </Route>
 
           {/* Módulo Associação */}
