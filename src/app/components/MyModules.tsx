@@ -1,80 +1,118 @@
 import { useState, useRef, useEffect } from 'react';
-import { Users, DollarSign, Calendar, BookOpen, Gift, ClipboardList, ArrowRight, ExternalLink, ChevronDown, Check } from 'lucide-react';
+import { Users, DollarSign, Calendar, BookOpen, Gift, ClipboardList, ArrowRight, ExternalLink, ChevronDown, Check, Building2, FileText, FlaskConical, Store, Megaphone, UserCheck } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { ItargetMark } from './ItargetMark';
 
 const allModules = [
   {
     id: 1,
-    name: 'Associativo',
-    description: 'Gestão completa de membros e associados com automação de anuidades e comunicação integrada',
+    moduleKey: 'associacao',
+    name: 'Associação',
+    description: 'Gestão completa de membros, associados e carteirinhas digitais.',
     icon: Users,
     iconColor: 'text-blue-400',
     accentColor: 'blue' as const,
-    status: 'active',
     route: '/modulo/associacao/dashboard',
   },
   {
     id: 2,
+    moduleKey: 'financeiro',
     name: 'Financeiro',
-    description: 'Gestão financeira centralizada com controle por centro de custo para todos os módulos',
+    description: 'Controle de receitas, despesas, cobranças e relatórios financeiros.',
     icon: DollarSign,
     iconColor: 'text-emerald-400',
     accentColor: 'emerald' as const,
-    status: 'active',
     route: '/modulo/financeiro/dashboard',
   },
   {
     id: 3,
-    name: 'Exames e Provas',
-    description: 'Processos de inscrição em provas de título de especialista, editais e locais de prova',
+    moduleKey: 'exames',
+    name: 'Exames',
+    description: 'Gerenciamento de exames, avaliações e certificações profissionais.',
     icon: ClipboardList,
-    iconColor: 'text-indigo-400',
-    accentColor: 'indigo' as const,
-    status: 'active',
+    iconColor: 'text-orange-400',
+    accentColor: 'orange' as const,
     route: '/modulo/exames/dashboard',
   },
   {
     id: 4,
-    name: 'Cursos',
-    description: 'Gestão de atividades educacionais, banco de questões e formulários por eixo temático',
+    moduleKey: 'cursos',
+    name: 'Cursos/EAD',
+    description: 'Gestão de atividades educacionais, banco de questões e ensino à distância.',
     icon: BookOpen,
     iconColor: 'text-violet-400',
     accentColor: 'violet' as const,
-    status: 'active',
     route: '/modulo/cursos/dashboard',
   },
   {
     id: 5,
-    name: 'Cashback',
-    description: 'Campanhas de cashback, carteiras digitais, pontuação e recompensas para membros',
-    icon: Gift,
-    iconColor: 'text-amber-400',
-    accentColor: 'amber' as const,
-    status: 'active',
-    route: '/modulo/cashback/dashboard',
+    moduleKey: 'servicos-residencias',
+    name: 'Serviços e Residências',
+    description: 'Controle de serviços médicos, residências e programas de especialização.',
+    icon: Building2,
+    iconColor: 'text-teal-400',
+    accentColor: 'teal' as const,
   },
   {
     id: 6,
-    name: 'Eventos',
-    description: 'Configuração de eventos, inscrições, programação científica e submissão de trabalhos',
-    icon: Calendar,
+    moduleKey: 'inscricoes',
+    name: 'Inscrições',
+    description: 'Gerenciamento de inscrições para eventos, cursos e atividades.',
+    icon: UserCheck,
+    iconColor: 'text-pink-400',
+    accentColor: 'pink' as const,
+  },
+  {
+    id: 7,
+    moduleKey: 'trabalhos-cientificos',
+    name: 'Trabalhos Científicos',
+    description: 'Submissão, avaliação e publicação de trabalhos e artigos científicos.',
+    icon: FileText,
+    iconColor: 'text-amber-400',
+    accentColor: 'amber' as const,
+  },
+  {
+    id: 8,
+    moduleKey: 'programacao-cientifica',
+    name: 'Programação Científica',
+    description: 'Montagem de grade de programação, palestras e sessões científicas.',
+    icon: FlaskConical,
+    iconColor: 'text-cyan-400',
+    accentColor: 'cyan' as const,
+  },
+  {
+    id: 9,
+    moduleKey: 'feira-comercial',
+    name: 'Feira Comercial',
+    description: 'Gestão de expositores, estandes e patrocinadores dos eventos.',
+    icon: Store,
+    iconColor: 'text-red-400',
+    accentColor: 'red' as const,
+  },
+  {
+    id: 10,
+    moduleKey: 'marketing',
+    name: 'Marketing',
+    description: 'Gerencie seu aplicativo, sites ou envie newsletter.',
+    icon: Megaphone,
     iconColor: 'text-rose-400',
     accentColor: 'rose' as const,
-    status: 'active',
-    route: '/modulo/eventos/dashboard',
   },
 ];
 
-type AccentColor = 'blue' | 'emerald' | 'indigo' | 'violet' | 'amber' | 'rose';
+type AccentColor = 'blue' | 'emerald' | 'orange' | 'violet' | 'teal' | 'pink' | 'amber' | 'cyan' | 'red' | 'rose';
 
 const AC: Record<AccentColor, { bg: string; border: string; text: string; glow: string; grad: string }> = {
   blue:    { bg: 'bg-blue-500/8',    border: 'border-blue-500/20',    text: 'text-blue-500',    glow: 'rgba(59,130,246,0.15)',  grad: 'from-blue-500/10 to-blue-500/3' },
   emerald: { bg: 'bg-emerald-500/8', border: 'border-emerald-500/20', text: 'text-emerald-500', glow: 'rgba(16,185,129,0.15)',  grad: 'from-emerald-500/10 to-emerald-500/3' },
-  indigo:  { bg: 'bg-indigo-500/8',  border: 'border-indigo-500/20',  text: 'text-indigo-500',  glow: 'rgba(99,102,241,0.15)',  grad: 'from-indigo-500/10 to-indigo-500/3' },
+  orange:  { bg: 'bg-orange-500/8',  border: 'border-orange-500/20',  text: 'text-orange-500',  glow: 'rgba(249,115,22,0.15)',  grad: 'from-orange-500/10 to-orange-500/3' },
   violet:  { bg: 'bg-violet-500/8',  border: 'border-violet-500/20',  text: 'text-violet-500',  glow: 'rgba(139,92,246,0.15)',  grad: 'from-violet-500/10 to-violet-500/3' },
+  teal:    { bg: 'bg-teal-500/8',    border: 'border-teal-500/20',    text: 'text-teal-500',    glow: 'rgba(20,184,166,0.15)',  grad: 'from-teal-500/10 to-teal-500/3' },
+  pink:    { bg: 'bg-pink-500/8',    border: 'border-pink-500/20',    text: 'text-pink-500',    glow: 'rgba(236,72,153,0.15)',  grad: 'from-pink-500/10 to-pink-500/3' },
   amber:   { bg: 'bg-amber-500/8',   border: 'border-amber-500/20',   text: 'text-amber-500',   glow: 'rgba(245,158,11,0.15)',  grad: 'from-amber-500/10 to-amber-500/3' },
-  rose:    { bg: 'bg-rose-500/8',    border: 'border-rose-500/20',    text: 'text-rose-500',     glow: 'rgba(244,63,94,0.15)',   grad: 'from-rose-500/10 to-rose-500/3' },
+  cyan:    { bg: 'bg-cyan-500/8',    border: 'border-cyan-500/20',    text: 'text-cyan-500',    glow: 'rgba(6,182,212,0.15)',   grad: 'from-cyan-500/10 to-cyan-500/3' },
+  red:     { bg: 'bg-red-500/8',     border: 'border-red-500/20',     text: 'text-red-500',     glow: 'rgba(239,68,68,0.15)',   grad: 'from-red-500/10 to-red-500/3' },
+  rose:    { bg: 'bg-rose-500/8',    border: 'border-rose-500/20',    text: 'text-rose-500',    glow: 'rgba(244,63,94,0.15)',   grad: 'from-rose-500/10 to-rose-500/3' },
 };
 
 type ViewMode = 'grid' | 'list' | 'compact' | 'vitrine' | 'launcher' | 'bento' | 'orbital';
@@ -215,33 +253,67 @@ function LayoutDropdown({ viewMode, onChange }: { viewMode: ViewMode; onChange: 
   );
 }
 
+const STORAGE_KEY = 'hubitarget_default_module';
+
 export function MyModules() {
   const navigate = useNavigate();
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
   const [orbitalHover, setOrbitalHover] = useState<number | null>(null);
+  const [defaultModule, setDefaultModule] = useState<string | null>(() => {
+    try { return localStorage.getItem(STORAGE_KEY); } catch { return null; }
+  });
+
+  const handleSetDefault = (moduleKey: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    const newValue = defaultModule === moduleKey ? null : moduleKey;
+    setDefaultModule(newValue);
+    try {
+      if (newValue) {
+        localStorage.setItem(STORAGE_KEY, newValue);
+      } else {
+        localStorage.removeItem(STORAGE_KEY);
+      }
+    } catch {}
+  };
+
+  const getModuleName = (id: string) => allModules.find(m => m.moduleKey === id)?.name || '';
+  const visibleModules = allModules.filter(m => !m.hidden);
 
   /* ── Grid ── */
   const renderGrid = () => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-      {allModules.map((mod) => {
+      {visibleModules.map((mod) => {
         const Icon = mod.icon;
         const ac = AC[mod.accentColor];
+        const isDefault = defaultModule === mod.moduleKey;
         return (
           <div key={mod.id} onClick={() => navigate(mod.route)}
-            className="group bg-card border border-border rounded-2xl p-6 hover:shadow-md hover:border-primary/20 transition-all cursor-pointer flex flex-col gap-4"
+            className={`group bg-card/80 backdrop-blur-sm border rounded-2xl p-6 hover:shadow-md transition-all cursor-pointer flex flex-col gap-4 ${
+              isDefault ? 'border-primary/40 shadow-sm' : 'border-border hover:border-primary/20'
+            }`}
           >
             <div className="flex items-start justify-between">
-              <div className={`w-11 h-11 rounded-xl ${ac.bg} border ${ac.border} flex items-center justify-center`}>
+              <div className={`w-11 h-11 rounded-xl ${ac.bg} flex items-center justify-center`}>
                 <Icon className={`w-5 h-5 ${mod.iconColor}`} />
               </div>
-              <span className="text-xs px-2 py-0.5 rounded-full bg-green-500/10 text-green-600 border border-green-500/15">Ativo</span>
+              <button
+                onClick={(e) => handleSetDefault(mod.moduleKey, e)}
+                title={isDefault ? 'Acesso padrão ativo — clique para desabilitar' : 'Definir como acesso padrão'}
+                className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
+                  isDefault ? 'bg-primary' : 'bg-muted-foreground/30'
+                }`}
+              >
+                <span className={`inline-block h-3.5 w-3.5 rounded-full bg-white shadow-sm transition-transform ${
+                  isDefault ? 'translate-x-4.5' : 'translate-x-0.5'
+                }`} />
+              </button>
             </div>
             <div className="flex-1">
               <h3 className="font-semibold mb-1.5 group-hover:text-primary transition-colors">{mod.name}</h3>
               <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">{mod.description}</p>
             </div>
             <div className="flex items-center justify-end pt-3 border-t border-border">
-              <span className={`flex items-center gap-1 text-sm ${ac.text} group-hover:gap-2 transition-all`}>
+              <span className="flex items-center gap-1 text-sm text-card-foreground group-hover:gap-2 transition-all">
                 Acessar <ArrowRight className="w-3.5 h-3.5" />
               </span>
             </div>
@@ -254,22 +326,35 @@ export function MyModules() {
   /* ── List ── */
   const renderList = () => (
     <div className="space-y-2">
-      {allModules.map((mod) => {
+      {visibleModules.map((mod) => {
         const Icon = mod.icon;
         const ac = AC[mod.accentColor];
+        const isDefault = defaultModule === mod.moduleKey;
         return (
           <div key={mod.id} onClick={() => navigate(mod.route)}
-            className="group bg-card border border-border rounded-xl px-5 py-4 hover:shadow-sm hover:border-primary/20 transition-all cursor-pointer flex items-center gap-5"
+            className={`group bg-card/80 backdrop-blur-sm border rounded-xl px-5 py-4 hover:shadow-sm transition-all cursor-pointer flex items-center gap-5 ${
+              isDefault ? 'border-primary/40' : 'border-border hover:border-primary/20'
+            }`}
           >
-            <div className={`w-10 h-10 rounded-xl ${ac.bg} border ${ac.border} flex items-center justify-center flex-shrink-0`}>
+            <div className={`w-10 h-10 rounded-xl ${ac.bg} flex items-center justify-center flex-shrink-0`}>
               <Icon className={`w-5 h-5 ${mod.iconColor}`} />
             </div>
             <div className="flex-1 min-w-0">
               <h3 className="font-medium group-hover:text-primary transition-colors">{mod.name}</h3>
               <p className="text-sm text-muted-foreground truncate mt-0.5">{mod.description}</p>
             </div>
-            <span className="text-xs px-2 py-0.5 rounded-full bg-green-500/10 text-green-600 border border-green-500/15 flex-shrink-0">Ativo</span>
-            <span className={`flex items-center gap-1 text-sm ${ac.text} group-hover:gap-2 transition-all flex-shrink-0`}>
+            <button
+              onClick={(e) => handleSetDefault(mod.moduleKey, e)}
+              title={isDefault ? 'Acesso padrão ativo' : 'Definir como acesso padrão'}
+              className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors flex-shrink-0 ${
+                isDefault ? 'bg-primary' : 'bg-muted-foreground/30'
+              }`}
+            >
+              <span className={`inline-block h-3.5 w-3.5 rounded-full bg-white shadow-sm transition-transform ${
+                isDefault ? 'translate-x-4.5' : 'translate-x-0.5'
+              }`} />
+            </button>
+            <span className="flex items-center gap-1 text-sm text-card-foreground group-hover:gap-2 transition-all flex-shrink-0">
               Acessar <ArrowRight className="w-3.5 h-3.5" />
             </span>
           </div>
@@ -280,13 +365,13 @@ export function MyModules() {
 
   /* ── Compact ── */
   const renderCompact = () => (
-    <div className="bg-card border border-border rounded-xl overflow-hidden">
-      {allModules.map((mod, idx) => {
+    <div className="bg-card/80 backdrop-blur-sm border border-border rounded-xl overflow-hidden">
+      {visibleModules.map((mod, idx) => {
         const Icon = mod.icon;
         const ac = AC[mod.accentColor];
         return (
           <div key={mod.id} onClick={() => navigate(mod.route)}
-            className={`group flex items-center gap-4 px-5 py-3 hover:bg-muted/40 transition-colors cursor-pointer ${idx < allModules.length - 1 ? 'border-b border-border' : ''}`}
+            className={`group flex items-center gap-4 px-5 py-3 hover:bg-muted/40 transition-colors cursor-pointer ${idx < visibleModules.length - 1 ? 'border-b border-border' : ''}`}
           >
             <div className={`w-8 h-8 rounded-lg ${ac.bg} flex items-center justify-center flex-shrink-0`}>
               <Icon className={`w-4 h-4 ${mod.iconColor}`} />
@@ -295,8 +380,7 @@ export function MyModules() {
               <span className="font-medium text-sm whitespace-nowrap">{mod.name}</span>
               <span className="text-xs text-muted-foreground truncate hidden md:block">{mod.description}</span>
             </div>
-            <span className="text-xs bg-green-500/10 text-green-600 px-2 py-0.5 rounded-full flex-shrink-0">Ativo</span>
-            <ExternalLink className={`w-3.5 h-3.5 ${ac.text} opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0`} />
+            <ExternalLink className="w-3.5 h-3.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
           </div>
         );
       })}
@@ -306,12 +390,12 @@ export function MyModules() {
   /* ── Vitrine ── */
   const renderVitrine = () => (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-      {allModules.map((mod) => {
+      {visibleModules.map((mod) => {
         const Icon = mod.icon;
         const ac = AC[mod.accentColor];
         return (
           <div key={mod.id} onClick={() => navigate(mod.route)}
-            className="group bg-card border border-border rounded-2xl overflow-hidden hover:shadow-lg hover:border-primary/20 transition-all cursor-pointer flex"
+            className="group bg-card/80 backdrop-blur-sm border border-border rounded-2xl overflow-hidden hover:shadow-lg hover:border-primary/20 transition-all cursor-pointer flex"
           >
             <div className={`w-1.5 flex-shrink-0 bg-gradient-to-b ${ac.grad}`} />
             <div className="flex-1 p-6 flex items-center gap-5">
@@ -335,12 +419,12 @@ export function MyModules() {
   /* ── Launcher ── */
   const renderLauncher = () => (
     <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-4">
-      {allModules.map((mod) => {
+      {visibleModules.map((mod) => {
         const Icon = mod.icon;
         const ac = AC[mod.accentColor];
         return (
           <div key={mod.id} onClick={() => navigate(mod.route)}
-            className="group flex flex-col items-center gap-3 p-5 rounded-2xl bg-card border border-border hover:shadow-md hover:border-primary/20 hover:scale-105 transition-all cursor-pointer"
+            className="group flex flex-col items-center gap-3 p-5 rounded-2xl bg-card/80 backdrop-blur-sm border border-border hover:shadow-md hover:border-primary/20 hover:scale-105 transition-all cursor-pointer"
           >
             <div className={`w-14 h-14 rounded-2xl ${ac.bg} border ${ac.border} flex items-center justify-center`}>
               <Icon className={`w-7 h-7 ${mod.iconColor}`} />
@@ -354,7 +438,7 @@ export function MyModules() {
 
   /* ── Bento ── */
   const renderBento = () => {
-    const [m1, m2, m3, m4, m5, m6] = allModules;
+    const [m1, m2, m3, m4, m5, m6] = visibleModules;
     return (
       <div
         className="grid gap-4"
@@ -380,7 +464,6 @@ export function MyModules() {
                 <div className={`w-16 h-16 rounded-2xl ${ac.bg} border-2 ${ac.border} flex items-center justify-center backdrop-blur-sm`}>
                   <Icon className={`w-8 h-8 ${m1.iconColor}`} />
                 </div>
-                <span className="text-xs px-2.5 py-1 rounded-full bg-green-500/15 text-green-600 border border-green-500/20">Ativo</span>
               </div>
 
               <div className="relative z-10">
@@ -452,7 +535,7 @@ export function MyModules() {
   const cx = W / 2, cy = H / 2;
   const radius = 210;
 
-  const nodePositions = allModules.map((_, i) => {
+  const nodePositions = visibleModules.map((_, i) => {
     const angle = (i * 60 - 90) * Math.PI / 180;
     return { x: cx + radius * Math.cos(angle), y: cy + radius * Math.sin(angle) };
   });
@@ -483,7 +566,7 @@ export function MyModules() {
 
           {/* Connection lines */}
           {nodePositions.map((pos, i) => {
-            const mod = allModules[i];
+            const mod = visibleModules[i];
             const ac = AC[mod.accentColor];
             const isHov = orbitalHover === mod.id;
             return (
@@ -526,7 +609,7 @@ export function MyModules() {
         </div>
 
         {/* Module nodes */}
-        {allModules.map((mod, i) => {
+        {visibleModules.map((mod, i) => {
           const Icon = mod.icon;
           const pos = nodePositions[i];
           const ac = AC[mod.accentColor];
@@ -598,7 +681,7 @@ export function MyModules() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-b from-muted/40 to-background">
       <div className="px-8 py-8">
         <div className="max-w-7xl mx-auto">
 
@@ -608,7 +691,10 @@ export function MyModules() {
               <h1 className="text-3xl mb-1.5">Departamentos</h1>
               <p className="text-muted-foreground">Acesse os departamentos da plataforma Itarget</p>
             </div>
-            <LayoutDropdown viewMode={viewMode} onChange={setViewMode} />
+            <div className="flex items-center gap-3">
+              <span className="text-sm text-muted-foreground">Layout:</span>
+              <LayoutDropdown viewMode={viewMode} onChange={setViewMode} />
+            </div>
           </div>
 
           {renderContent()}

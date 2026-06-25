@@ -27,7 +27,6 @@ export function LoginPage({ onLogin }: LoginPageProps) {
         entityName: 'Sociedade Brasileira de Cardiologia',
       }));
       onLogin();
-      navigate('/hub/modulos');
     } else {
       setError('E-mail ou senha incorretos.');
     }

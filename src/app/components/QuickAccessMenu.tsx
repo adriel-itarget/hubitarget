@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { Search, Users, Calendar, DollarSign, FileText, Settings, BarChart3, Building2, Tags, CreditCard, UserPlus, FileCheck, Briefcase, X, Zap, ClipboardList, BookOpen, Gift, LayoutGrid, Package, ChevronRight, ChevronLeft, Lock, Monitor, Languages, MessageSquare, Upload, ToggleRight, Vote, Layers, Info } from 'lucide-react';
+import { Search, Users, Calendar, DollarSign, FileText, Settings, BarChart3, Building2, Tags, CreditCard, UserPlus, FileCheck, Briefcase, X, Zap, ClipboardList, BookOpen, Gift, LayoutGrid, Package, ChevronRight, ChevronLeft, Lock, Monitor, Languages, MessageSquare, Upload, ToggleRight, Vote, Layers, Info, FlaskConical, Store, Megaphone, UserCheck } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 function WidgetsIcon({ className }: { className?: string }) {
@@ -15,12 +15,16 @@ interface QuickAccessMenuProps {
 }
 
 const MODULES = [
-  { id: 'associacao', label: 'Associação',  description: 'Gestão de associados e anuidades', Icon: Users,         color: '#60a5fa', route: '/modulo/associacao/dashboard' },
-  { id: 'financeiro', label: 'Financeiro',  description: 'Lançamentos, cobranças e relatórios', Icon: DollarSign,    color: '#34d399', route: '/modulo/financeiro/dashboard' },
-  { id: 'exames',     label: 'Exames',      description: 'Processos e certificações', Icon: ClipboardList, color: '#818cf8', route: '/modulo/exames/dashboard' },
-  { id: 'cursos',     label: 'Cursos',      description: 'Educação e atividades', Icon: BookOpen,      color: '#a78bfa', route: '/modulo/cursos/dashboard' },
-  { id: 'cashback',   label: 'Cashback',    description: 'Campanhas e benefícios', Icon: Gift,          color: '#fbbf24', route: '/modulo/cashback/dashboard' },
-  { id: 'eventos',    label: 'Eventos',     description: 'Organização e inscrições', Icon: Calendar,      color: '#fb7185', route: '/modulo/eventos/dashboard' },
+  { id: 'associacao',           label: 'Associação',             description: 'Gestão de membros e carteirinhas',      Icon: Users,         color: '#60a5fa', route: '/modulo/associacao/dashboard' },
+  { id: 'financeiro',           label: 'Financeiro',             description: 'Receitas, despesas e cobranças',        Icon: DollarSign,    color: '#34d399', route: '/modulo/financeiro/dashboard' },
+  { id: 'exames',               label: 'Exames',                 description: 'Certificações e avaliações',            Icon: ClipboardList,color: '#fb923c', route: '/modulo/exames/dashboard' },
+  { id: 'cursos',               label: 'Cursos/EAD',             description: 'Educação e banco de questões',          Icon: BookOpen,      color: '#a78bfa', route: '/modulo/cursos/dashboard' },
+  { id: 'servicos-residencias', label: 'Serviços e Residências', description: 'Especializações e programas',            Icon: Building2,     color: '#2dd4bf', route: '' },
+  { id: 'inscricoes',           label: 'Inscrições',             description: 'Eventos e atividades',                   Icon: UserCheck,     color: '#f472b6', route: '' },
+  { id: 'trabalhos-cientificos',label: 'Trabalhos Científicos',  description: 'Artigos e publicações',                 Icon: FileText,      color: '#fbbf24', route: '' },
+  { id: 'programacao-cientifica',label:'Programação Científica', description: 'Palestras e sessões',                    Icon: FlaskConical,  color: '#22d3ee', route: '' },
+  { id: 'feira-comercial',      label: 'Feira Comercial',        description: 'Expositores e estandes',                Icon: Store,         color: '#f87171', route: '' },
+  { id: 'marketing',            label: 'Marketing',              description: 'Aplicativo e newsletter',               Icon: Megaphone,     color: '#fb7193', route: '' },
 ];
 
 const ENTITY_ITEMS = [
@@ -212,7 +216,7 @@ export function QuickAccessMenu({ currentModule }: QuickAccessMenuProps) {
                 onClick={() => { setActiveTab('quick'); setSettingsStack([]); }}
                 className={`flex-1 flex items-center justify-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-all ${
                   activeTab === 'quick'
-                    ? 'bg-card text-foreground shadow-sm'
+                    ? 'bg-primary text-primary-foreground shadow-sm'
                     : 'text-muted-foreground hover:text-foreground'
                 }`}
               >
@@ -223,7 +227,7 @@ export function QuickAccessMenu({ currentModule }: QuickAccessMenuProps) {
                 onClick={() => setActiveTab('settings')}
                 className={`flex-1 flex items-center justify-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-all ${
                   activeTab === 'settings'
-                    ? 'bg-card text-foreground shadow-sm'
+                    ? 'bg-primary text-primary-foreground shadow-sm'
                     : 'text-muted-foreground hover:text-foreground'
                 }`}
               >
@@ -278,10 +282,9 @@ export function QuickAccessMenu({ currentModule }: QuickAccessMenuProps) {
                           >
                             <mod.Icon className="w-4 h-4" style={{ color: mod.color }} />
                           </div>
-                          <div className="min-w-0">
-                            <p className="text-sm font-medium truncate">{mod.label}</p>
-                            <p className="text-[11px] text-muted-foreground leading-tight line-clamp-1">{mod.description}</p>
-                          </div>
+                           <div className="min-w-0">
+                             <p className="text-sm font-medium truncate">{mod.label}</p>
+                           </div>
                         </button>
                       ))}
                     </div>

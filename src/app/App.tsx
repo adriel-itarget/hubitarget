@@ -57,6 +57,29 @@ function AssocPlaceholder({ title }: { title: string }) {
   );
 }
 
+const MODULE_ROUTES: Record<string, string> = {
+  associacao: '/modulo/associacao/dashboard',
+  financeiro: '/modulo/financeiro/dashboard',
+  exames: '/modulo/exames/dashboard',
+  cursos: '/modulo/cursos/dashboard',
+  cashback: '/modulo/cashback/dashboard',
+  eventos: '/modulo/eventos/dashboard',
+};
+
+function getDefaultRoute(): string {
+  try {
+    const defaultModule = localStorage.getItem('hubitarget_default_module');
+    if (defaultModule && MODULE_ROUTES[defaultModule]) {
+      return MODULE_ROUTES[defaultModule];
+    }
+  } catch {}
+  return '/hub/modulos';
+}
+
+function AuthRedirect() {
+  return <Navigate to={getDefaultRoute()} replace />;
+}
+
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
@@ -69,8 +92,8 @@ export default function App() {
       <BrowserRouter>
         <Routes>
           {/* Rotas públicas */}
-          <Route path="/" element={isLoggedIn ? <Navigate to="/hub/modulos" replace /> : <Navigate to="/login" replace />} />
-          <Route path="/login" element={isLoggedIn ? <Navigate to="/hub/modulos" replace /> : <LoginPage onLogin={handleLogin} />} />
+          <Route path="/" element={isLoggedIn ? <AuthRedirect /> : <Navigate to="/login" replace />} />
+          <Route path="/login" element={isLoggedIn ? <AuthRedirect /> : <LoginPage onLogin={handleLogin} />} />
           <Route path="/design-system" element={<DesignSystemPage />} />
 
           {/* Hub */}
