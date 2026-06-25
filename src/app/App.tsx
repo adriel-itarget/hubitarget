@@ -5,17 +5,12 @@ import { AppThemeProvider } from './components/AppThemeContext';
 import { LoginPage } from './pages/LoginPage';
 import { DesignSystemPage } from './pages/DesignSystemPage';
 import { HubLayout } from './components/HubLayout';
-import { EntityDashboard } from './components/EntityDashboard';
 import { EntityConfig } from './components/EntityConfig';
 import { EntityDados } from './components/EntityDados';
 import { EntityGeral } from './components/EntityGeral';
 import { EntityDiretoria } from './components/EntityDiretoria';
 import { EntityTextosRegras } from './components/EntityTextosRegras';
-import { Subscriptions } from './components/Subscriptions';
-import { UsersAccess } from './components/UsersAccess';
 import { MyModules } from './components/MyModules';
-import { PaymentMethods } from './components/PaymentMethods';
-import { EntityCRUD } from './components/EntityCRUD';
 
 // Módulo Associação
 import { AssociacaoModule } from './modules/associacao/AssociacaoModule';
@@ -51,8 +46,6 @@ import { EventosDashboard } from './modules/eventos/pages/EventosDashboard';
 import { ListaEventos } from './modules/eventos/pages/ListaEventos';
 import { Trabalhos } from './modules/eventos/pages/Trabalhos';
 
-import { Users, Calendar, DollarSign, Tags } from 'lucide-react';
-
 function AssocPlaceholder({ title }: { title: string }) {
   return (
     <div className="min-h-screen bg-background">
@@ -86,11 +79,7 @@ export default function App() {
             element={isLoggedIn ? <HubLayout onLogout={handleLogout} /> : <Navigate to="/login" replace />}
           >
             <Route index element={<Navigate to="/hub/modulos" replace />} />
-            <Route path="dashboard" element={<EntityDashboard />} />
-            <Route path="assinaturas" element={<Subscriptions />} />
-            <Route path="usuarios" element={<UsersAccess />} />
             <Route path="modulos" element={<MyModules />} />
-            <Route path="pagamentos" element={<PaymentMethods />} />
           </Route>
 
           {/* Módulo Associação */}

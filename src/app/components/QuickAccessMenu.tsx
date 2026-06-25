@@ -1,6 +1,14 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { Grid3x3, Search, Users, Calendar, DollarSign, FileText, Settings, BarChart3, Building2, Tags, CreditCard, UserPlus, FileCheck, Briefcase, X, Zap, ClipboardList, BookOpen, Gift, LayoutGrid, Package, ChevronRight, ChevronLeft, Lock, Monitor, Languages, MessageSquare, Upload, ToggleRight, Vote, Layers } from 'lucide-react';
+import { Search, Users, Calendar, DollarSign, FileText, Settings, BarChart3, Building2, Tags, CreditCard, UserPlus, FileCheck, Briefcase, X, Zap, ClipboardList, BookOpen, Gift, LayoutGrid, Package, ChevronRight, ChevronLeft, Lock, Monitor, Languages, MessageSquare, Upload, ToggleRight, Vote, Layers, Info } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+
+function WidgetsIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M3 3h8v8H3V3zm0 10h8v8H3v-8zm10-10h8v8h-8V3zm0 10h8v8h-8v-8z" />
+    </svg>
+  );
+}
 
 interface QuickAccessMenuProps {
   currentModule?: string;
@@ -36,59 +44,59 @@ const SETTINGS_CATEGORIES = [
   {
     id: 'acesso', label: 'Acesso', Icon: Lock, color: '#60a5fa',
     items: [
-      { id: 'usuarios', label: 'Gerenciar Usuários' },
-      { id: 'grupos', label: 'Grupos de acesso' },
-      { id: 'permissoes', label: 'Permissões do Sistema' },
+      { id: 'usuarios', label: 'Gerenciar Usuários', description: 'Adicionar, editar e remover usuários do sistema' },
+      { id: 'grupos', label: 'Grupos de acesso', description: 'Organizar usuários em grupos com permissões' },
+      { id: 'permissoes', label: 'Permissões do Sistema', description: 'Controle de acesso a funcionalidades' },
     ]
   },
   {
     id: 'sistema', label: 'Sistema', Icon: Monitor, color: '#34d399',
     items: [
-      { id: 'menus', label: 'Menus' },
-      { id: 'config', label: 'Configurações' },
-      { id: 'config-novos', label: 'Configurações Novos' },
-      { id: 'campos-form', label: 'Campos Form' },
-      { id: 'logos', label: 'Logos' },
-      { id: 'notificacoes', label: 'Notificações' },
-      { id: 'idioma', label: 'Idioma' },
-      { id: 'traducao', label: 'Tradução' },
-      { id: 'traducao-centro-custo', label: 'Tradução centro de custo' },
-      { id: 'mensagens', label: 'Mensagens do Sistema' },
+      { id: 'menus', label: 'Menus', description: 'Personalizar menus de navegação' },
+      { id: 'config', label: 'Configurações', description: 'Configurações gerais do sistema' },
+      { id: 'config-novos', label: 'Configurações Novos', description: 'Configurações para novos usuários' },
+      { id: 'campos-form', label: 'Campos Form', description: 'Gerenciar campos de formulários' },
+      { id: 'logos', label: 'Logos', description: 'Gerenciar logotipos da plataforma' },
+      { id: 'notificacoes', label: 'Notificações', description: 'Configurar alertas e notificações' },
+      { id: 'idioma', label: 'Idioma', description: 'Alterar idioma do sistema' },
+      { id: 'traducao', label: 'Tradução', description: 'Gerenciar traduções de textos' },
+      { id: 'traducao-centro-custo', label: 'Tradução centro de custo', description: 'Traduzir termos de centros de custo' },
+      { id: 'mensagens', label: 'Mensagens do Sistema', description: 'Gerenciar mensagens automáticas' },
     ]
   },
   {
     id: 'documentos', label: 'Documentos', Icon: FileText, color: '#818cf8',
     items: [
-      { id: 'modelos', label: 'Modelos de Documentos' },
-      { id: 'config-associese', label: 'Configuração de Documento Associe-se' },
-      { id: 'tipos-associese', label: 'Tipos de Documento Associe-se' },
-      { id: 'config-especialidades', label: 'Configurações Especialidades' },
-      { id: 'config-esp-docs', label: 'Configuração Especialidades Documentos' },
+      { id: 'modelos', label: 'Modelos de Documentos', description: 'Criar e editar templates de documentos' },
+      { id: 'config-associese', label: 'Configuração de Documento Associe-se', description: 'Configurar documentos do cadastro' },
+      { id: 'tipos-associese', label: 'Tipos de Documento Associe-se', description: 'Definir tipos de documentos aceitos' },
+      { id: 'config-especialidades', label: 'Configurações Especialidades', description: 'Gerenciar especialidades médicas' },
+      { id: 'config-esp-docs', label: 'Configuração Especialidades Documentos', description: 'Vincular documentos a especialidades' },
     ]
   },
   {
     id: 'forms', label: 'Forms', Icon: ClipboardList, color: '#a78bfa',
     items: [
-      { id: 'formularios', label: 'Formulários' },
-      { id: 'perguntas', label: 'Perguntas' },
-      { id: 'respostas', label: 'Respostas' },
+      { id: 'formularios', label: 'Formulários', description: 'Criar e gerenciar formulários' },
+      { id: 'perguntas', label: 'Perguntas', description: 'Banco de perguntas para formulários' },
+      { id: 'respostas', label: 'Respostas', description: 'Gerenciar respostas padronizadas' },
     ]
   },
   {
     id: 'relatorios', label: 'Relatórios', Icon: BarChart3, color: '#fbbf24',
     items: [
-      { id: 'abas', label: 'Abas dos relatórios' },
-      { id: 'campos-exibidos', label: 'Campos exibidos dos relatórios' },
-      { id: 'config-campos', label: 'Configurador dos Campos' },
-      { id: 'indicadores', label: 'Indicadores' },
+      { id: 'abas', label: 'Abas dos relatórios', description: 'Organizar relatórios em abas' },
+      { id: 'campos-exibidos', label: 'Campos exibidos dos relatórios', description: 'Selecionar campos para exibição' },
+      { id: 'config-campos', label: 'Configurador dos Campos', description: 'Personalizar campos de relatórios' },
+      { id: 'indicadores', label: 'Indicadores', description: 'Configurar KPIs e métricas' },
     ]
   },
   {
     id: 'geral', label: 'Geral', Icon: Layers, color: '#94a3b8',
     items: [
-      { id: 'importacao-excel', label: 'Importação Excel' },
-      { id: 'config-status', label: 'Configuração Status' },
-      { id: 'votantes', label: 'Inserir votantes eleições' },
+      { id: 'importacao-excel', label: 'Importação Excel', description: 'Importar dados via planilhas' },
+      { id: 'config-status', label: 'Configuração Status', description: 'Definir status personalizados' },
+      { id: 'votantes', label: 'Inserir votantes eleições', description: 'Gerenciar eleitores para votações' },
     ]
   },
 ];
@@ -97,7 +105,9 @@ export function QuickAccessMenu({ currentModule }: QuickAccessMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'quick' | 'settings'>('quick');
   const [searchTerm, setSearchTerm] = useState('');
+  const [settingsSearch, setSettingsSearch] = useState('');
   const [settingsStack, setSettingsStack] = useState<string[]>([]);
+  const [hoveredInfo, setHoveredInfo] = useState<string | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
@@ -132,6 +142,7 @@ export function QuickAccessMenu({ currentModule }: QuickAccessMenuProps) {
   useEffect(() => {
     if (!isOpen) {
       setSearchTerm('');
+      setSettingsSearch('');
       setSettingsStack([]);
     }
   }, [isOpen]);
@@ -156,17 +167,24 @@ export function QuickAccessMenu({ currentModule }: QuickAccessMenuProps) {
   const hasResults = filteredModules.length > 0 || filteredEntity.length > 0 || filteredCreate.length > 0;
 
   return (
-    <div className="relative" ref={menuRef}>
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className={`p-2 rounded-lg transition-colors ${isOpen ? 'bg-accent' : 'hover:bg-accent'}`}
-        title="Menu de Acesso Rápido"
-      >
-        <Grid3x3 className="w-5 h-5" />
-      </button>
-
+    <>
       {isOpen && (
-        <div className="absolute right-0 top-full mt-2 w-[580px] bg-card border border-border rounded-2xl shadow-2xl overflow-hidden z-50">
+        <div
+          className="fixed inset-0 bg-black/20 z-40 transition-opacity"
+          onClick={() => setIsOpen(false)}
+        />
+      )}
+      <div className="relative z-50" ref={menuRef}>
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className={`p-2 rounded-lg transition-colors ${isOpen ? 'bg-accent' : 'hover:bg-accent'}`}
+          title="Menu de Acesso Rápido"
+        >
+          <WidgetsIcon className="w-5 h-5" />
+        </button>
+
+        {isOpen && (
+          <div className="absolute right-0 top-full mt-2 w-[580px] bg-card border border-border rounded-2xl shadow-2xl overflow-hidden z-50">
 
           {/* Header */}
           <div className="px-4 pt-4 pb-3 border-b border-border">
@@ -335,56 +353,162 @@ export function QuickAccessMenu({ currentModule }: QuickAccessMenuProps) {
 
             {/* === SETTINGS TAB === */}
             {activeTab === 'settings' && (
-              <div className="p-2">
-                {settingsStack.length === 0 ? (
-                  /* Root: categories list */
-                  <div className="space-y-0.5">
-                    {SETTINGS_CATEGORIES.map(cat => {
-                      const Icon = cat.Icon;
-                      return (
+              <div>
+                {/* iOS-style search bar */}
+                {settingsStack.length === 0 && (
+                  <div className="px-4 pt-3 pb-2">
+                    <div className="relative">
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                      <input
+                        type="text"
+                        placeholder="Configurações"
+                        value={settingsSearch}
+                        onChange={e => setSettingsSearch(e.target.value)}
+                        className="w-full pl-9 pr-4 py-2.5 bg-muted/60 rounded-xl text-sm outline-none focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-muted-foreground/60"
+                      />
+                      {settingsSearch && (
                         <button
-                          key={cat.id}
-                          onClick={() => openCategory(cat.id)}
-                          className="w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-muted transition-colors text-left group"
+                          onClick={() => setSettingsSearch('')}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-muted-foreground/20 flex items-center justify-center hover:bg-muted-foreground/30 transition-colors"
                         >
-                          <div
-                            className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-105"
-                            style={{ backgroundColor: `${cat.color}15`, border: `1px solid ${cat.color}30` }}
-                          >
-                            <Icon className="w-5 h-5" style={{ color: cat.color }} />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium">{cat.label}</p>
-                            <p className="text-[11px] text-muted-foreground">{cat.items.length} itens</p>
-                          </div>
-                          <ChevronRight className="w-4 h-4 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
+                          <X className="w-3 h-3 text-muted-foreground" />
                         </button>
-                      );
-                    })}
-                  </div>
-                ) : (
-                  /* Sub-level: items list */
-                  <div className="space-y-0.5">
-                    {currentCategory?.items.map(item => (
-                      <button
-                        key={item.id}
-                        className="w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-muted transition-colors text-left group"
-                      >
-                        <div
-                          className="w-2 h-2 rounded-full flex-shrink-0"
-                          style={{ backgroundColor: currentCategory.color }}
-                        />
-                        <span className="text-sm flex-1">{item.label}</span>
-                        <ChevronRight className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
-                      </button>
-                    ))}
+                      )}
+                    </div>
                   </div>
                 )}
+
+                <div className="p-2">
+                  {settingsStack.length === 0 ? (
+                    /* Root: categories list */
+                    settingsSearch ? (
+                      /* Search results */
+                      <div className="space-y-1">
+                        {SETTINGS_CATEGORIES.filter(cat =>
+                          cat.items.some(item =>
+                            item.label.toLowerCase().includes(settingsSearch.toLowerCase()) ||
+                            item.description.toLowerCase().includes(settingsSearch.toLowerCase())
+                          )
+                        ).map(cat => {
+                          const Icon = cat.Icon;
+                          const filteredItems = cat.items.filter(item =>
+                            item.label.toLowerCase().includes(settingsSearch.toLowerCase()) ||
+                            item.description.toLowerCase().includes(settingsSearch.toLowerCase())
+                          );
+                          return (
+                            <div key={cat.id}>
+                              <div className="flex items-center gap-2 px-3 py-2">
+                                <div
+                                  className="w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0"
+                                  style={{ backgroundColor: `${cat.color}15` }}
+                                >
+                                  <Icon className="w-3.5 h-3.5" style={{ color: cat.color }} />
+                                </div>
+                                <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{cat.label}</span>
+                              </div>
+                              {filteredItems.map(item => (
+                                <div
+                                  key={item.id}
+                                  className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-muted transition-colors group"
+                                >
+                                  <div className="w-2 h-2 rounded-full flex-shrink-0 ml-1" style={{ backgroundColor: cat.color }} />
+                                  <span className="text-sm flex-1">{item.label}</span>
+                                  <div className="relative">
+                                    <button
+                                      onMouseEnter={() => setHoveredInfo(item.id)}
+                                      onMouseLeave={() => setHoveredInfo(null)}
+                                      className="p-1 rounded-full hover:bg-muted-foreground/10 transition-colors"
+                                    >
+                                      <Info className="w-4 h-4 text-muted-foreground/50" />
+                                    </button>
+                                    {hoveredInfo === item.id && (
+                                      <div className="absolute right-0 top-full mt-1 w-56 p-2.5 bg-foreground text-background text-xs rounded-lg shadow-xl z-50">
+                                        {item.description}
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          );
+                        })}
+                        {SETTINGS_CATEGORIES.filter(cat =>
+                          cat.items.some(item =>
+                            item.label.toLowerCase().includes(settingsSearch.toLowerCase()) ||
+                            item.description.toLowerCase().includes(settingsSearch.toLowerCase())
+                          )
+                        ).length === 0 && (
+                          <div className="py-8 text-center text-muted-foreground text-sm">
+                            Nenhuma configuração encontrada
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      /* Categories grid */
+                      <div className="space-y-0.5">
+                        {SETTINGS_CATEGORIES.map(cat => {
+                          const Icon = cat.Icon;
+                          return (
+                            <button
+                              key={cat.id}
+                              onClick={() => openCategory(cat.id)}
+                              className="w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-muted transition-colors text-left group"
+                            >
+                              <div
+                                className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-105"
+                                style={{ backgroundColor: `${cat.color}15`, border: `1px solid ${cat.color}30` }}
+                              >
+                                <Icon className="w-5 h-5" style={{ color: cat.color }} />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm font-medium">{cat.label}</p>
+                                <p className="text-[11px] text-muted-foreground">{cat.items.length} itens</p>
+                              </div>
+                              <ChevronRight className="w-4 h-4 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )
+                  ) : (
+                    /* Sub-level: items list */
+                    <div className="space-y-0.5">
+                      {currentCategory?.items.map(item => (
+                        <div
+                          key={item.id}
+                          className="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-muted transition-colors group"
+                        >
+                          <div
+                            className="w-2 h-2 rounded-full flex-shrink-0"
+                            style={{ backgroundColor: currentCategory.color }}
+                          />
+                          <span className="text-sm flex-1">{item.label}</span>
+                          <div className="relative">
+                            <button
+                              onMouseEnter={() => setHoveredInfo(item.id)}
+                              onMouseLeave={() => setHoveredInfo(null)}
+                              className="p-1 rounded-full hover:bg-muted-foreground/10 transition-colors"
+                            >
+                              <Info className="w-4 h-4 text-muted-foreground/50" />
+                            </button>
+                            {hoveredInfo === item.id && (
+                              <div className="absolute right-0 top-full mt-1 w-56 p-2.5 bg-foreground text-background text-xs rounded-lg shadow-xl z-50">
+                                {item.description}
+                              </div>
+                            )}
+                          </div>
+                          <ChevronRight className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
             )}
           </div>
         </div>
       )}
     </div>
+    </>
   );
 }
