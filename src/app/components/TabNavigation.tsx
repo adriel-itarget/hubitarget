@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { ChevronLeft, ChevronRight, X, Users, DollarSign, ClipboardList, BookOpen, Gift, Calendar, LayoutGrid } from 'lucide-react';
 
 interface Tab {
@@ -37,8 +37,23 @@ const MODULE_ICONS: Record<string, React.ComponentType<{ className?: string; sty
 
 export function TabNavigation({ tabs, activeTabId, onTabClick, onTabClose }: TabNavigationProps) {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const tabRefs = useRef<Map<string, HTMLDivElement>>(new Map());
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(false);
+
+  const scrollToTab = useCallback((tabId: string, behavior: ScrollBehavior = 'smooth') => {
+    const container = scrollContainerRef.current;
+    const tabEl = tabRefs.current.get(tabId);
+    if (container && tabEl) {
+      const containerRect = container.getBoundingClientRect();
+      const tabRect = tabEl.getBoundingClientRect();
+      const isFullyVisible = tabRect.left >= containerRect.left && tabRect.right <= containerRect.right;
+      if (!isFullyVisible) {
+        const offset = tabEl.offsetLeft - container.offsetLeft - container.clientWidth / 2 + tabEl.clientWidth / 2;
+        container.scrollTo({ left: Math.max(0, offset), behavior });
+      }
+    }
+  }, []);
 
   const checkScroll = () => {
     if (scrollContainerRef.current) {
@@ -61,9 +76,32 @@ export function TabNavigation({ tabs, activeTabId, onTabClick, onTabClose }: Tab
     }
   }, [tabs]);
 
+  useEffect(() => {
+    if (tabs.length > 0) {
+      requestAnimationFrame(() => {
+        scrollToTab(tabs[tabs.length - 1].id, 'smooth');
+      });
+    }
+  }, [tabs.length, scrollToTab]);
+
   const scroll = (direction: 'left' | 'right') => {
     if (scrollContainerRef.current) {
-      scrollContainerRef.current.scrollBy({ left: direction === 'left' ? -200 : 200, behavior: 'smooth' });
+      const container = scrollContainerRef.current;
+      const tabsArr = Array.from(tabRefs.current.keys());
+      const currentIndex = tabsArr.findIndex(id => {
+        const el = tabRefs.current.get(id);
+        if (!el) return false;
+        const rect = el.getBoundingClientRect();
+        const containerRect = container.getBoundingClientRect();
+        return rect.left >= containerRect.left - 10 && rect.left <= containerRect.left + 10;
+      });
+      if (direction === 'right' && currentIndex < tabsArr.length - 1) {
+        scrollToTab(tabsArr[currentIndex + 1]);
+      } else if (direction === 'left' && currentIndex > 0) {
+        scrollToTab(tabsArr[currentIndex - 1]);
+      } else {
+        container.scrollBy({ left: direction === 'left' ? -200 : 200, behavior: 'smooth' });
+      }
     }
   };
 
@@ -94,6 +132,7 @@ export function TabNavigation({ tabs, activeTabId, onTabClick, onTabClose }: Tab
             return (
               <div
                 key={tab.id}
+                ref={(el) => { if (el) tabRefs.current.set(tab.id, el); }}
                 onClick={() => onTabClick(tab.id)}
                 className={`group flex items-center gap-2 px-3 py-3 text-sm transition-colors border-b-2 whitespace-nowrap cursor-pointer ${
                   isActive
