@@ -11,11 +11,89 @@ interface LoginPageProps {
 const DEMO_EMAIL = 'carlos.silva@sbcardio.org.br';
 const DEMO_PASSWORD = 'Demo@2024';
 
+type Theme = 'dark' | 'slate' | 'light' | 'slate-light';
+
+const THEMES: Record<Theme, {
+  bg: string;
+  blob1: string;
+  blob2: string;
+  gridColor: string;
+  textColor: string;
+  subtextColor: string;
+  featureDot: string;
+  featureText: string;
+  footerColor: string;
+  markOpacity: number;
+  accentColor: string;
+}> = {
+  dark: {
+    bg: 'linear-gradient(135deg, #0d354e 0%, #0a2840 40%, #062030 100%)',
+    blob1: 'radial-gradient(circle, #00b2cc, transparent)',
+    blob2: 'radial-gradient(circle, #008dab, transparent)',
+    gridColor: '#00b2cc',
+    textColor: '#ffffff',
+    subtextColor: 'rgba(147,197,253,0.7)',
+    featureDot: '#00b2cc',
+    featureText: 'rgba(191,219,254,0.7)',
+    footerColor: 'rgba(147,197,253,0.3)',
+    markOpacity: 1,
+    accentColor: '#00b2cc',
+  },
+  slate: {
+    bg: 'linear-gradient(135deg, #1e293b 0%, #334155 40%, #475569 100%)',
+    blob1: 'radial-gradient(circle, #94a3b8, transparent)',
+    blob2: 'radial-gradient(circle, #64748b, transparent)',
+    gridColor: '#94a3b8',
+    textColor: '#f8fafc',
+    subtextColor: 'rgba(226,232,240,0.8)',
+    featureDot: '#cbd5e1',
+    featureText: 'rgba(226,232,240,0.7)',
+    footerColor: 'rgba(148,163,184,0.4)',
+    markOpacity: 1,
+    accentColor: '#94a3b8',
+  },
+  light: {
+    bg: 'linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 40%, #d1fae5 100%)',
+    blob1: 'radial-gradient(circle, #34d399, transparent)',
+    blob2: 'radial-gradient(circle, #10b981, transparent)',
+    gridColor: '#34d399',
+    textColor: '#064e3b',
+    subtextColor: 'rgba(6,78,59,0.7)',
+    featureDot: '#10b981',
+    featureText: 'rgba(6,78,59,0.6)',
+    footerColor: 'rgba(6,78,59,0.3)',
+    markOpacity: 0.8,
+    accentColor: '#10b981',
+  },
+  'slate-light': {
+    bg: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 40%, #e2e8f0 100%)',
+    blob1: 'radial-gradient(circle, #94a3b8, transparent)',
+    blob2: 'radial-gradient(circle, #64748b, transparent)',
+    gridColor: '#94a3b8',
+    textColor: '#0f172a',
+    subtextColor: 'rgba(15,23,42,0.6)',
+    featureDot: '#64748b',
+    featureText: 'rgba(15,23,42,0.55)',
+    footerColor: 'rgba(15,23,42,0.3)',
+    markOpacity: 0.85,
+    accentColor: '#475569',
+  },
+};
+
+const FEATURES = [
+  'Gestão de associados e anuidades',
+  'Eventos, cursos e certificações',
+  'Financeiro integrado a todos os módulos',
+];
+
 export function LoginPage({ onLogin }: LoginPageProps) {
   const [email, setEmail] = useState(DEMO_EMAIL);
   const [password, setPassword] = useState(DEMO_PASSWORD);
   const [error, setError] = useState('');
+  const [theme, setTheme] = useState<Theme>('dark');
   const navigate = useNavigate();
+
+  const t = THEMES[theme];
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,25 +110,28 @@ export function LoginPage({ onLogin }: LoginPageProps) {
     }
   };
 
+  const isLight = theme === 'light' || theme === 'slate-light';
+  const logoWhite = !isLight;
+
   return (
     <div className="min-h-screen flex">
 
       {/* ── Left panel — brand ── */}
       <div
-        className="hidden lg:flex flex-col justify-between w-[54%] relative overflow-hidden p-12"
-        style={{ background: 'linear-gradient(135deg, #0d354e 0%, #0a2840 40%, #062030 100%)' }}
+        className="hidden lg:flex flex-col justify-between w-[54%] relative overflow-hidden p-12 transition-colors duration-700"
+        style={{ background: t.bg }}
       >
         {/* Decorative blobs */}
         <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full opacity-10"
-          style={{ background: 'radial-gradient(circle, #00b2cc, transparent)' }} />
+          style={{ background: t.blob1 }} />
         <div className="absolute bottom-0 right-0 w-[500px] h-[500px] rounded-full opacity-8"
-          style={{ background: 'radial-gradient(circle, #008dab, transparent)', transform: 'translate(40%, 40%)' }} />
+          style={{ background: t.blob2, transform: 'translate(40%, 40%)' }} />
 
         {/* Grid pattern */}
         <svg className="absolute inset-0 w-full h-full opacity-5" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <pattern id="lgrid" width="60" height="60" patternUnits="userSpaceOnUse">
-              <path d="M 60 0 L 0 0 0 60" fill="none" stroke="#00b2cc" strokeWidth="0.5"/>
+              <path d="M 60 0 L 0 0 0 60" fill="none" stroke={t.gridColor} strokeWidth="0.5"/>
             </pattern>
           </defs>
           <rect width="100%" height="100%" fill="url(#lgrid)" />
@@ -58,7 +139,7 @@ export function LoginPage({ onLogin }: LoginPageProps) {
 
         {/* Logo — top */}
         <div className="relative z-10">
-          <ItargetLogo height={38} white />
+          <ItargetLogo height={38} white={logoWhite} />
         </div>
 
         {/* Center content */}
@@ -66,36 +147,60 @@ export function LoginPage({ onLogin }: LoginPageProps) {
           {/* Animated mark */}
           <div className="relative w-28 h-28 mb-10">
             <div className="absolute inset-0 rounded-full opacity-20 animate-ping"
-              style={{ background: 'radial-gradient(circle, #00b2cc, transparent)', animationDuration: '3s' }} />
+              style={{ background: t.blob1, animationDuration: '3s' }} />
             <div className="absolute inset-2 rounded-full opacity-30 animate-ping"
-              style={{ background: 'radial-gradient(circle, #008dab, transparent)', animationDuration: '3s', animationDelay: '1.5s' }} />
-            <div className="relative z-10 w-28 h-28 flex items-center justify-center">
+              style={{ background: t.blob2, animationDuration: '3s', animationDelay: '1.5s' }} />
+            <div className="relative z-10 w-28 h-28 flex items-center justify-center" style={{ opacity: t.markOpacity }}>
               <ItargetMark size={112} />
             </div>
           </div>
 
-          <h2 className="text-4xl text-white mb-3" style={{ lineHeight: 1.2 }}>
+          <h2 className="text-4xl mb-3" style={{ color: t.textColor, lineHeight: 1.2, fontWeight: 600 }}>
             Gestão inteligente<br />
-            <span style={{ color: '#00b2cc' }}>para sua entidade</span>
+            <span style={{ color: t.accentColor }}>para sua entidade</span>
           </h2>
-          <p className="text-blue-200/70 text-base leading-relaxed max-w-sm">
+          <p className="text-base leading-relaxed max-w-sm" style={{ color: t.subtextColor }}>
             Plataforma completa para associações, sociedades médicas e entidades de classe.
           </p>
 
           <div className="mt-8 space-y-3">
-            {['Gestão de associados e anuidades', 'Eventos, cursos e certificações', 'Financeiro integrado a todos os módulos'].map(f => (
+            {FEATURES.map(f => (
               <div key={f} className="flex items-center gap-3">
-                <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: '#00b2cc' }} />
-                <span className="text-blue-100/70 text-sm">{f}</span>
+                <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: t.featureDot }} />
+                <span className="text-sm" style={{ color: t.featureText }}>{f}</span>
               </div>
             ))}
           </div>
         </div>
 
-        <p className="text-blue-200/30 text-xs relative z-10 flex items-center gap-3">
-          <span>© 2026 Itarget · Todos os direitos reservados</span>
-          <Link to="/design-system" className="text-blue-200/40 hover:text-blue-200/70 transition-colors underline underline-offset-2 decoration-blue-200/30">Design System</Link>
-        </p>
+        {/* Footer + theme switcher */}
+        <div className="relative z-10 flex items-center justify-between">
+          <p className="text-xs flex items-center gap-3" style={{ color: t.footerColor }}>
+            <span>© 2026 Itarget · Todos os direitos reservados</span>
+            <Link to="/design-system"
+              className="hover:opacity-80 transition-colors underline underline-offset-2"
+              style={{ color: t.footerColor }}>
+              Design System
+            </Link>
+          </p>
+
+          {/* Theme switcher */}
+          <div className="flex items-center gap-2">
+            {(['dark', 'slate', 'light', 'slate-light'] as Theme[]).map((v) => (
+              <button
+                key={v}
+                onClick={() => setTheme(v)}
+                title={v === 'dark' ? 'Azul Escuro' : v === 'slate' ? 'Slate' : v === 'light' ? 'Claro' : 'Slate Claro'}
+                className={`w-3 h-3 rounded-full border-2 transition-all duration-300 ${
+                  theme === v ? 'scale-125 border-white/60' : 'border-white/20 hover:border-white/40'
+                }`}
+                style={{
+                  background: v === 'dark' ? '#0d354e' : v === 'slate' ? '#475569' : v === 'light' ? '#d1fae5' : '#e2e8f0',
+                }}
+              />
+            ))}
+          </div>
+        </div>
       </div>
 
       {/* ── Right panel — form ── */}
