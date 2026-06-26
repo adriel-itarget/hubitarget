@@ -1006,7 +1006,7 @@ export function QuickAccessMenu({ currentModule }: QuickAccessMenuProps) {
                                       onClick={() => handleNav(item.route)}
                                       className="w-full flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-card transition-colors text-left group"
                                     >
-                                      <div className="w-6 h-6 rounded-md bg-card border border-border flex items-center justify-center text-muted-foreground group-hover:text-foreground transition-colors flex-shrink-0">
+                                      <div className="w-6 h-6 rounded-md bg-muted/50 flex items-center justify-center text-muted-foreground group-hover:text-foreground transition-colors flex-shrink-0">
                                         {item.icon}
                                       </div>
                                       <span className="text-xs font-medium truncate">{item.label}</span>
