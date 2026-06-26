@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { ItargetMark } from './ItargetMark';
 import { ItargetLogo } from './ItargetLogo';
+import { Button } from './ui/button';
 
 interface SidebarProps {
   onLogout: () => void;
@@ -46,19 +47,20 @@ export function Sidebar({ onLogout }: SidebarProps) {
 
       {/* Nav zone */}
       <div className="flex-1 relative min-h-0">
-        <button
+        <Button
+          variant="outline"
+          size="icon"
           onClick={() => isCollapsed ? setIsCollapsed(false) : collapse()}
           title={isCollapsed ? 'Expandir menu' : 'Recolher menu'}
           style={{ right: -10 }}
           className={`absolute top-1/2 -translate-y-1/2 z-30 w-5 h-5 rounded-full
-            bg-card border border-border shadow-md
-            flex items-center justify-center
+            shadow-md
             text-muted-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary
             transition-all duration-200
             ${isHovered ? 'opacity-100 scale-100' : 'opacity-0 scale-75 pointer-events-none'}`}
         >
           {isCollapsed ? <ChevronRight className="w-3 h-3" /> : <ChevronLeft className="w-3 h-3" />}
-        </button>
+        </Button>
 
         <nav className={`h-full overflow-y-auto overflow-x-hidden space-y-0.5 transition-all duration-300 ${isCollapsed ? 'p-2' : 'p-3'}`}>
           <NavLink to="/hub/dashboard" title={isCollapsed ? 'Dashboard' : undefined}

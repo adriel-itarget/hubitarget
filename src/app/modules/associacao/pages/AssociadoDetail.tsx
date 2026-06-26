@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { ArrowLeft, Mail, Phone, MapPin, Calendar, GraduationCap, Award, Trophy, DollarSign, Wallet, Clock, X, FileText, Shield, Edit, BookOpen, ChevronRight } from 'lucide-react';
 import { AreaChart, Area, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { Card, CardContent, CardHeader, CardTitle } from '@/app/components/ui/card';
+import { Button } from '@/app/components/ui/button';
+import { Badge } from '@/app/components/ui/badge';
 
 const maskCPF = (cpf: string) =>
   cpf.replace(/^(\d{3})\.\d{3}\.\d{3}-(\d{2})$/, '$1.***.***-$2');
@@ -86,11 +89,11 @@ interface AssociadoDetailProps {
 }
 
 const statusColor = (s: string) => {
-  if (s === 'Adimplente') return { text: 'text-green-600', border: 'border-green-500/20', bg: 'bg-green-500/10', dot: 'bg-green-500' };
-  if (s === 'Em débito') return { text: 'text-red-600', border: 'border-red-500/20', bg: 'bg-red-500/10', dot: 'bg-red-500' };
-  if (s === 'Pendente') return { text: 'text-yellow-600', border: 'border-yellow-500/20', bg: 'bg-yellow-500/10', dot: 'bg-yellow-500' };
-  if (s === 'Inativo') return { text: 'text-gray-500', border: 'border-gray-500/20', bg: 'bg-gray-500/10', dot: 'bg-gray-400' };
-  return { text: 'text-blue-600', border: 'border-blue-500/20', bg: 'bg-blue-500/10', dot: 'bg-blue-500' };
+  if (s === 'Adimplente') return { text: 'text-green-600', border: 'border-green-500/20', bg: 'bg-green-500/10', dot: 'bg-green-500', variant: 'default' as const };
+  if (s === 'Em débito') return { text: 'text-red-600', border: 'border-red-500/20', bg: 'bg-red-500/10', dot: 'bg-red-500', variant: 'destructive' as const };
+  if (s === 'Pendente') return { text: 'text-yellow-600', border: 'border-yellow-500/20', bg: 'bg-yellow-500/10', dot: 'bg-yellow-500', variant: 'outline' as const };
+  if (s === 'Inativo') return { text: 'text-gray-500', border: 'border-gray-500/20', bg: 'bg-gray-500/10', dot: 'bg-gray-400', variant: 'secondary' as const };
+  return { text: 'text-blue-600', border: 'border-blue-500/20', bg: 'bg-blue-500/10', dot: 'bg-blue-500', variant: 'default' as const };
 };
 
 export function AssociadoDetail({ associate, onBack, onEdit }: AssociadoDetailProps) {
@@ -98,9 +101,9 @@ export function AssociadoDetail({ associate, onBack, onEdit }: AssociadoDetailPr
   const sc = statusColor(associate.status);
 
   const SectionBtn = ({ onClick, label }: { onClick: () => void; label: string }) => (
-    <button onClick={onClick} className="text-sm text-primary hover:text-primary/80 flex items-center gap-1 transition-colors">
+    <Button variant="ghost" size="sm" onClick={onClick} className="text-sm text-primary hover:text-primary/80 gap-1">
       {label} <ChevronRight className="w-3.5 h-3.5" />
-    </button>
+    </Button>
   );
 
   return (
@@ -111,13 +114,12 @@ export function AssociadoDetail({ associate, onBack, onEdit }: AssociadoDetailPr
         <div className="absolute top-10 left-1/2 w-40 h-40 bg-primary/4 rounded-full blur-2xl pointer-events-none" />
 
         <div className="px-8 max-w-7xl mx-auto">
-          <button onClick={onBack} className="flex items-center gap-2 text-muted-foreground hover:text-foreground mb-7 transition-colors group">
+          <Button variant="ghost" onClick={onBack} className="gap-2 text-muted-foreground hover:text-foreground mb-7 group">
             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
             <span className="text-sm">Voltar para lista</span>
-          </button>
+          </Button>
 
           <div className="flex items-start gap-5 flex-wrap md:flex-nowrap">
-            {/* Avatar */}
             <div className="relative flex-shrink-0">
               {associate.photo ? (
                 <img src={associate.photo} alt={associate.name} className="w-28 h-28 rounded-2xl object-cover ring-4 ring-background shadow-2xl" />
@@ -129,33 +131,29 @@ export function AssociadoDetail({ associate, onBack, onEdit }: AssociadoDetailPr
               <div className={`absolute -bottom-1.5 -right-1.5 w-5 h-5 rounded-full border-2 border-background ${sc.dot}`} title={associate.status} />
             </div>
 
-            {/* Info */}
             <div className="flex-1 min-w-0">
               <h1 className="text-3xl mb-2.5 truncate">{associate.name}</h1>
               <div className="flex items-center gap-2 flex-wrap">
-                <span className={`text-xs px-3 py-1 rounded-full border font-medium ${sc.bg} ${sc.text} ${sc.border}`}>
+                <Badge variant={sc.variant} className={`${sc.bg} ${sc.text} ${sc.border}`}>
                   {associate.status}
-                </span>
-                <span className="text-xs px-3 py-1 bg-blue-500/10 text-blue-600 rounded-full border border-blue-500/20">
+                </Badge>
+                <Badge variant="secondary" className="bg-blue-500/10 text-blue-600 border border-blue-500/20">
                   {associate.category}
-                </span>
+                </Badge>
                 <span className="text-xs text-muted-foreground">· Membro desde {associate.joinDate}</span>
                 <span className="text-xs text-muted-foreground">· CRM SP 12{associate.id}456</span>
               </div>
             </div>
 
-            <button
-              onClick={onEdit}
-              className="flex items-center gap-2 px-4 py-2.5 bg-primary text-primary-foreground rounded-xl hover:bg-primary/90 transition-colors shadow-sm flex-shrink-0"
-            >
-              <Edit className="w-4 h-4" />
+            <Button onClick={onEdit} className="flex-shrink-0">
+              <Edit className="w-4 h-4 mr-2" />
               Editar Perfil
-            </button>
+            </Button>
           </div>
         </div>
       </div>
 
-      {/* ── KPI Row (floated over hero) ── */}
+      {/* ── KPI Row ── */}
       <div className="px-8 -mt-16">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -167,18 +165,20 @@ export function AssociadoDetail({ associate, onBack, onEdit }: AssociadoDetailPr
             ].map(kpi => {
               const Icon = kpi.icon;
               return (
-                <div key={kpi.label} className="bg-card border border-border rounded-xl p-4 shadow-sm">
-                  <div className="flex items-center gap-3">
-                    <div className={`w-10 h-10 rounded-xl ${kpi.bg} flex items-center justify-center flex-shrink-0`}>
-                      <Icon className={`w-5 h-5 ${kpi.color}`} />
+                <Card key={kpi.label} className="shadow-sm">
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-3">
+                      <div className={`w-10 h-10 rounded-xl ${kpi.bg} flex items-center justify-center flex-shrink-0`}>
+                        <Icon className={`w-5 h-5 ${kpi.color}`} />
+                      </div>
+                      <div>
+                        <p className="text-xs text-muted-foreground">{kpi.label}</p>
+                        <p className="text-lg font-semibold leading-tight">{kpi.value}</p>
+                        <p className="text-xs text-muted-foreground">{kpi.sub}</p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-xs text-muted-foreground">{kpi.label}</p>
-                      <p className="text-lg font-semibold leading-tight">{kpi.value}</p>
-                      <p className="text-xs text-muted-foreground">{kpi.sub}</p>
-                    </div>
-                  </div>
-                </div>
+                  </CardContent>
+                </Card>
               );
             })}
           </div>
@@ -189,190 +189,202 @@ export function AssociadoDetail({ associate, onBack, onEdit }: AssociadoDetailPr
       <div className="px-8 py-8">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-          {/* Left column — 2/3 */}
+          {/* Left column */}
           <div className="lg:col-span-2 space-y-6">
 
             {/* Financial */}
-            <div className="bg-card border border-border rounded-xl p-6">
-              <div className="flex items-center justify-between mb-5">
-                <h3 className="font-semibold flex items-center gap-2">
-                  <DollarSign className="w-5 h-5 text-green-600" /> Financeiro
-                </h3>
-                <SectionBtn onClick={() => setOpenModal('financial')} label="Ver histórico" />
-              </div>
-              <div className="grid grid-cols-3 gap-3 mb-5">
-                <div className="bg-green-500/8 rounded-xl p-3.5 border border-green-500/15">
-                  <p className="text-xs text-muted-foreground mb-0.5">Total pago 2026</p>
-                  <p className="text-xl font-semibold text-green-600">R$ 900</p>
+            <Card>
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between mb-5">
+                  <h3 className="font-semibold flex items-center gap-2">
+                    <DollarSign className="w-5 h-5 text-green-600" /> Financeiro
+                  </h3>
+                  <SectionBtn onClick={() => setOpenModal('financial')} label="Ver histórico" />
                 </div>
-                <div className="bg-blue-500/8 rounded-xl p-3.5 border border-blue-500/15">
-                  <p className="text-xs text-muted-foreground mb-0.5">Próximo venc.</p>
-                  <p className="text-xl font-semibold text-blue-600">15/07</p>
-                </div>
-                <div className="bg-muted/40 rounded-xl p-3.5">
-                  <p className="text-xs text-muted-foreground mb-0.5">Cashback acum.</p>
-                  <p className="text-xl font-semibold">R$ 234</p>
-                </div>
-              </div>
-              <div className="divide-y divide-border">
-                {payments.slice(0, 3).map((p, i) => (
-                  <div key={i} className="flex items-center justify-between py-2.5">
-                    <div>
-                      <p className="text-sm font-medium">Anuidade {p.mes}</p>
-                      <p className="text-xs text-muted-foreground">Pago em {p.data}</p>
-                    </div>
-                    <div className="text-right flex items-center gap-2">
-                      <p className="text-sm font-semibold text-green-600">{p.valor}</p>
-                      <span className="text-xs px-1.5 py-0.5 bg-green-500/10 text-green-600 rounded-full">Pago</span>
-                    </div>
+                <div className="grid grid-cols-3 gap-3 mb-5">
+                  <div className="bg-green-500/8 rounded-xl p-3.5 border border-green-500/15">
+                    <p className="text-xs text-muted-foreground mb-0.5">Total pago 2026</p>
+                    <p className="text-xl font-semibold text-green-600">R$ 900</p>
                   </div>
-                ))}
-              </div>
-            </div>
+                  <div className="bg-blue-500/8 rounded-xl p-3.5 border border-blue-500/15">
+                    <p className="text-xs text-muted-foreground mb-0.5">Próximo venc.</p>
+                    <p className="text-xl font-semibold text-blue-600">15/07</p>
+                  </div>
+                  <div className="bg-muted/40 rounded-xl p-3.5">
+                    <p className="text-xs text-muted-foreground mb-0.5">Cashback acum.</p>
+                    <p className="text-xl font-semibold">R$ 234</p>
+                  </div>
+                </div>
+                <div className="divide-y divide-border">
+                  {payments.slice(0, 3).map((p, i) => (
+                    <div key={i} className="flex items-center justify-between py-2.5">
+                      <div>
+                        <p className="text-sm font-medium">Anuidade {p.mes}</p>
+                        <p className="text-xs text-muted-foreground">Pago em {p.data}</p>
+                      </div>
+                      <div className="text-right flex items-center gap-2">
+                        <p className="text-sm font-semibold text-green-600">{p.valor}</p>
+                        <Badge variant="secondary" className="bg-green-500/10 text-green-600">Pago</Badge>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
 
             {/* Events */}
-            <div className="bg-card border border-border rounded-xl p-6">
-              <div className="flex items-center justify-between mb-5">
-                <h3 className="font-semibold flex items-center gap-2">
-                  <Calendar className="w-5 h-5 text-blue-600" /> Eventos
-                </h3>
-                <SectionBtn onClick={() => setOpenModal('events')} label="Ver todos" />
-              </div>
-              <div className="space-y-3">
-                {eventsData.slice(0, 3).map((e, i) => (
-                  <div key={i} className="flex items-start gap-3 p-3.5 bg-muted/30 rounded-xl hover:bg-muted/50 transition-colors">
-                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 text-xs font-semibold text-primary">
-                      #{i + 1}
+            <Card>
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between mb-5">
+                  <h3 className="font-semibold flex items-center gap-2">
+                    <Calendar className="w-5 h-5 text-blue-600" /> Eventos
+                  </h3>
+                  <SectionBtn onClick={() => setOpenModal('events')} label="Ver todos" />
+                </div>
+                <div className="space-y-3">
+                  {eventsData.slice(0, 3).map((e, i) => (
+                    <div key={i} className="flex items-start gap-3 p-3.5 bg-muted/30 rounded-xl hover:bg-muted/50 transition-colors">
+                      <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 text-xs font-semibold text-primary">
+                        #{i + 1}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium line-clamp-1">{e.name}</p>
+                        <p className="text-xs text-muted-foreground mt-0.5">{e.local} · {e.date}</p>
+                      </div>
+                      <Badge variant="secondary" className={`flex-shrink-0 ${e.roleColor}`}>{e.role}</Badge>
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium line-clamp-1">{e.name}</p>
-                      <p className="text-xs text-muted-foreground mt-0.5">{e.local} · {e.date}</p>
-                    </div>
-                    <span className={`text-xs px-2 py-0.5 rounded-full flex-shrink-0 ${e.roleColor}`}>{e.role}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
 
             {/* Academic */}
-            <div className="bg-card border border-border rounded-xl p-6">
-              <div className="flex items-center justify-between mb-5">
-                <h3 className="font-semibold flex items-center gap-2">
-                  <GraduationCap className="w-5 h-5 text-purple-600" /> Formação Acadêmica
-                </h3>
-                <SectionBtn onClick={() => setOpenModal('academic')} label="Ver completa" />
-              </div>
-              <div className="space-y-4">
-                {academicHistory.slice(0, 3).map((item, i) => (
-                  <div key={i} className="flex items-start gap-3">
-                    <div className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0" />
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-baseline gap-2 flex-wrap">
-                        <p className="text-sm font-medium">{item.course}</p>
-                        <span className="text-xs text-muted-foreground">({item.type})</span>
+            <Card>
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between mb-5">
+                  <h3 className="font-semibold flex items-center gap-2">
+                    <GraduationCap className="w-5 h-5 text-purple-600" /> Formação Acadêmica
+                  </h3>
+                  <SectionBtn onClick={() => setOpenModal('academic')} label="Ver completa" />
+                </div>
+                <div className="space-y-4">
+                  {academicHistory.slice(0, 3).map((item, i) => (
+                    <div key={i} className="flex items-start gap-3">
+                      <div className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-baseline gap-2 flex-wrap">
+                          <p className="text-sm font-medium">{item.course}</p>
+                          <span className="text-xs text-muted-foreground">({item.type})</span>
+                        </div>
+                        <p className="text-xs text-muted-foreground">{item.institution} · {item.period}</p>
                       </div>
-                      <p className="text-xs text-muted-foreground">{item.institution} · {item.period}</p>
+                      <Badge variant="secondary" className={`flex-shrink-0 ${
+                        item.status === 'Concluído' ? 'bg-green-500/10 text-green-600' : 'bg-blue-500/10 text-blue-600'
+                      }`}>{item.status}</Badge>
                     </div>
-                    <span className={`text-xs px-2 py-0.5 rounded-full flex-shrink-0 ${
-                      item.status === 'Concluído' ? 'bg-green-500/10 text-green-600' : 'bg-blue-500/10 text-blue-600'
-                    }`}>{item.status}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
           </div>
 
-          {/* Right column — 1/3 */}
+          {/* Right column */}
           <div className="space-y-5">
 
             {/* Contact */}
-            <div className="bg-card border border-border rounded-xl p-5">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold text-sm">Contato</h3>
-                <button onClick={onEdit} className="text-xs text-primary hover:underline flex items-center gap-1">
-                  <Edit className="w-3 h-3" /> Editar
-                </button>
-              </div>
-              <div className="space-y-3">
-                <div className="flex items-start gap-2.5">
-                  <Mail className="w-3.5 h-3.5 text-muted-foreground mt-0.5 flex-shrink-0" />
-                  <span className="text-xs break-all">{associate.email}</span>
+            <Card>
+              <CardContent className="p-5">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-semibold text-sm">Contato</h3>
+                  <Button variant="ghost" size="sm" onClick={onEdit} className="text-xs text-primary hover:underline gap-1">
+                    <Edit className="w-3 h-3" /> Editar
+                  </Button>
                 </div>
-                <div className="flex items-center gap-2.5">
-                  <Phone className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />
-                  <span className="text-xs">{associate.phone}</span>
+                <div className="space-y-3">
+                  <div className="flex items-start gap-2.5">
+                    <Mail className="w-3.5 h-3.5 text-muted-foreground mt-0.5 flex-shrink-0" />
+                    <span className="text-xs break-all">{associate.email}</span>
+                  </div>
+                  <div className="flex items-center gap-2.5">
+                    <Phone className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />
+                    <span className="text-xs">{associate.phone}</span>
+                  </div>
+                  <div className="flex items-start gap-2.5">
+                    <MapPin className="w-3.5 h-3.5 text-muted-foreground mt-0.5 flex-shrink-0" />
+                    <span className="text-xs">{associate.address}</span>
+                  </div>
                 </div>
-                <div className="flex items-start gap-2.5">
-                  <MapPin className="w-3.5 h-3.5 text-muted-foreground mt-0.5 flex-shrink-0" />
-                  <span className="text-xs">{associate.address}</span>
+                <div className="mt-4 pt-3 border-t border-border grid grid-cols-2 gap-3 text-xs">
+                  <div>
+                    <p className="text-muted-foreground mb-0.5">CPF</p>
+                    <p className="font-mono font-medium">{associate.cpf}</p>
+                  </div>
+                  <div>
+                    <p className="text-muted-foreground mb-0.5">Anuidade</p>
+                    <p className="font-medium">{associate.annuity}</p>
+                  </div>
                 </div>
-              </div>
-              <div className="mt-4 pt-3 border-t border-border grid grid-cols-2 gap-3 text-xs">
-                <div>
-                  <p className="text-muted-foreground mb-0.5">CPF</p>
-                  <p className="font-mono font-medium">{associate.cpf}</p>
+                <div className="mt-3 flex items-center gap-1.5 text-xs text-green-600 bg-green-500/5 border border-green-500/15 rounded-lg px-2.5 py-2">
+                  <Shield className="w-3 h-3 text-green-500 flex-shrink-0" />
+                  <span>Perfil individual · dados completos</span>
                 </div>
-                <div>
-                  <p className="text-muted-foreground mb-0.5">Anuidade</p>
-                  <p className="font-medium">{associate.annuity}</p>
-                </div>
-              </div>
-              <div className="mt-3 flex items-center gap-1.5 text-xs text-green-600 bg-green-500/5 border border-green-500/15 rounded-lg px-2.5 py-2">
-                <Shield className="w-3 h-3 text-green-500 flex-shrink-0" />
-                <span>Perfil individual · dados completos</span>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
 
             {/* Gamification */}
-            <div className="bg-card border border-border rounded-xl p-5">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold text-sm">Gamificação</h3>
-                <SectionBtn onClick={() => setOpenModal('achievements')} label="Ver conquistas" />
-              </div>
-              <div className="bg-gradient-to-r from-yellow-500/10 to-amber-500/5 rounded-xl p-3.5 mb-4 border border-yellow-500/15">
-                <div className="flex items-center gap-2 mb-2">
-                  <Trophy className="w-4 h-4 text-yellow-600" />
-                  <span className="text-sm font-semibold">Nível Ouro</span>
-                  <span className="text-xs text-muted-foreground ml-auto">580 pts</span>
+            <Card>
+              <CardContent className="p-5">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-semibold text-sm">Gamificação</h3>
+                  <SectionBtn onClick={() => setOpenModal('achievements')} label="Ver conquistas" />
                 </div>
-                <div className="w-full bg-yellow-500/20 rounded-full h-1.5 mb-1">
-                  <div className="bg-yellow-500 h-1.5 rounded-full" style={{ width: '72.5%' }} />
-                </div>
-                <p className="text-xs text-muted-foreground">220 pts para Platina (800)</p>
-              </div>
-              <div className="space-y-2.5">
-                {achievements.slice(0, 3).map((a, i) => (
-                  <div key={i} className="flex items-center gap-2.5">
-                    <div className={`w-7 h-7 rounded-lg ${a.bg} flex items-center justify-center flex-shrink-0`}>
-                      <Award className={`w-3.5 h-3.5 ${a.color}`} />
-                    </div>
-                    <div>
-                      <p className="text-xs font-medium">{a.name}</p>
-                      <p className="text-xs text-muted-foreground">{a.desc}</p>
-                    </div>
+                <div className="bg-gradient-to-r from-yellow-500/10 to-amber-500/5 rounded-xl p-3.5 mb-4 border border-yellow-500/15">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Trophy className="w-4 h-4 text-yellow-600" />
+                    <span className="text-sm font-semibold">Nível Ouro</span>
+                    <span className="text-xs text-muted-foreground ml-auto">580 pts</span>
                   </div>
-                ))}
-              </div>
-            </div>
+                  <div className="w-full bg-yellow-500/20 rounded-full h-1.5 mb-1">
+                    <div className="bg-yellow-500 h-1.5 rounded-full" style={{ width: '72.5%' }} />
+                  </div>
+                  <p className="text-xs text-muted-foreground">220 pts para Platina (800)</p>
+                </div>
+                <div className="space-y-2.5">
+                  {achievements.slice(0, 3).map((a, i) => (
+                    <div key={i} className="flex items-center gap-2.5">
+                      <div className={`w-7 h-7 rounded-lg ${a.bg} flex items-center justify-center flex-shrink-0`}>
+                        <Award className={`w-3.5 h-3.5 ${a.color}`} />
+                      </div>
+                      <div>
+                        <p className="text-xs font-medium">{a.name}</p>
+                        <p className="text-xs text-muted-foreground">{a.desc}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
 
             {/* Activity */}
-            <div className="bg-card border border-border rounded-xl p-5">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold text-sm">Atividade Recente</h3>
-                <SectionBtn onClick={() => setOpenModal('activity')} label="Ver tudo" />
-              </div>
-              <div className="space-y-3">
-                {activityLog.slice(0, 4).map((item, i) => (
-                  <div key={i} className="flex items-start gap-2.5">
-                    <Clock className="w-3.5 h-3.5 text-muted-foreground mt-0.5 flex-shrink-0" />
-                    <div>
-                      <p className="text-xs font-medium leading-tight">{item.action}</p>
-                      <p className="text-xs text-muted-foreground mt-0.5">{item.date.split(' ')[0]}</p>
+            <Card>
+              <CardContent className="p-5">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-semibold text-sm">Atividade Recente</h3>
+                  <SectionBtn onClick={() => setOpenModal('activity')} label="Ver tudo" />
+                </div>
+                <div className="space-y-3">
+                  {activityLog.slice(0, 4).map((item, i) => (
+                    <div key={i} className="flex items-start gap-2.5">
+                      <Clock className="w-3.5 h-3.5 text-muted-foreground mt-0.5 flex-shrink-0" />
+                      <div>
+                        <p className="text-xs font-medium leading-tight">{item.action}</p>
+                        <p className="text-xs text-muted-foreground mt-0.5">{item.date.split(' ')[0]}</p>
+                      </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>
@@ -380,7 +392,7 @@ export function AssociadoDetail({ associate, onBack, onEdit }: AssociadoDetailPr
       {/* ── Modals ── */}
       {openModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-card rounded-2xl border border-border max-w-2xl w-full max-h-[88vh] overflow-hidden flex flex-col shadow-2xl">
+          <Card className="max-w-2xl w-full max-h-[88vh] overflow-hidden flex flex-col shadow-2xl">
             <div className="px-6 py-4 border-b border-border flex items-center justify-between flex-shrink-0">
               <h3 className="font-semibold text-lg">
                 {openModal === 'financial' && 'Histórico Financeiro'}
@@ -389,9 +401,9 @@ export function AssociadoDetail({ associate, onBack, onEdit }: AssociadoDetailPr
                 {openModal === 'achievements' && 'Conquistas e Gamificação'}
                 {openModal === 'activity' && 'Histórico de Atividades'}
               </h3>
-              <button onClick={() => setOpenModal(null)} className="p-2 hover:bg-muted rounded-lg transition-colors">
+              <Button variant="ghost" size="icon" onClick={() => setOpenModal(null)}>
                 <X className="w-4 h-4" />
-              </button>
+              </Button>
             </div>
             <div className="p-6 overflow-y-auto">
 
@@ -434,7 +446,7 @@ export function AssociadoDetail({ associate, onBack, onEdit }: AssociadoDetailPr
                         </div>
                         <div className="text-right">
                           <p className="text-sm font-semibold text-green-600">{p.valor}</p>
-                          <span className="text-xs px-2 py-0.5 bg-green-500/10 text-green-600 rounded-full">Pago</span>
+                          <Badge variant="secondary" className="bg-green-500/10 text-green-600">Pago</Badge>
                         </div>
                       </div>
                     ))}
@@ -451,7 +463,7 @@ export function AssociadoDetail({ associate, onBack, onEdit }: AssociadoDetailPr
                           <p className="font-medium text-sm">{e.name}</p>
                           <p className="text-xs text-muted-foreground mt-1">{e.local} · {e.date}</p>
                         </div>
-                        <span className={`text-xs px-2 py-1 rounded-full flex-shrink-0 ${e.roleColor}`}>{e.role}</span>
+                        <Badge variant="secondary" className={`flex-shrink-0 ${e.roleColor}`}>{e.role}</Badge>
                       </div>
                     </div>
                   ))}
@@ -465,9 +477,9 @@ export function AssociadoDetail({ associate, onBack, onEdit }: AssociadoDetailPr
                       <div key={i} className="border-l-2 border-primary pl-4">
                         <div className="flex items-center justify-between flex-wrap gap-2">
                           <p className="font-medium text-sm">{item.course}</p>
-                          <span className={`text-xs px-2 py-0.5 rounded-full ${
+                          <Badge variant="secondary" className={`${
                             item.status === 'Concluído' ? 'bg-green-500/10 text-green-600' : 'bg-blue-500/10 text-blue-600'
-                          }`}>{item.status}</span>
+                          }`}>{item.status}</Badge>
                         </div>
                         <p className="text-xs text-muted-foreground mt-0.5">{item.type} · {item.institution}</p>
                         <p className="text-xs text-muted-foreground">{item.period}</p>
@@ -555,7 +567,7 @@ export function AssociadoDetail({ associate, onBack, onEdit }: AssociadoDetailPr
                 </div>
               )}
             </div>
-          </div>
+          </Card>
         </div>
       )}
     </div>

@@ -1,4 +1,7 @@
 import { ClipboardList, Users, FileText, MapPin, AlertCircle, CheckCircle, Clock } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/app/components/ui/card';
+import { Button } from '@/app/components/ui/button';
+import { Badge } from '@/app/components/ui/badge';
 
 const processos = [
   { id: 1, name: 'Prova de Título 2026 - 1ª Fase', status: 'inscricoes_abertas', candidatos: 312, encerramento: '30/06/2026' },
@@ -32,79 +35,87 @@ export function ExamesDashboard() {
             ].map((item, i) => {
               const Icon = item.icon;
               return (
-                <div key={i} className="bg-card border border-border rounded-xl p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className={`w-12 h-12 rounded-full ${item.bg} flex items-center justify-center`}>
-                      <Icon className={`w-6 h-6 ${item.iconColor}`} />
+                <Card key={i}>
+                  <CardContent className="pt-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className={`w-12 h-12 rounded-full ${item.bg} flex items-center justify-center`}>
+                        <Icon className={`w-6 h-6 ${item.iconColor}`} />
+                      </div>
+                      {item.badge && <Badge variant="outline" className="text-green-600 border-green-500/30 bg-green-500/10">{item.badge}</Badge>}
                     </div>
-                    {item.badge && <span className="text-xs text-green-600 font-medium">{item.badge}</span>}
-                  </div>
-                  <h3 className="text-2xl font-semibold mb-1">{item.value}</h3>
-                  <p className="text-sm text-muted-foreground">{item.label}</p>
-                </div>
+                    <h3 className="text-2xl font-semibold mb-1">{item.value}</h3>
+                    <p className="text-sm text-muted-foreground">{item.label}</p>
+                  </CardContent>
+                </Card>
               );
             })}
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="bg-card border border-border rounded-xl">
-              <div className="p-6 border-b border-border">
-                <h3 className="font-semibold">Processos em Andamento</h3>
-              </div>
-              <div className="divide-y divide-border">
-                {processos.map(p => {
-                  const s = statusConfig[p.status];
-                  return (
-                    <div key={p.id} className="p-5 hover:bg-muted/30 transition-colors">
-                      <div className="flex items-start justify-between mb-3">
-                        <h4 className="font-medium text-sm">{p.name}</h4>
-                        <span className={`text-xs px-2 py-1 rounded-full font-medium ${s.color}`}>{s.label}</span>
+            <Card>
+              <CardHeader>
+                <CardTitle>Processos em Andamento</CardTitle>
+              </CardHeader>
+              <CardContent className="p-0">
+                <div className="divide-y divide-border">
+                  {processos.map(p => {
+                    const s = statusConfig[p.status];
+                    return (
+                      <div key={p.id} className="p-5 hover:bg-muted/30 transition-colors">
+                        <div className="flex items-start justify-between mb-3">
+                          <h4 className="font-medium text-sm">{p.name}</h4>
+                          <Badge variant="outline" className={s.color}>{s.label}</Badge>
+                        </div>
+                        <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                          <span className="flex items-center gap-1"><Users className="w-3.5 h-3.5" /> {p.candidatos} candidatos</span>
+                          <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" /> Encerra {p.encerramento}</span>
+                        </div>
                       </div>
-                      <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                        <span className="flex items-center gap-1"><Users className="w-3.5 h-3.5" /> {p.candidatos} candidatos</span>
-                        <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" /> Encerra {p.encerramento}</span>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
+                    );
+                  })}
+                </div>
+              </CardContent>
+            </Card>
 
-            <div className="bg-card border border-border rounded-xl p-6">
-              <h3 className="font-semibold mb-4">Ações Pendentes</h3>
-              <div className="space-y-3">
-                <div className="p-4 border border-orange-500/20 bg-orange-500/5 rounded-lg flex items-start gap-3">
-                  <AlertCircle className="w-5 h-5 text-orange-500 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <p className="font-medium text-sm mb-1">47 documentos aguardando análise</p>
-                    <p className="text-xs text-muted-foreground mb-2">Prova de Título 2026 - 1ª Fase</p>
-                    <button className="text-xs px-3 py-1 bg-orange-500 text-white rounded hover:bg-orange-600 transition-colors">
-                      Revisar Documentos
-                    </button>
+            <Card>
+              <CardHeader>
+                <CardTitle>Ações Pendentes</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  <div className="p-4 border border-orange-500/20 bg-orange-500/5 rounded-lg flex items-start gap-3">
+                    <AlertCircle className="w-5 h-5 text-orange-500 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <p className="font-medium text-sm mb-1">47 documentos aguardando análise</p>
+                      <p className="text-xs text-muted-foreground mb-2">Prova de Título 2026 - 1ª Fase</p>
+                      <Button size="sm" className="bg-orange-500 hover:bg-orange-600 text-white">
+                        Revisar Documentos
+                      </Button>
+                    </div>
+                  </div>
+                  <div className="p-4 border border-blue-500/20 bg-blue-500/5 rounded-lg flex items-start gap-3">
+                    <CheckCircle className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <p className="font-medium text-sm mb-1">Publicar edital 2ª fase</p>
+                      <p className="text-xs text-muted-foreground mb-2">Prazo: 15/06/2026</p>
+                      <Button size="sm" className="bg-blue-500 hover:bg-blue-600 text-white">
+                        Ver Edital
+                      </Button>
+                    </div>
+                  </div>
+                  <div className="p-4 border border-purple-500/20 bg-purple-500/5 rounded-lg flex items-start gap-3">
+                    <MapPin className="w-5 h-5 text-purple-500 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <p className="font-medium text-sm mb-1">Confirmar 3 locais de prova</p>
+                      <p className="text-xs text-muted-foreground mb-2">São Paulo, Rio de Janeiro, Brasília</p>
+                      <Button size="sm" className="bg-purple-500 hover:bg-purple-600 text-white">
+                        Gerenciar Locais
+                      </Button>
+                    </div>
                   </div>
                 </div>
-                <div className="p-4 border border-blue-500/20 bg-blue-500/5 rounded-lg flex items-start gap-3">
-                  <CheckCircle className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <p className="font-medium text-sm mb-1">Publicar edital 2ª fase</p>
-                    <p className="text-xs text-muted-foreground mb-2">Prazo: 15/06/2026</p>
-                    <button className="text-xs px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors">
-                      Ver Edital
-                    </button>
-                  </div>
-                </div>
-                <div className="p-4 border border-purple-500/20 bg-purple-500/5 rounded-lg flex items-start gap-3">
-                  <MapPin className="w-5 h-5 text-purple-500 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <p className="font-medium text-sm mb-1">Confirmar 3 locais de prova</p>
-                    <p className="text-xs text-muted-foreground mb-2">São Paulo, Rio de Janeiro, Brasília</p>
-                    <button className="text-xs px-3 py-1 bg-purple-500 text-white rounded hover:bg-purple-600 transition-colors">
-                      Gerenciar Locais
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>

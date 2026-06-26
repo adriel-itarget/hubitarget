@@ -7,6 +7,11 @@ import {
 import { useState, useRef, useEffect } from 'react';
 import { AssociadoDetail } from './AssociadoDetail';
 import { AssociadoForm } from './AssociadoForm';
+import { Card, CardContent } from '@/app/components/ui/card';
+import { Button } from '@/app/components/ui/button';
+import { Badge } from '@/app/components/ui/badge';
+import { Input } from '@/app/components/ui/input';
+import { Checkbox } from '@/app/components/ui/checkbox';
 
 // ── LGPD mask helpers ──────────────────────────────────────────────────────────
 const maskCPF = (cpf: string) =>
@@ -161,7 +166,6 @@ export function PessoasAssociados() {
     }
   }, [paginatedAssociates.length]);
 
-  // Close context menu on click/escape
   useEffect(() => {
     if (!contextMenu) return;
     const close = () => setContextMenu(null);
@@ -174,7 +178,6 @@ export function PessoasAssociados() {
   const scrollTable = (dir: 'left' | 'right') =>
     tableRef.current?.scrollBy({ left: dir === 'left' ? -320 : 320, behavior: 'smooth' });
 
-  // ── Tooltip with hover bridge ─────────────────────────────────────────────
   const showTooltip = (associate: Associate, e: React.MouseEvent) => {
     if (hoverTimeout.current) clearTimeout(hoverTimeout.current);
     const rect = e.currentTarget.getBoundingClientRect();
@@ -188,7 +191,6 @@ export function PessoasAssociados() {
     if (hoverTimeout.current) clearTimeout(hoverTimeout.current);
   };
 
-  // ── Context menu ──────────────────────────────────────────────────────────
   const handleContextMenu = (e: React.MouseEvent, associate: Associate) => {
     e.preventDefault();
     e.stopPropagation();
@@ -252,23 +254,23 @@ export function PessoasAssociados() {
   if (viewState === 'form')
     return <AssociadoForm associate={selectedAssociate} onBack={() => setViewState(selectedAssociate ? 'detail' : 'list')} onSave={() => setViewState(selectedAssociate ? 'detail' : 'list')} />;
 
-  // ── Floating arrow component ───────────────────────────────────────────────
   const FloatingArrow = ({ dir, can }: { dir: 'left' | 'right'; can: boolean }) => (
     <div className="absolute inset-y-0 z-20 pointer-events-none" style={{ [dir]: 0, width: 40 }}>
-      <button
+      <Button
+        variant="outline"
+        size="icon"
         onClick={() => scrollTable(dir)}
         disabled={!can}
-        className={`pointer-events-auto w-9 h-9 rounded-full shadow-xl border flex items-center justify-center transition-all duration-200 ${
-          can ? 'bg-background/95 backdrop-blur-sm border-border hover:bg-accent hover:border-primary hover:scale-105' : 'opacity-0 pointer-events-none'
+        className={`pointer-events-auto w-9 h-9 rounded-full shadow-xl ${
+          can ? 'bg-background/95 backdrop-blur-sm' : 'opacity-0 pointer-events-none'
         }`}
         style={{ position: 'sticky', top: 'calc(50vh - 18px)' }}
       >
         {dir === 'left' ? <ChevronLeft className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
-      </button>
+      </Button>
     </div>
   );
 
-  // ── Main render ────────────────────────────────────────────────────────────
   return (
     <div className="min-h-screen bg-background">
       <div className="px-4 md:px-8 py-8">
@@ -280,77 +282,83 @@ export function PessoasAssociados() {
               <h1 className="text-3xl mb-2">Pessoas e Associados</h1>
               <p className="text-muted-foreground">Gerencie pessoas físicas, jurídicas e categorias</p>
             </div>
-            <button onClick={openNewForm} className="flex items-center justify-center gap-2 px-4 py-2.5 bg-primary text-primary-foreground rounded-xl hover:bg-primary/90 transition-colors shadow-sm">
-              <Plus className="w-5 h-5" /> Novo Associado
-            </button>
+            <Button onClick={openNewForm}>
+              <Plus className="w-5 h-5 mr-2" /> Novo Associado
+            </Button>
           </div>
 
           {/* Search + filters */}
-          <div className="bg-card border border-border rounded-xl p-4 md:p-6 mb-6">
-            <div className="flex flex-col md:flex-row gap-3">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                <input type="text" placeholder="Buscar por nome, CPF, email..." value={searchTerm}
-                  onChange={e => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none text-sm" />
-              </div>
-              <div className="flex gap-2">
-                <button onClick={() => setShowFilters(!showFilters)}
-                  className={`flex items-center gap-2 px-4 py-2 border rounded-lg transition-colors text-sm ${showFilters ? 'border-primary bg-primary/10 text-primary' : 'border-border hover:bg-accent'}`}>
-                  <Filter className="w-4 h-4" />
-                  Filtros
-                  {activeFiltersCount > 0 && <span className="ml-1 px-1.5 py-0.5 bg-primary text-primary-foreground rounded-full text-xs">{activeFiltersCount}</span>}
-                </button>
-                <div className="flex items-center gap-1 bg-muted rounded-lg p-1">
-                  <button onClick={() => setViewMode('list')} className={`p-2 rounded transition-colors ${viewMode === 'list' ? 'bg-background shadow-sm' : 'hover:bg-background/50'}`}><List className="w-4 h-4" /></button>
-                  <button onClick={() => setViewMode('grid')} className={`p-2 rounded transition-colors ${viewMode === 'grid' ? 'bg-background shadow-sm' : 'hover:bg-background/50'}`}><Grid3x3 className="w-4 h-4" /></button>
+          <Card className="mb-6">
+            <CardContent className="p-4 md:p-6">
+              <div className="flex flex-col md:flex-row gap-3">
+                <div className="relative flex-1">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <Input type="text" placeholder="Buscar por nome, CPF, email..." value={searchTerm}
+                    onChange={e => setSearchTerm(e.target.value)}
+                    className="pl-10" />
+                </div>
+                <div className="flex gap-2">
+                  <Button variant={showFilters ? 'default' : 'outline'} onClick={() => setShowFilters(!showFilters)}>
+                    <Filter className="w-4 h-4 mr-2" />
+                    Filtros
+                    {activeFiltersCount > 0 && <Badge className="ml-1 px-1.5 py-0.5 h-5 text-xs">{activeFiltersCount}</Badge>}
+                  </Button>
+                  <div className="flex items-center gap-1 bg-muted rounded-lg p-1">
+                    <Button variant={viewMode === 'list' ? 'background' : 'ghost'} size="icon" className="h-8 w-8"
+                      onClick={() => setViewMode('list')}><List className="w-4 h-4" /></Button>
+                    <Button variant={viewMode === 'grid' ? 'background' : 'ghost'} size="icon" className="h-8 w-8"
+                      onClick={() => setViewMode('grid')}><Grid3x3 className="w-4 h-4" /></Button>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            {showFilters && (
-              <div className="mt-4 pt-4 border-t border-border">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div>
-                    <label className="text-sm font-medium mb-2 block">Status</label>
-                    <div className="space-y-2">
-                      {statuses.map(s => (
-                        <label key={s} className="flex items-center gap-2 cursor-pointer">
-                          <input type="checkbox" checked={selectedStatuses.includes(s)} onChange={() => toggleFilter(s, selectedStatuses, setSelectedStatuses)} className="rounded border-border" />
-                          <span className={`text-xs px-2 py-1 rounded-full border ${getStatusColor(s)}`}>{s}</span>
-                        </label>
-                      ))}
+              {showFilters && (
+                <div className="mt-4 pt-4 border-t border-border">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <label className="text-sm font-medium mb-2 block">Status</label>
+                      <div className="space-y-2">
+                        {statuses.map(s => (
+                          <label key={s} className="flex items-center gap-2 cursor-pointer">
+                            <Checkbox checked={selectedStatuses.includes(s)}
+                              onCheckedChange={() => toggleFilter(s, selectedStatuses, setSelectedStatuses)} />
+                            <Badge variant="outline" className={`text-xs ${getStatusColor(s)}`}>{s}</Badge>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium mb-2 block">Estado</label>
+                      <div className="space-y-2 max-h-40 overflow-y-auto">
+                        {states.map(st => (
+                          <label key={st} className="flex items-center gap-2 cursor-pointer">
+                            <Checkbox checked={selectedStates.includes(st)}
+                              onCheckedChange={() => toggleFilter(st, selectedStates, setSelectedStates)} />
+                            <span className="text-sm">{st}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium mb-2 block">Categoria</label>
+                      <div className="space-y-2">
+                        {categories.map(c => (
+                          <label key={c} className="flex items-center gap-2 cursor-pointer">
+                            <Checkbox checked={selectedCategories.includes(c)}
+                              onCheckedChange={() => toggleFilter(c, selectedCategories, setSelectedCategories)} />
+                            <span className="text-sm">{c}</span>
+                          </label>
+                        ))}
+                      </div>
                     </div>
                   </div>
-                  <div>
-                    <label className="text-sm font-medium mb-2 block">Estado</label>
-                    <div className="space-y-2 max-h-40 overflow-y-auto">
-                      {states.map(st => (
-                        <label key={st} className="flex items-center gap-2 cursor-pointer">
-                          <input type="checkbox" checked={selectedStates.includes(st)} onChange={() => toggleFilter(st, selectedStates, setSelectedStates)} className="rounded border-border" />
-                          <span className="text-sm">{st}</span>
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium mb-2 block">Categoria</label>
-                    <div className="space-y-2">
-                      {categories.map(c => (
-                        <label key={c} className="flex items-center gap-2 cursor-pointer">
-                          <input type="checkbox" checked={selectedCategories.includes(c)} onChange={() => toggleFilter(c, selectedCategories, setSelectedCategories)} className="rounded border-border" />
-                          <span className="text-sm">{c}</span>
-                        </label>
-                      ))}
-                    </div>
-                  </div>
+                  {activeFiltersCount > 0 && (
+                    <Button variant="ghost" size="sm" onClick={clearAllFilters} className="mt-4 text-sm text-primary hover:underline">Limpar todos os filtros</Button>
+                  )}
                 </div>
-                {activeFiltersCount > 0 && (
-                  <button onClick={clearAllFilters} className="mt-4 text-sm text-primary hover:underline">Limpar todos os filtros</button>
-                )}
-              </div>
-            )}
-          </div>
+              )}
+            </CardContent>
+          </Card>
 
           {/* ── List view ── */}
           {viewMode === 'list' ? (
@@ -358,138 +366,139 @@ export function PessoasAssociados() {
               <FloatingArrow dir="left" can={canScrollLeft} />
               <FloatingArrow dir="right" can={canScrollRight} />
 
-              <div className="bg-card border border-border rounded-xl overflow-hidden">
-                {/* Info bar */}
-                <div className="px-6 py-3 bg-muted/20 border-b border-border flex items-center gap-3">
-                  <span className="text-sm text-muted-foreground">
-                    {filteredAssociates.length === 0
-                      ? 'Nenhum resultado'
-                      : `${(currentPage - 1) * PAGE_SIZE + 1}–${Math.min(currentPage * PAGE_SIZE, filteredAssociates.length)} de ${filteredAssociates.length} registros`}
-                  </span>
-                  <div className="flex items-center gap-1 text-xs text-muted-foreground bg-muted/50 px-2 py-0.5 rounded">
-                    <Shield className="w-3 h-3 text-blue-500" /> LGPD
+              <Card>
+                <CardContent className="p-0">
+                  {/* Info bar */}
+                  <div className="px-6 py-3 bg-muted/20 border-b border-border flex items-center gap-3">
+                    <span className="text-sm text-muted-foreground">
+                      {filteredAssociates.length === 0
+                        ? 'Nenhum resultado'
+                        : `${(currentPage - 1) * PAGE_SIZE + 1}–${Math.min(currentPage * PAGE_SIZE, filteredAssociates.length)} de ${filteredAssociates.length} registros`}
+                    </span>
+                    <div className="flex items-center gap-1 text-xs text-muted-foreground bg-muted/50 px-2 py-0.5 rounded">
+                      <Shield className="w-3 h-3 text-blue-500" /> LGPD
+                    </div>
+                    <span className="text-xs text-muted-foreground ml-auto hidden sm:block opacity-50">
+                      Clique com botão direito para ações
+                    </span>
                   </div>
-                  <span className="text-xs text-muted-foreground ml-auto hidden sm:block opacity-50">
-                    Clique com botão direito para ações
-                  </span>
-                </div>
 
-                {/* Table */}
-                <div ref={tableRef} className="overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-                  <table className="w-full">
-                    <thead className="bg-muted/50">
-                      <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider whitespace-nowrap">Associado</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider whitespace-nowrap hidden md:table-cell">CPF</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider whitespace-nowrap hidden lg:table-cell">E-mail</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider whitespace-nowrap hidden lg:table-cell">Localidade</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider whitespace-nowrap hidden xl:table-cell">Anuidade</th>
-                        <th className="px-4 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider whitespace-nowrap">Ações</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-border">
-                      {paginatedAssociates.map(associate => (
-                        <tr
-                          key={associate.id}
-                          className="hover:bg-muted/30 transition-colors group"
-                          onContextMenu={e => handleContextMenu(e, associate)}
-                        >
-                          {/* ── Associado column: avatar + name + status + category ── */}
-                          <td className="px-6 py-3.5 whitespace-nowrap">
-                            <div className="flex items-center gap-3">
-                              {/* Avatar — tooltip trigger */}
-                              <div
-                                className="flex-shrink-0 cursor-pointer"
-                                onMouseEnter={e => showTooltip(associate, e)}
-                                onMouseLeave={startHideTooltip}
-                              >
-                                {associate.photo ? (
-                                  <img src={associate.photo} alt={associate.name} className="w-10 h-10 rounded-full object-cover ring-2 ring-border group-hover:ring-primary/30 transition-all" />
-                                ) : (
-                                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center ring-2 ring-border group-hover:ring-primary/30 transition-all">
-                                    <span className="text-xs font-semibold text-primary">{initials(associate.name)}</span>
+                  {/* Table */}
+                  <div ref={tableRef} className="overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+                    <table className="w-full">
+                      <thead className="bg-muted/50">
+                        <tr>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider whitespace-nowrap">Associado</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider whitespace-nowrap hidden md:table-cell">CPF</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider whitespace-nowrap hidden lg:table-cell">E-mail</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider whitespace-nowrap hidden lg:table-cell">Localidade</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider whitespace-nowrap hidden xl:table-cell">Anuidade</th>
+                          <th className="px-4 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider whitespace-nowrap">Ações</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-border">
+                        {paginatedAssociates.map(associate => (
+                          <tr
+                            key={associate.id}
+                            className="hover:bg-muted/30 transition-colors group"
+                            onContextMenu={e => handleContextMenu(e, associate)}
+                          >
+                            <td className="px-6 py-3.5 whitespace-nowrap">
+                              <div className="flex items-center gap-3">
+                                <div
+                                  className="flex-shrink-0 cursor-pointer"
+                                  onMouseEnter={e => showTooltip(associate, e)}
+                                  onMouseLeave={startHideTooltip}
+                                >
+                                  {associate.photo ? (
+                                    <img src={associate.photo} alt={associate.name} className="w-10 h-10 rounded-full object-cover ring-2 ring-border group-hover:ring-primary/30 transition-all" />
+                                  ) : (
+                                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center ring-2 ring-border group-hover:ring-primary/30 transition-all">
+                                      <span className="text-xs font-semibold text-primary">{initials(associate.name)}</span>
+                                    </div>
+                                  )}
+                                </div>
+                                <div>
+                                  <p className="font-medium text-sm">{associate.name}</p>
+                                  <div className="flex items-center gap-1.5 mt-1">
+                                    <Badge variant="outline" className={`text-xs ${getStatusColor(associate.status)}`}>
+                                      {associate.status}
+                                    </Badge>
+                                    <span className="text-xs text-muted-foreground">{associate.category}</span>
                                   </div>
-                                )}
-                              </div>
-                              {/* Name + status + category */}
-                              <div>
-                                <p className="font-medium text-sm">{associate.name}</p>
-                                <div className="flex items-center gap-1.5 mt-1">
-                                  <span className={`text-xs px-1.5 py-0.5 rounded-full border leading-none ${getStatusColor(associate.status)}`}>
-                                    {associate.status}
-                                  </span>
-                                  <span className="text-xs text-muted-foreground">{associate.category}</span>
                                 </div>
                               </div>
-                            </div>
-                          </td>
+                            </td>
 
-                          <td className="px-6 py-3.5 whitespace-nowrap text-sm font-mono hidden md:table-cell text-muted-foreground">
-                            {maskCPF(associate.cpf)}
-                          </td>
-                          <td className="px-6 py-3.5 whitespace-nowrap text-sm font-mono hidden lg:table-cell text-muted-foreground">
-                            {maskEmail(associate.email)}
-                          </td>
-                          <td className="px-6 py-3.5 whitespace-nowrap text-sm hidden lg:table-cell text-muted-foreground">
-                            {maskAddress(associate.address)}
-                          </td>
-                          <td className="px-6 py-3.5 whitespace-nowrap text-sm hidden xl:table-cell text-muted-foreground">
-                            {associate.annuity}
-                          </td>
+                            <td className="px-6 py-3.5 whitespace-nowrap text-sm font-mono hidden md:table-cell text-muted-foreground">
+                              {maskCPF(associate.cpf)}
+                            </td>
+                            <td className="px-6 py-3.5 whitespace-nowrap text-sm font-mono hidden lg:table-cell text-muted-foreground">
+                              {maskEmail(associate.email)}
+                            </td>
+                            <td className="px-6 py-3.5 whitespace-nowrap text-sm hidden lg:table-cell text-muted-foreground">
+                              {maskAddress(associate.address)}
+                            </td>
+                            <td className="px-6 py-3.5 whitespace-nowrap text-sm hidden xl:table-cell text-muted-foreground">
+                              {associate.annuity}
+                            </td>
 
-                          {/* ── Actions column ── */}
-                          <td className="px-4 py-3.5 whitespace-nowrap text-right">
-                            {associate.status === 'Pendente' ? (
-                              <button onClick={() => handleApproveAssociate(associate)}
-                                className="text-xs px-2.5 py-1 bg-yellow-500/10 text-yellow-600 border border-yellow-500/20 rounded-lg hover:bg-yellow-500/20 transition-colors">
-                                Revisar
-                              </button>
-                            ) : (
-                              <button
-                                onClick={e => handleContextMenu(e, associate)}
-                                className="p-1.5 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground transition-colors opacity-0 group-hover:opacity-100"
-                                title="Ações"
-                              >
-                                <MoreVertical className="w-4 h-4" />
-                              </button>
-                            )}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-
-                {/* Pagination */}
-                {totalPages > 1 && (
-                  <div className="flex items-center justify-between px-6 py-3 border-t border-border bg-muted/20">
-                    <span className="text-sm text-muted-foreground">Página {currentPage} de {totalPages}</span>
-                    <div className="flex items-center gap-1">
-                      <button onClick={() => setCurrentPage(1)} disabled={currentPage === 1}
-                        className="px-2 py-1 text-xs rounded-lg border border-border hover:bg-accent disabled:opacity-30 disabled:cursor-not-allowed">«</button>
-                      <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1}
-                        className="flex items-center gap-1 px-3 py-1.5 text-xs rounded-lg border border-border hover:bg-accent disabled:opacity-30 disabled:cursor-not-allowed">
-                        <ChevronLeft className="w-3 h-3" /> Anterior
-                      </button>
-                      {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                        const page = Math.max(1, Math.min(totalPages - 4, currentPage - 2)) + i;
-                        return (
-                          <button key={page} onClick={() => setCurrentPage(page)}
-                            className={`w-8 h-7 text-xs rounded-lg border transition-colors ${page === currentPage ? 'bg-primary text-primary-foreground border-primary' : 'border-border hover:bg-accent'}`}>
-                            {page}
-                          </button>
-                        );
-                      })}
-                      <button onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages}
-                        className="flex items-center gap-1 px-3 py-1.5 text-xs rounded-lg border border-border hover:bg-accent disabled:opacity-30 disabled:cursor-not-allowed">
-                        Próxima <ChevronRight className="w-3 h-3" />
-                      </button>
-                      <button onClick={() => setCurrentPage(totalPages)} disabled={currentPage === totalPages}
-                        className="px-2 py-1 text-xs rounded-lg border border-border hover:bg-accent disabled:opacity-30 disabled:cursor-not-allowed">»</button>
-                    </div>
+                            <td className="px-4 py-3.5 whitespace-nowrap text-right">
+                              {associate.status === 'Pendente' ? (
+                                <Button variant="outline" size="sm" onClick={() => handleApproveAssociate(associate)}
+                                  className="text-xs border-yellow-500/20 text-yellow-600 bg-yellow-500/10 hover:bg-yellow-500/20">
+                                  Revisar
+                                </Button>
+                              ) : (
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={e => handleContextMenu(e, associate)}
+                                  className="opacity-0 group-hover:opacity-100 h-8 w-8"
+                                  title="Ações"
+                                >
+                                  <MoreVertical className="w-4 h-4" />
+                                </Button>
+                              )}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
-                )}
-              </div>
+
+                  {/* Pagination */}
+                  {totalPages > 1 && (
+                    <div className="flex items-center justify-between px-6 py-3 border-t border-border bg-muted/20">
+                      <span className="text-sm text-muted-foreground">Página {currentPage} de {totalPages}</span>
+                      <div className="flex items-center gap-1">
+                        <Button variant="outline" size="icon" className="h-7 w-7"
+                          onClick={() => setCurrentPage(1)} disabled={currentPage === 1}>«</Button>
+                        <Button variant="outline" size="sm" className="h-7"
+                          onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1}>
+                          <ChevronLeft className="w-3 h-3 mr-1" /> Anterior
+                        </Button>
+                        {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                          const page = Math.max(1, Math.min(totalPages - 4, currentPage - 2)) + i;
+                          return (
+                            <Button key={page} variant={page === currentPage ? 'default' : 'outline'} size="icon"
+                              className="h-7 w-8 text-xs"
+                              onClick={() => setCurrentPage(page)}>
+                              {page}
+                            </Button>
+                          );
+                        })}
+                        <Button variant="outline" size="sm" className="h-7"
+                          onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages}>
+                          Próxima <ChevronRight className="w-3 h-3 ml-1" />
+                        </Button>
+                        <Button variant="outline" size="icon" className="h-7 w-7"
+                          onClick={() => setCurrentPage(totalPages)} disabled={currentPage === totalPages}>»</Button>
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
             </div>
 
           ) : (
@@ -503,36 +512,38 @@ export function PessoasAssociados() {
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {filteredAssociates.slice(0, gridItemsShown).map(associate => (
-                  <div key={associate.id} className="bg-card border border-border rounded-xl p-4 hover:shadow-lg transition-all cursor-pointer hover:border-primary/30"
+                  <Card key={associate.id} className="hover:shadow-lg transition-all cursor-pointer hover:border-primary/30"
                     onClick={() => associate.status === 'Pendente' ? handleApproveAssociate(associate) : openDetail(associate)}>
-                    <div className="flex flex-col items-center text-center mb-4">
-                      <div onMouseEnter={e => showTooltip(associate, e)} onMouseLeave={startHideTooltip}>
-                        {associate.photo ? (
-                          <img src={associate.photo} alt={associate.name} className="w-20 h-20 rounded-full object-cover mb-3" />
-                        ) : (
-                          <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mb-3">
-                            <span className="text-xl font-semibold text-primary">{initials(associate.name)}</span>
-                          </div>
-                        )}
+                    <CardContent className="p-4">
+                      <div className="flex flex-col items-center text-center mb-4">
+                        <div onMouseEnter={e => showTooltip(associate, e)} onMouseLeave={startHideTooltip}>
+                          {associate.photo ? (
+                            <img src={associate.photo} alt={associate.name} className="w-20 h-20 rounded-full object-cover mb-3" />
+                          ) : (
+                            <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mb-3">
+                              <span className="text-xl font-semibold text-primary">{initials(associate.name)}</span>
+                            </div>
+                          )}
+                        </div>
+                        <h3 className="font-semibold text-sm mb-1">{associate.name}</h3>
+                        <p className="text-xs text-muted-foreground font-mono mb-2">{maskEmail(associate.email)}</p>
+                        <div className="flex items-center gap-1.5">
+                          <Badge variant="outline" className={`text-xs ${getStatusColor(associate.status)}`}>{associate.status}</Badge>
+                          <span className="text-xs text-muted-foreground">{associate.category}</span>
+                        </div>
                       </div>
-                      <h3 className="font-semibold text-sm mb-1">{associate.name}</h3>
-                      <p className="text-xs text-muted-foreground font-mono mb-2">{maskEmail(associate.email)}</p>
-                      <div className="flex items-center gap-1.5">
-                        <span className={`text-xs px-2 py-0.5 rounded-full border ${getStatusColor(associate.status)}`}>{associate.status}</span>
-                        <span className="text-xs text-muted-foreground">{associate.category}</span>
+                      <div className="space-y-1.5 text-sm border-t border-border pt-3">
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground text-xs">CPF</span>
+                          <span className="font-medium font-mono text-xs">{maskCPF(associate.cpf)}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground text-xs">Anuidade</span>
+                          <span className="font-medium text-xs">{associate.annuity}</span>
+                        </div>
                       </div>
-                    </div>
-                    <div className="space-y-1.5 text-sm border-t border-border pt-3">
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground text-xs">CPF</span>
-                        <span className="font-medium font-mono text-xs">{maskCPF(associate.cpf)}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground text-xs">Anuidade</span>
-                        <span className="font-medium text-xs">{associate.annuity}</span>
-                      </div>
-                    </div>
-                  </div>
+                    </CardContent>
+                  </Card>
                 ))}
               </div>
               <div ref={sentinelRef} className="py-6 flex justify-center">
@@ -555,18 +566,16 @@ export function PessoasAssociados() {
           style={{ left: contextMenu.x, top: contextMenu.y, width: 224 }}
           onClick={e => e.stopPropagation()}
         >
-          {/* Header */}
           <div className="px-3.5 py-2.5 bg-muted/60 border-b border-border">
             <p className="text-xs font-semibold truncate">{contextMenu.associate.name}</p>
             <div className="flex items-center gap-1.5 mt-1">
-              <span className={`text-xs px-1.5 py-0.5 rounded-full border leading-none ${getStatusColor(contextMenu.associate.status)}`}>
+              <Badge variant="outline" className={`text-xs ${getStatusColor(contextMenu.associate.status)}`}>
                 {contextMenu.associate.status}
-              </span>
+              </Badge>
               <span className="text-xs text-muted-foreground">· {contextMenu.associate.category}</span>
             </div>
           </div>
 
-          {/* Ações */}
           <div className="py-1">
             <p className="px-3.5 pt-1.5 pb-1 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Ações</p>
             {ctxMenuActions.map(item => {
@@ -584,7 +593,6 @@ export function PessoasAssociados() {
             })}
           </div>
 
-          {/* Acessos */}
           <div className="border-t border-border py-1">
             <p className="px-3.5 pt-1.5 pb-1 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Acessos</p>
             {ctxMenuAccess.map(item => {
@@ -607,53 +615,57 @@ export function PessoasAssociados() {
       {/* ── Approval modal ── */}
       {approvalModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-card rounded-2xl border border-border max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
-            <div className="p-6 border-b border-border flex items-center justify-between sticky top-0 bg-card">
-              <div>
-                <h3 className="text-xl font-semibold">Revisar Associado</h3>
-                <p className="text-sm text-muted-foreground">{approvalModal.associate.name}</p>
-              </div>
-              <button onClick={() => setApprovalModal(null)} className="p-2 hover:bg-muted rounded-xl transition-colors"><X className="w-5 h-5" /></button>
-            </div>
-            <div className="p-6">
-              <div className="flex items-center gap-4 mb-6 p-4 bg-muted/30 rounded-xl">
-                {approvalModal.associate.photo ? (
-                  <img src={approvalModal.associate.photo} alt={approvalModal.associate.name} className="w-16 h-16 rounded-full object-cover" />
-                ) : (
-                  <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
-                    <span className="text-lg font-semibold text-primary">{initials(approvalModal.associate.name)}</span>
-                  </div>
-                )}
-                <div className="flex-1">
-                  <h4 className="font-semibold mb-1">{approvalModal.associate.name}</h4>
-                  <p className="text-sm text-muted-foreground">{approvalModal.associate.email}</p>
-                  <p className="text-sm text-muted-foreground">CPF: {approvalModal.associate.cpf}</p>
+          <Card className="max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
+            <CardContent className="p-0">
+              <div className="p-6 border-b border-border flex items-center justify-between sticky top-0 bg-card">
+                <div>
+                  <h3 className="text-xl font-semibold">Revisar Associado</h3>
+                  <p className="text-sm text-muted-foreground">{approvalModal.associate.name}</p>
                 </div>
+                <Button variant="ghost" size="icon" onClick={() => setApprovalModal(null)}><X className="w-5 h-5" /></Button>
               </div>
-              <div className="mb-6">
-                <h4 className="font-semibold mb-3">Documentos enviados</h4>
-                <div className="space-y-2">
-                  {approvalModal.documents.map((doc, i) => (
-                    <div key={i} className="flex items-center justify-between p-3 bg-muted/30 rounded-xl">
-                      <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center"><FileText className="w-4 h-4 text-primary" /></div>
-                        <div><p className="font-medium text-sm">{doc.name}</p><p className="text-xs text-muted-foreground">{doc.type}</p></div>
-                      </div>
-                      <button className="text-sm text-primary hover:underline">Visualizar</button>
+              <div className="p-6">
+                <div className="flex items-center gap-4 mb-6 p-4 bg-muted/30 rounded-xl">
+                  {approvalModal.associate.photo ? (
+                    <img src={approvalModal.associate.photo} alt={approvalModal.associate.name} className="w-16 h-16 rounded-full object-cover" />
+                  ) : (
+                    <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+                      <span className="text-lg font-semibold text-primary">{initials(approvalModal.associate.name)}</span>
                     </div>
-                  ))}
+                  )}
+                  <div className="flex-1">
+                    <h4 className="font-semibold mb-1">{approvalModal.associate.name}</h4>
+                    <p className="text-sm text-muted-foreground">{approvalModal.associate.email}</p>
+                    <p className="text-sm text-muted-foreground">CPF: {approvalModal.associate.cpf}</p>
+                  </div>
+                </div>
+                <div className="mb-6">
+                  <h4 className="font-semibold mb-3">Documentos enviados</h4>
+                  <div className="space-y-2">
+                    {approvalModal.documents.map((doc, i) => (
+                      <div key={i} className="flex items-center justify-between p-3 bg-muted/30 rounded-xl">
+                        <div className="flex items-center gap-3">
+                          <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center"><FileText className="w-4 h-4 text-primary" /></div>
+                          <div><p className="font-medium text-sm">{doc.name}</p><p className="text-xs text-muted-foreground">{doc.type}</p></div>
+                        </div>
+                        <Button variant="ghost" size="sm">Visualizar</Button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="flex gap-3">
+                  <Button variant="outline" className="flex-1 border-red-500/20 text-red-600 bg-red-500/10 hover:bg-red-500/20"
+                    onClick={() => setApprovalModal(null)}>
+                    <X className="w-4 h-4 mr-2" /> Reprovar
+                  </Button>
+                  <Button className="flex-1 bg-green-600 text-white hover:bg-green-700"
+                    onClick={() => setApprovalModal(null)}>
+                    <Check className="w-4 h-4 mr-2" /> Aprovar
+                  </Button>
                 </div>
               </div>
-              <div className="flex gap-3">
-                <button onClick={() => setApprovalModal(null)} className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-red-500/10 text-red-600 border border-red-500/20 rounded-xl hover:bg-red-500/20 transition-colors">
-                  <X className="w-4 h-4" /> Reprovar
-                </button>
-                <button onClick={() => setApprovalModal(null)} className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors">
-                  <Check className="w-4 h-4" /> Aprovar
-                </button>
-              </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
         </div>
       )}
 
@@ -666,7 +678,6 @@ export function PessoasAssociados() {
           onMouseLeave={() => setHoveredAssociate(null)}
         >
           <div className="bg-card border border-border rounded-2xl shadow-2xl p-4 w-72">
-            {/* Profile */}
             <div className="flex items-start gap-3 mb-3">
               {hoveredAssociate.photo ? (
                 <img src={hoveredAssociate.photo} alt={hoveredAssociate.name} className="w-14 h-14 rounded-xl object-cover flex-shrink-0" />
@@ -678,14 +689,13 @@ export function PessoasAssociados() {
               <div className="flex-1 min-w-0">
                 <h4 className="font-semibold text-sm truncate">{hoveredAssociate.name}</h4>
                 <div className="flex items-center gap-1.5 mt-1 flex-wrap">
-                  <span className={`text-xs px-1.5 py-0.5 rounded-full border ${getStatusColor(hoveredAssociate.status)}`}>{hoveredAssociate.status}</span>
+                  <Badge variant="outline" className={`text-xs ${getStatusColor(hoveredAssociate.status)}`}>{hoveredAssociate.status}</Badge>
                   <span className="text-xs text-muted-foreground">{hoveredAssociate.category}</span>
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">desde {hoveredAssociate.joinDate}</p>
               </div>
             </div>
 
-            {/* Masked contact data */}
             <div className="space-y-1.5 text-xs border-t border-border pt-3">
               <div className="flex items-center gap-2 text-muted-foreground">
                 <Mail className="w-3 h-3 flex-shrink-0" />
@@ -710,17 +720,16 @@ export function PessoasAssociados() {
               <div><p className="text-muted-foreground">Anuidade</p><p className="font-medium">{hoveredAssociate.annuity}</p></div>
             </div>
 
-            {/* LGPD + Ver detalhes */}
             <div className="mt-3 flex items-center gap-1 text-xs text-muted-foreground pb-3 border-b border-border">
               <Shield className="w-3 h-3 text-blue-500 flex-shrink-0" />
               <span>Dados protegidos pela LGPD</span>
             </div>
-            <button
+            <Button
+              className="mt-3 w-full"
               onClick={() => { openDetail(hoveredAssociate); setHoveredAssociate(null); }}
-              className="mt-3 w-full py-2 bg-primary text-primary-foreground rounded-lg text-xs font-medium hover:bg-primary/90 transition-colors"
             >
               Ver detalhes completos
-            </button>
+            </Button>
           </div>
         </div>
       )}

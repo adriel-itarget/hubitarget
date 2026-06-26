@@ -1,7 +1,17 @@
 import { useState } from 'react';
-import { Plus, Search, Gift, X, ChevronRight, ChevronLeft, Check, Edit2, Users, Wallet, Star, Trash2, Clock, RefreshCw } from 'lucide-react';
-
-// ── Types ──────────────────────────────────────────────────────────────────────
+import { Plus, Search, Gift, ChevronRight, ChevronLeft, Check, Edit2, Users, Wallet, Star, Trash2, Clock, RefreshCw } from 'lucide-react';
+import { Card, CardContent } from '@/app/components/ui/card';
+import { Button } from '@/app/components/ui/button';
+import { Input } from '@/app/components/ui/input';
+import { Badge } from '@/app/components/ui/badge';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/app/components/ui/dialog';
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/app/components/ui/sheet';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/app/components/ui/tabs';
+import { Label } from '@/app/components/ui/label';
+import { Textarea } from '@/app/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/app/components/ui/select';
+import { Separator } from '@/app/components/ui/separator';
+import { ScrollArea } from '@/app/components/ui/scroll-area';
 
 type Recorrencia = 'unica_vez' | 'diario' | 'mensal' | 'anual' | 'indeterminado';
 
@@ -48,8 +58,6 @@ function produtoToForm(p: ProdutoCampanha): ProdutoFormData {
     carenciaEmDias: String(p.carenciaEmDias), recorrencia: p.recorrencia,
   };
 }
-
-// ── Mock data ──────────────────────────────────────────────────────────────────
 
 const mockCampanhas = [
   { id: 1, name: 'Cashback Anuidade 2026',  tipo: 'Anuidade',  percentual: 8,  valorTotal: 45800, usuarios: 412, inicio: '01/01/2026', fim: '31/12/2026', status: 'ativa'  },
@@ -98,91 +106,88 @@ const mockUsuariosCampanha: Record<number, { id: number; nome: string; avatar: s
   ],
 };
 
-// ── Shared input classes ───────────────────────────────────────────────────────
-const inputCls = 'w-full px-3 py-2 bg-background border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary/20 outline-none';
-const selectCls = `${inputCls} cursor-pointer`;
-
-// ── ProdutoFormFields ──────────────────────────────────────────────────────────
-
 function ProdutoFormFields({ data, onChange }: { data: ProdutoFormData; onChange: (d: ProdutoFormData) => void }) {
   const set = <K extends keyof ProdutoFormData>(k: K, v: ProdutoFormData[K]) => onChange({ ...data, [k]: v });
 
   return (
     <div className="space-y-3">
-      <div>
-        <label className="block text-xs font-medium mb-1">Nome do Produto</label>
-        <input value={data.nome} onChange={e => set('nome', e.target.value)}
-          className={inputCls} placeholder="Ex: Anuidade Padrão" />
+      <div className="space-y-1">
+        <Label className="text-xs">Nome do Produto</Label>
+        <Input value={data.nome} onChange={e => set('nome', e.target.value)}
+          placeholder="Ex: Anuidade Padrão" className="h-8 text-xs" />
       </div>
 
       <div className="grid grid-cols-2 gap-3">
-        <div>
-          <label className="block text-xs font-medium mb-1">Tipo de Pontuação</label>
+        <div className="space-y-1">
+          <Label className="text-xs">Tipo de Pontuação</Label>
           <div className="flex gap-1.5">
             {(['cash', 'pontos'] as const).map(t => (
-              <button key={t} type="button" onClick={() => set('tipoPontuacao', t)}
-                className={`flex-1 py-1.5 text-xs rounded-lg border transition-colors flex items-center justify-center gap-1 ${
-                  data.tipoPontuacao === t ? 'border-primary bg-primary/5 text-primary' : 'border-border hover:bg-accent'}`}>
-                {t === 'cash' ? <><Wallet className="w-3 h-3" />Cash</> : <><Star className="w-3 h-3" />Pontos</>}
-              </button>
+              <Button key={t} type="button" variant={data.tipoPontuacao === t ? 'default' : 'outline'}
+                size="sm" onClick={() => set('tipoPontuacao', t)}
+                className="flex-1 h-8 text-xs">
+                {t === 'cash' ? <><Wallet className="w-3 h-3 mr-1" />Cash</> : <><Star className="w-3 h-3 mr-1" />Pontos</>}
+              </Button>
             ))}
           </div>
         </div>
-        <div>
-          <label className="block text-xs font-medium mb-1">Tipo de Valor</label>
+        <div className="space-y-1">
+          <Label className="text-xs">Tipo de Valor</Label>
           <div className="flex gap-1.5">
             {(['percentual', 'fixo'] as const).map(t => (
-              <button key={t} type="button" onClick={() => set('tipoValor', t)}
-                className={`flex-1 py-1.5 text-xs rounded-lg border transition-colors ${
-                  data.tipoValor === t ? 'border-primary bg-primary/5 text-primary' : 'border-border hover:bg-accent'}`}>
+              <Button key={t} type="button" variant={data.tipoValor === t ? 'default' : 'outline'}
+                size="sm" onClick={() => set('tipoValor', t)}
+                className="flex-1 h-8 text-xs">
                 {t === 'percentual' ? 'Percentual %' : 'Fixo'}
-              </button>
+              </Button>
             ))}
           </div>
         </div>
       </div>
 
       <div className="grid grid-cols-2 gap-3">
-        <div>
-          <label className="block text-xs font-medium mb-1">
+        <div className="space-y-1">
+          <Label className="text-xs">
             Valor {data.tipoValor === 'percentual' ? '(%)' : data.tipoPontuacao === 'cash' ? '(R$)' : '(pts)'}
-          </label>
-          <input type="number" min="0" value={data.valor} onChange={e => set('valor', e.target.value)}
-            className={inputCls} placeholder={data.tipoValor === 'percentual' ? 'Ex: 8' : 'Ex: 100'} />
+          </Label>
+          <Input type="number" min="0" value={data.valor} onChange={e => set('valor', e.target.value)}
+            className="h-8 text-xs" placeholder={data.tipoValor === 'percentual' ? 'Ex: 8' : 'Ex: 100'} />
         </div>
-        <div>
-          <label className="block text-xs font-medium mb-1">Recorrência</label>
-          <select value={data.recorrencia} onChange={e => set('recorrencia', e.target.value as Recorrencia)} className={selectCls}>
-            {(Object.entries(RECORRENCIA_LABEL) as [Recorrencia, string][]).map(([k, v]) => (
-              <option key={k} value={k}>{v}</option>
-            ))}
-          </select>
+        <div className="space-y-1">
+          <Label className="text-xs">Recorrência</Label>
+          <Select value={data.recorrencia} onValueChange={v => set('recorrencia', v as Recorrencia)}>
+            <SelectTrigger className="h-8 text-xs">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {(Object.entries(RECORRENCIA_LABEL) as [Recorrencia, string][]).map(([k, v]) => (
+                <SelectItem key={k} value={k}>{v}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       </div>
 
       <div className="grid grid-cols-2 gap-3">
-        <div>
-          <label className="block text-xs font-medium mb-1">Expiração (dias)</label>
-          <input type="number" min="0" value={data.naoExpira ? '' : data.expiracaoEmDias}
+        <div className="space-y-1">
+          <Label className="text-xs">Expiração (dias)</Label>
+          <Input type="number" min="0" value={data.naoExpira ? '' : data.expiracaoEmDias}
             disabled={data.naoExpira} onChange={e => set('expiracaoEmDias', e.target.value)}
-            className={`${inputCls} disabled:opacity-40`} placeholder="Ex: 365" />
-          <label className="flex items-center gap-1.5 text-xs mt-1.5 cursor-pointer text-muted-foreground hover:text-foreground transition-colors">
+            className="h-8 text-xs disabled:opacity-40" placeholder="Ex: 365" />
+          <label className="flex items-center gap-1.5 text-xs mt-1 cursor-pointer text-muted-foreground hover:text-foreground transition-colors">
             <input type="checkbox" checked={data.naoExpira} onChange={e => set('naoExpira', e.target.checked)} className="accent-primary" />
             Não expira
           </label>
         </div>
-        <div>
-          <label className="block text-xs font-medium mb-1">Carência para Resgate (dias)</label>
-          <input type="number" min="0" value={data.carenciaEmDias} onChange={e => set('carenciaEmDias', e.target.value)}
-            className={inputCls} placeholder="0" />
+        <div className="space-y-1">
+          <Label className="text-xs">Carência para Resgate (dias)</Label>
+          <Input type="number" min="0" value={data.carenciaEmDias} onChange={e => set('carenciaEmDias', e.target.value)}
+            className="h-8 text-xs" placeholder="0" />
           <p className="text-[11px] text-muted-foreground mt-1">0 = resgate imediato</p>
         </div>
       </div>
     </div>
   );
 }
-
-// ── ProdutoItem ────────────────────────────────────────────────────────────────
 
 function ProdutoItem({ produto, onEdit, onRemove }: {
   produto: ProdutoCampanha;
@@ -195,10 +200,9 @@ function ProdutoItem({ produto, onEdit, onRemove }: {
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap mb-1.5">
             <span className="text-sm font-medium">{produto.nome}</span>
-            <span className={`text-xs px-1.5 py-0.5 rounded-full font-medium ${
-              produto.tipoPontuacao === 'cash' ? 'bg-green-500/10 text-green-600' : 'bg-violet-500/10 text-violet-600'}`}>
+            <Badge variant={produto.tipoPontuacao === 'cash' ? 'default' : 'secondary'} className="text-xs">
               {produto.tipoPontuacao === 'cash' ? 'Cash' : 'Pontos'}
-            </span>
+            </Badge>
           </div>
           <div className="flex items-center gap-3 text-xs text-muted-foreground flex-wrap">
             <span className="flex items-center gap-1">
@@ -219,25 +223,24 @@ function ProdutoItem({ produto, onEdit, onRemove }: {
           </div>
         </div>
         <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-          <button onClick={onEdit} className="p-1.5 hover:bg-accent rounded-lg transition-colors">
+          <Button variant="ghost" size="icon" className="h-7 w-7" onClick={onEdit}>
             <Edit2 className="w-3.5 h-3.5" />
-          </button>
-          <button onClick={onRemove} className="p-1.5 hover:bg-red-500/10 hover:text-red-500 rounded-lg transition-colors">
+          </Button>
+          <Button variant="ghost" size="icon" className="h-7 w-7 hover:text-red-500 hover:bg-red-500/10" onClick={onRemove}>
             <Trash2 className="w-3.5 h-3.5" />
-          </button>
+          </Button>
         </div>
       </div>
     </div>
   );
 }
 
-// ── Campaign Panel ─────────────────────────────────────────────────────────────
-
 type PanelTab = 'dados' | 'usuarios' | 'produtos';
 
-function CampanhaPanel({ campanha, initialTab, onClose }: {
+function CampanhaPanel({ campanha, initialTab, open, onClose }: {
   campanha: typeof mockCampanhas[0];
   initialTab: PanelTab;
+  open: boolean;
   onClose: () => void;
 }) {
   const [activeTab, setActiveTab] = useState<PanelTab>(initialTab);
@@ -264,179 +267,159 @@ function CampanhaPanel({ campanha, initialTab, onClose }: {
     setEditingId(null);
   };
 
-  const tabs: { id: PanelTab; label: string }[] = [
-    { id: 'dados',    label: 'Dados'    },
-    { id: 'usuarios', label: `Usuários (${usuarios.length})` },
-    { id: 'produtos', label: `Produtos (${produtos.length})` },
-  ];
-
   return (
-    <div className="fixed inset-0 z-40 flex justify-end" onClick={onClose}>
-      <div className="w-[460px] h-full bg-card border-l border-border shadow-2xl flex flex-col overflow-hidden"
-        onClick={e => e.stopPropagation()}>
-
-        {/* Header */}
-        <div className="p-4 border-b border-border flex items-start justify-between gap-3 flex-shrink-0">
+    <Sheet open={open} onOpenChange={onClose}>
+      <SheetContent className="w-[460px] sm:max-w-[460px] p-0 flex flex-col">
+        <SheetHeader className="p-4 border-b border-border">
           <div className="min-w-0">
-            <p className="font-semibold truncate">{campanha.name}</p>
+            <SheetTitle className="truncate">{campanha.name}</SheetTitle>
             <p className="text-xs text-muted-foreground">{campanha.tipo} · {campanha.inicio} até {campanha.fim}</p>
           </div>
-          <button onClick={onClose} className="p-1 hover:bg-accent rounded-lg transition-colors flex-shrink-0">
-            <X className="w-4 h-4" />
-          </button>
-        </div>
+        </SheetHeader>
 
-        {/* Tabs */}
-        <div className="flex border-b border-border flex-shrink-0">
-          {tabs.map(t => (
-            <button key={t.id} onClick={() => setActiveTab(t.id)}
-              className={`flex-1 py-2.5 text-xs font-medium transition-colors border-b-2 ${
-                activeTab === t.id ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'}`}>
-              {t.label}
-            </button>
-          ))}
-        </div>
+        <Tabs value={activeTab} onValueChange={v => setActiveTab(v as PanelTab)} className="flex flex-col flex-1 min-h-0">
+          <TabsList className="rounded-none border-b border-border h-auto p-0 bg-transparent">
+            <TabsTrigger value="dados" className="rounded-none flex-1 h-9 text-xs data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-primary">Dados</TabsTrigger>
+            <TabsTrigger value="usuarios" className="rounded-none flex-1 h-9 text-xs data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-primary">Usuários ({usuarios.length})</TabsTrigger>
+            <TabsTrigger value="produtos" className="rounded-none flex-1 h-9 text-xs data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-primary">Produtos ({produtos.length})</TabsTrigger>
+          </TabsList>
 
-        {/* Content */}
-        <div className="flex-1 overflow-y-auto p-4">
+          <ScrollArea className="flex-1 min-h-0">
+            <div className="p-4">
 
-          {/* ── Dados Tab ── */}
-          {activeTab === 'dados' && (
-            <div className="space-y-4">
-              <div>
-                <label className="block text-xs font-medium mb-1">Nome da Campanha</label>
-                <input value={formDados.name} onChange={e => setFormDados(f => ({ ...f, name: e.target.value }))}
-                  className={inputCls} />
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-medium mb-1">Tipo</label>
-                  <select value={formDados.tipo} onChange={e => setFormDados(f => ({ ...f, tipo: e.target.value }))} className={selectCls}>
-                    {['Anuidade','Evento','Educação','Indicação','Fidelidade'].map(t => <option key={t}>{t}</option>)}
-                  </select>
+            <TabsContent value="dados" className="mt-0">
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label>Nome da Campanha</Label>
+                  <Input value={formDados.name} onChange={e => setFormDados(f => ({ ...f, name: e.target.value }))} />
                 </div>
-                <div>
-                  <label className="block text-xs font-medium mb-1">Status</label>
-                  <select value={formDados.status} onChange={e => setFormDados(f => ({ ...f, status: e.target.value }))} className={selectCls}>
-                    <option value="ativa">Ativa</option>
-                    <option value="pausada">Pausada</option>
-                    <option value="encerrada">Encerrada</option>
-                  </select>
-                </div>
-              </div>
-              <div>
-                <label className="block text-xs font-medium mb-1">% Cashback geral</label>
-                <input type="number" value={formDados.percentual} onChange={e => setFormDados(f => ({ ...f, percentual: Number(e.target.value) }))}
-                  className={inputCls} />
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-medium mb-1">Início</label>
-                  <input value={formDados.inicio} onChange={e => setFormDados(f => ({ ...f, inicio: e.target.value }))} className={inputCls} />
-                </div>
-                <div>
-                  <label className="block text-xs font-medium mb-1">Fim</label>
-                  <input value={formDados.fim} onChange={e => setFormDados(f => ({ ...f, fim: e.target.value }))} className={inputCls} />
-                </div>
-              </div>
-              <button className="w-full py-2.5 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors">
-                Salvar Alterações
-              </button>
-            </div>
-          )}
-
-          {/* ── Usuários Tab ── */}
-          {activeTab === 'usuarios' && (
-            <div className="space-y-2">
-              {usuarios.length === 0 ? (
-                <p className="text-sm text-muted-foreground text-center py-10">Nenhum usuário vinculado a esta campanha</p>
-              ) : usuarios.map(u => (
-                <div key={u.id} className="flex items-center gap-3 p-3 rounded-xl border border-border hover:bg-muted/30 transition-colors">
-                  <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center text-xs font-bold text-primary flex-shrink-0">
-                    {u.avatar}
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-2">
+                    <Label>Tipo</Label>
+                    <Select value={formDados.tipo} onValueChange={v => setFormDados(f => ({ ...f, tipo: v }))}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        {['Anuidade','Evento','Educação','Indicação','Fidelidade'].map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
+                      </SelectContent>
+                    </Select>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium truncate">{u.nome}</p>
-                    <p className="text-xs text-muted-foreground">Desde {u.dataEntrada}</p>
-                  </div>
-                  <div className="text-right flex-shrink-0 space-y-0.5">
-                    <p className="text-xs font-semibold text-green-600">
-                      {u.saldoCash.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-                    </p>
-                    <p className="text-xs text-violet-600">{u.saldoPontos.toLocaleString()} pts</p>
+                  <div className="space-y-2">
+                    <Label>Status</Label>
+                    <Select value={formDados.status} onValueChange={v => setFormDados(f => ({ ...f, status: v }))}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="ativa">Ativa</SelectItem>
+                        <SelectItem value="pausada">Pausada</SelectItem>
+                        <SelectItem value="encerrada">Encerrada</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
-              ))}
-            </div>
-          )}
-
-          {/* ── Produtos Tab ── */}
-          {activeTab === 'produtos' && (
-            <div className="space-y-3">
-              <button onClick={() => { setShowAddProduto(s => !s); setAddForm(emptyForm()); }}
-                className="w-full flex items-center justify-center gap-2 py-2 text-sm border border-dashed border-border rounded-xl hover:border-primary hover:text-primary hover:bg-primary/5 transition-colors">
-                <Plus className="w-4 h-4" />
-                Adicionar Produto Campanha
-              </button>
-
-              {showAddProduto && (
-                <div className="p-4 rounded-xl border border-primary/30 bg-primary/5 space-y-3">
-                  <p className="text-xs font-semibold text-primary uppercase tracking-wide">Novo Produto</p>
-                  <ProdutoFormFields data={addForm} onChange={setAddForm} />
-                  <div className="flex gap-2">
-                    <button onClick={() => setShowAddProduto(false)}
-                      className="flex-1 py-2 text-xs border border-border rounded-lg hover:bg-accent transition-colors">
-                      Cancelar
-                    </button>
-                    <button onClick={handleAddProduto} disabled={!addForm.nome}
-                      className="flex-1 py-2 text-xs bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-40">
-                      Adicionar
-                    </button>
+                <div className="space-y-2">
+                  <Label>% Cashback geral</Label>
+                  <Input type="number" value={formDados.percentual} onChange={e => setFormDados(f => ({ ...f, percentual: Number(e.target.value) }))} />
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-2">
+                    <Label>Início</Label>
+                    <Input value={formDados.inicio} onChange={e => setFormDados(f => ({ ...f, inicio: e.target.value }))} />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Fim</Label>
+                    <Input value={formDados.fim} onChange={e => setFormDados(f => ({ ...f, fim: e.target.value }))} />
                   </div>
                 </div>
-              )}
+                <Button className="w-full">Salvar Alterações</Button>
+              </div>
+            </TabsContent>
 
-              {produtos.length === 0 && !showAddProduto && (
-                <p className="text-sm text-muted-foreground text-center py-8">Nenhum produto configurado</p>
-              )}
-
-              {produtos.map(p => (
-                <div key={p.id}>
-                  {editingId === p.id ? (
-                    <div className="p-4 rounded-xl border border-border bg-muted/30 space-y-3">
-                      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Editando: {p.nome}</p>
-                      <ProdutoFormFields data={editForm} onChange={setEditForm} />
-                      <div className="flex gap-2">
-                        <button onClick={() => setEditingId(null)}
-                          className="flex-1 py-2 text-xs border border-border rounded-lg hover:bg-accent transition-colors">
-                          Cancelar
-                        </button>
-                        <button onClick={() => handleSaveEdit(p.id)} disabled={!editForm.nome}
-                          className="flex-1 py-2 text-xs bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-40">
-                          Salvar
-                        </button>
-                      </div>
+            <TabsContent value="usuarios" className="mt-0">
+              <div className="space-y-2">
+                {usuarios.length === 0 ? (
+                  <p className="text-sm text-muted-foreground text-center py-10">Nenhum usuário vinculado a esta campanha</p>
+                ) : usuarios.map(u => (
+                  <div key={u.id} className="flex items-center gap-3 p-3 rounded-xl border border-border hover:bg-muted/30 transition-colors">
+                    <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center text-xs font-bold text-primary flex-shrink-0">
+                      {u.avatar}
                     </div>
-                  ) : (
-                    <ProdutoItem produto={p}
-                      onEdit={() => { setEditingId(p.id); setEditForm(produtoToForm(p)); setShowAddProduto(false); }}
-                      onRemove={() => setProdutos(prev => prev.filter(x => x.id !== p.id))} />
-                  )}
-                </div>
-              ))}
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium truncate">{u.nome}</p>
+                      <p className="text-xs text-muted-foreground">Desde {u.dataEntrada}</p>
+                    </div>
+                    <div className="text-right flex-shrink-0 space-y-0.5">
+                      <p className="text-xs font-semibold text-green-600">
+                        {u.saldoCash.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                      </p>
+                      <p className="text-xs text-violet-600">{u.saldoPontos.toLocaleString()} pts</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </TabsContent>
+
+            <TabsContent value="produtos" className="mt-0">
+              <div className="space-y-3">
+                <Button variant="outline" className="w-full border-dashed"
+                  onClick={() => { setShowAddProduto(s => !s); setAddForm(emptyForm()); }}>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Adicionar Produto Campanha
+                </Button>
+
+                {showAddProduto && (
+                  <div className="p-4 rounded-xl border border-primary/30 bg-primary/5 space-y-3">
+                    <p className="text-xs font-semibold text-primary uppercase tracking-wide">Novo Produto</p>
+                    <ProdutoFormFields data={addForm} onChange={setAddForm} />
+                    <div className="flex gap-2">
+                      <Button variant="outline" size="sm" className="flex-1" onClick={() => setShowAddProduto(false)}>
+                        Cancelar
+                      </Button>
+                      <Button size="sm" className="flex-1" onClick={handleAddProduto} disabled={!addForm.nome}>
+                        Adicionar
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
+                {produtos.length === 0 && !showAddProduto && (
+                  <p className="text-sm text-muted-foreground text-center py-8">Nenhum produto configurado</p>
+                )}
+
+                {produtos.map(p => (
+                  <div key={p.id}>
+                    {editingId === p.id ? (
+                      <div className="p-4 rounded-xl border border-border bg-muted/30 space-y-3">
+                        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Editando: {p.nome}</p>
+                        <ProdutoFormFields data={editForm} onChange={setEditForm} />
+                        <div className="flex gap-2">
+                          <Button variant="outline" size="sm" className="flex-1" onClick={() => setEditingId(null)}>
+                            Cancelar
+                          </Button>
+                          <Button size="sm" className="flex-1" onClick={() => handleSaveEdit(p.id)} disabled={!editForm.nome}>
+                            Salvar
+                          </Button>
+                        </div>
+                      </div>
+                    ) : (
+                      <ProdutoItem produto={p}
+                        onEdit={() => { setEditingId(p.id); setEditForm(produtoToForm(p)); setShowAddProduto(false); }}
+                        onRemove={() => setProdutos(prev => prev.filter(x => x.id !== p.id))} />
+                    )}
+                  </div>
+                ))}
+              </div>
+            </TabsContent>
+
             </div>
-          )}
-        </div>
-      </div>
-    </div>
+          </ScrollArea>
+        </Tabs>
+      </SheetContent>
+    </Sheet>
   );
 }
 
-// ── Wizard ─────────────────────────────────────────────────────────────────────
-
 const wizardSteps = ['Dados da Campanha', 'Produtos Campanha', 'Revisão'];
 
-function CampanhaWizard({ onClose }: { onClose: () => void }) {
+function CampanhaWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
   const [step, setStep] = useState(0);
   const [form, setForm] = useState({ name: '', tipo: 'Anuidade', inicio: '', fim: '' });
   const [produtos, setProdutos] = useState<ProdutoCampanha[]>([]);
@@ -453,20 +436,14 @@ function CampanhaWizard({ onClose }: { onClose: () => void }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-card rounded-2xl shadow-2xl w-full max-w-xl max-h-[90vh] flex flex-col">
+    <Dialog open={open} onOpenChange={onClose}>
+      <DialogContent className="max-w-xl max-h-[90vh] flex flex-col">
+        <DialogHeader>
+          <DialogTitle>Nova Campanha de Cashback</DialogTitle>
+          <p className="text-sm text-muted-foreground">Passo {step + 1} de {wizardSteps.length}</p>
+        </DialogHeader>
 
-        {/* Header */}
-        <div className="p-6 border-b border-border flex items-center justify-between flex-shrink-0">
-          <div>
-            <h2 className="text-lg font-semibold">Nova Campanha de Cashback</h2>
-            <p className="text-sm text-muted-foreground mt-0.5">Passo {step + 1} de {wizardSteps.length}</p>
-          </div>
-          <button onClick={onClose} className="p-1.5 hover:bg-accent rounded-lg transition-colors"><X className="w-4 h-4" /></button>
-        </div>
-
-        {/* Steps */}
-        <div className="px-6 pt-4 flex-shrink-0">
+        <div className="px-1">
           <div className="flex items-center">
             {wizardSteps.map((s, i) => (
               <div key={i} className="flex items-center flex-1 last:flex-none">
@@ -487,30 +464,33 @@ function CampanhaWizard({ onClose }: { onClose: () => void }) {
           </div>
         </div>
 
-        {/* Body */}
-        <div className="px-6 pb-2 flex-1 overflow-y-auto min-h-0">
+        <ScrollArea className="flex-1 min-h-0 max-h-[400px]">
+          <div className="px-1 pb-4">
 
           {step === 0 && (
             <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium mb-1.5">Nome da Campanha</label>
-                <input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-                  className={inputCls} placeholder="Ex: Cashback Anuidade 2026" />
+              <div className="space-y-2">
+                <Label>Nome da Campanha</Label>
+                <Input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
+                  placeholder="Ex: Cashback Anuidade 2026" />
               </div>
-              <div>
-                <label className="block text-sm font-medium mb-1.5">Tipo</label>
-                <select value={form.tipo} onChange={e => setForm(f => ({ ...f, tipo: e.target.value }))} className={selectCls}>
-                  {['Anuidade','Evento','Educação','Indicação','Fidelidade'].map(t => <option key={t}>{t}</option>)}
-                </select>
+              <div className="space-y-2">
+                <Label>Tipo</Label>
+                <Select value={form.tipo} onValueChange={v => setForm(f => ({ ...f, tipo: v }))}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {['Anuidade','Evento','Educação','Indicação','Fidelidade'].map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
+                  </SelectContent>
+                </Select>
               </div>
               <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium mb-1.5">Início</label>
-                  <input type="date" value={form.inicio} onChange={e => setForm(f => ({ ...f, inicio: e.target.value }))} className={inputCls} />
+                <div className="space-y-2">
+                  <Label>Início</Label>
+                  <Input type="date" value={form.inicio} onChange={e => setForm(f => ({ ...f, inicio: e.target.value }))} />
                 </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1.5">Fim</label>
-                  <input type="date" value={form.fim} onChange={e => setForm(f => ({ ...f, fim: e.target.value }))} className={inputCls} />
+                <div className="space-y-2">
+                  <Label>Fim</Label>
+                  <Input type="date" value={form.fim} onChange={e => setForm(f => ({ ...f, fim: e.target.value }))} />
                 </div>
               </div>
             </div>
@@ -520,25 +500,23 @@ function CampanhaWizard({ onClose }: { onClose: () => void }) {
             <div className="space-y-3">
               <p className="text-sm text-muted-foreground">Configure os produtos que geram cashback ou pontos nesta campanha.</p>
 
-              <button onClick={() => { setShowAddForm(s => !s); setAddForm(emptyForm()); setEditingId(null); }}
-                className="w-full flex items-center justify-center gap-2 py-2.5 text-sm border border-dashed border-border rounded-xl hover:border-primary hover:text-primary hover:bg-primary/5 transition-colors">
-                <Plus className="w-4 h-4" />
+              <Button variant="outline" className="w-full border-dashed"
+                onClick={() => { setShowAddForm(s => !s); setAddForm(emptyForm()); setEditingId(null); }}>
+                <Plus className="w-4 h-4 mr-2" />
                 Adicionar Produto Campanha
-              </button>
+              </Button>
 
               {showAddForm && (
                 <div className="p-4 rounded-xl border border-primary/30 bg-primary/5 space-y-3">
                   <p className="text-xs font-semibold text-primary uppercase tracking-wide">Novo Produto</p>
                   <ProdutoFormFields data={addForm} onChange={setAddForm} />
                   <div className="flex gap-2">
-                    <button onClick={() => setShowAddForm(false)}
-                      className="flex-1 py-2 text-xs border border-border rounded-lg hover:bg-accent transition-colors">
+                    <Button variant="outline" size="sm" className="flex-1" onClick={() => setShowAddForm(false)}>
                       Cancelar
-                    </button>
-                    <button onClick={handleAddProduto} disabled={!addForm.nome}
-                      className="flex-1 py-2 text-xs bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-40">
+                    </Button>
+                    <Button size="sm" className="flex-1" onClick={handleAddProduto} disabled={!addForm.nome}>
                       Adicionar
-                    </button>
+                    </Button>
                   </div>
                 </div>
               )}
@@ -554,11 +532,10 @@ function CampanhaWizard({ onClose }: { onClose: () => void }) {
                       <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Editando: {p.nome}</p>
                       <ProdutoFormFields data={editForm} onChange={setEditForm} />
                       <div className="flex gap-2">
-                        <button onClick={() => setEditingId(null)}
-                          className="flex-1 py-2 text-xs border border-border rounded-lg hover:bg-accent transition-colors">Cancelar</button>
-                        <button onClick={() => { setProdutos(prev => prev.map(x => x.id === p.id ? { id: p.id, ...formToProduto(editForm) } : x)); setEditingId(null); }}
-                          disabled={!editForm.nome}
-                          className="flex-1 py-2 text-xs bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-40">Salvar</button>
+                        <Button variant="outline" size="sm" className="flex-1" onClick={() => setEditingId(null)}>Cancelar</Button>
+                        <Button size="sm" className="flex-1"
+                          onClick={() => { setProdutos(prev => prev.map(x => x.id === p.id ? { id: p.id, ...formToProduto(editForm) } : x)); setEditingId(null); }}
+                          disabled={!editForm.nome}>Salvar</Button>
                       </div>
                     </div>
                   ) : (
@@ -588,7 +565,7 @@ function CampanhaWizard({ onClose }: { onClose: () => void }) {
                   <div className="space-y-2">
                     {produtos.map(p => (
                       <div key={p.id} className="flex items-center gap-2 text-sm p-2 rounded-lg bg-muted/30">
-                        <span className={`w-2 h-2 rounded-full flex-shrink-0 ${p.tipoPontuacao === 'cash' ? 'bg-green-500' : 'bg-violet-500'}`} />
+                        <Badge variant={p.tipoPontuacao === 'cash' ? 'default' : 'secondary'} className="h-2 w-2 p-0" />
                         <span className="font-medium flex-1">{p.nome}</span>
                         <span className="text-muted-foreground text-xs">
                           {p.tipoValor === 'percentual' ? `${p.valor}%` : p.tipoPontuacao === 'cash' ? `R$ ${p.valor}` : `${p.valor} pts`}
@@ -602,27 +579,24 @@ function CampanhaWizard({ onClose }: { onClose: () => void }) {
               <p className="text-sm text-muted-foreground">Ao confirmar, a campanha será criada com status <strong>Ativa</strong>.</p>
             </div>
           )}
-        </div>
 
-        {/* Footer */}
-        <div className="p-6 border-t border-border flex justify-between flex-shrink-0">
-          <button onClick={() => step === 0 ? onClose() : setStep(s => s - 1)}
-            className="flex items-center gap-2 px-4 py-2 text-sm border border-border rounded-lg hover:bg-accent transition-colors">
-            <ChevronLeft className="w-4 h-4" />
+          </div>
+        </ScrollArea>
+
+        <div className="flex justify-between pt-4 border-t">
+          <Button variant="outline" onClick={() => step === 0 ? onClose() : setStep(s => s - 1)}>
+            <ChevronLeft className="w-4 h-4 mr-2" />
             {step === 0 ? 'Cancelar' : 'Anterior'}
-          </button>
-          <button onClick={() => step < wizardSteps.length - 1 ? setStep(s => s + 1) : onClose()}
-            className="flex items-center gap-2 px-4 py-2 text-sm bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors">
+          </Button>
+          <Button onClick={() => step < wizardSteps.length - 1 ? setStep(s => s + 1) : onClose()}>
             {step < wizardSteps.length - 1 ? 'Próximo' : 'Criar Campanha'}
-            {step < wizardSteps.length - 1 && <ChevronRight className="w-4 h-4" />}
-          </button>
+            {step < wizardSteps.length - 1 && <ChevronRight className="w-4 h-4 ml-2" />}
+          </Button>
         </div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }
-
-// ── Main Page ──────────────────────────────────────────────────────────────────
 
 export function Campanhas() {
   const [search, setSearch] = useState('');
@@ -642,24 +616,23 @@ export function Campanhas() {
               <h1 className="text-3xl mb-2">Campanhas de Cashback</h1>
               <p className="text-muted-foreground">Gerencie campanhas, produtos e usuários vinculados</p>
             </div>
-            <button onClick={() => setShowWizard(true)}
-              className="flex items-center gap-2 px-4 py-2.5 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors text-sm font-medium">
-              <Plus className="w-4 h-4" /> Nova Campanha
-            </button>
+            <Button onClick={() => setShowWizard(true)}>
+              <Plus className="w-4 h-4 mr-2" /> Nova Campanha
+            </Button>
           </div>
 
           <div className="relative mb-6">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Buscar campanhas..."
-              className="w-full pl-9 pr-4 py-2.5 bg-card border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary/20 outline-none" />
+            <Input value={search} onChange={e => setSearch(e.target.value)} placeholder="Buscar campanhas..."
+              className="pl-9" />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {filtered.map(c => {
               const numProdutos = (mockProdutos[c.id] || []).length;
               return (
-                <div key={c.id} className="bg-card border border-border rounded-xl overflow-hidden hover:shadow-md transition-all group">
-                  <div className="p-5">
+                <Card key={c.id} className="overflow-hidden hover:shadow-md transition-all group">
+                  <CardContent className="pt-6">
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-xl bg-orange-500/10 flex items-center justify-center">
@@ -670,10 +643,9 @@ export function Campanhas() {
                           <p className="text-xs text-muted-foreground">{c.tipo}</p>
                         </div>
                       </div>
-                      <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                        c.status === 'ativa' ? 'bg-green-500/10 text-green-600' : 'bg-yellow-500/10 text-yellow-600'}`}>
+                      <Badge variant={c.status === 'ativa' ? 'default' : 'secondary'}>
                         {c.status === 'ativa' ? 'Ativa' : 'Pausada'}
-                      </span>
+                      </Badge>
                     </div>
 
                     <div className="grid grid-cols-3 gap-3 mb-4">
@@ -694,21 +666,18 @@ export function Campanhas() {
                     <p className="text-xs text-muted-foreground mb-4">{c.inicio} até {c.fim} · {numProdutos} produto{numProdutos !== 1 ? 's' : ''}</p>
 
                     <div className="flex gap-2 pt-3 border-t border-border">
-                      <button onClick={() => openPanel(c, 'dados')}
-                        className="flex-1 flex items-center justify-center gap-1.5 py-1.5 text-xs border border-border rounded-lg hover:bg-accent hover:text-primary transition-colors">
-                        <Edit2 className="w-3 h-3" /> Editar
-                      </button>
-                      <button onClick={() => openPanel(c, 'usuarios')}
-                        className="flex-1 flex items-center justify-center gap-1.5 py-1.5 text-xs border border-border rounded-lg hover:bg-accent hover:text-primary transition-colors">
-                        <Users className="w-3 h-3" /> Usuários
-                      </button>
-                      <button onClick={() => openPanel(c, 'produtos')}
-                        className="flex-1 flex items-center justify-center gap-1.5 py-1.5 text-xs border border-border rounded-lg hover:bg-accent hover:text-primary transition-colors">
-                        <Gift className="w-3 h-3" /> Produtos
-                      </button>
+                      <Button variant="outline" size="sm" className="flex-1" onClick={() => openPanel(c, 'dados')}>
+                        <Edit2 className="w-3 h-3 mr-1.5" /> Editar
+                      </Button>
+                      <Button variant="outline" size="sm" className="flex-1" onClick={() => openPanel(c, 'usuarios')}>
+                        <Users className="w-3 h-3 mr-1.5" /> Usuários
+                      </Button>
+                      <Button variant="outline" size="sm" className="flex-1" onClick={() => openPanel(c, 'produtos')}>
+                        <Gift className="w-3 h-3 mr-1.5" /> Produtos
+                      </Button>
                     </div>
-                  </div>
-                </div>
+                  </CardContent>
+                </Card>
               );
             })}
           </div>
@@ -719,10 +688,11 @@ export function Campanhas() {
         <CampanhaPanel
           campanha={panel.campanha}
           initialTab={panel.tab}
+          open={!!panel}
           onClose={() => setPanel(null)}
         />
       )}
-      {showWizard && <CampanhaWizard onClose={() => setShowWizard(false)} />}
+      <CampanhaWizard open={showWizard} onClose={() => setShowWizard(false)} />
     </div>
   );
 }

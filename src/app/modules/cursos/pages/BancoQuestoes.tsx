@@ -1,5 +1,14 @@
 import { useState } from 'react';
-import { Plus, Search, HelpCircle, X, ChevronDown, ChevronUp, Edit2, Trash2 } from 'lucide-react';
+import { Plus, Search, HelpCircle, ChevronDown, ChevronUp, Edit2 } from 'lucide-react';
+import { Card, CardContent } from '@/app/components/ui/card';
+import { Button } from '@/app/components/ui/button';
+import { Input } from '@/app/components/ui/input';
+import { Badge } from '@/app/components/ui/badge';
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/app/components/ui/dialog';
+import { Label } from '@/app/components/ui/label';
+import { Textarea } from '@/app/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/app/components/ui/select';
+import { RadioGroup, RadioGroupItem } from '@/app/components/ui/radio-group';
 
 const eixos = ['Todos', 'Fisiopatologia', 'Diagnóstico', 'Tratamento', 'Prevenção', 'Hemodinâmica', 'Eletrofisiologia'];
 const cursos = ['Todos os Cursos', 'Cardiologia Intervencionista', 'Ecocardiografia Avançada', 'Eletrofisiologia Clínica'];
@@ -43,7 +52,7 @@ const dificuldadeConfig: Record<string, { label: string; color: string }> = {
   dificil: { label: 'Difícil', color: 'bg-red-500/10 text-red-600' },
 };
 
-function QuestaoModal({ onClose }: { onClose: () => void }) {
+function QuestaoModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   const [form, setForm] = useState({
     enunciado: '', eixo: '', curso: '', dificuldade: 'media',
     alternativas: [
@@ -59,75 +68,84 @@ function QuestaoModal({ onClose }: { onClose: () => void }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-card rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-        <div className="p-6 border-b border-border flex items-center justify-between sticky top-0 bg-card">
-          <h2 className="text-lg font-semibold">Nova Questão</h2>
-          <button onClick={onClose} className="p-1.5 hover:bg-accent rounded-lg transition-colors"><X className="w-4 h-4" /></button>
-        </div>
-        <div className="p-6 space-y-4">
-          <div>
-            <label className="block text-sm font-medium mb-1.5">Enunciado</label>
-            <textarea value={form.enunciado} onChange={e => setForm(f => ({...f, enunciado: e.target.value}))}
-              rows={3} className="w-full px-3 py-2.5 bg-input-background border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary/20 outline-none resize-none"
-              placeholder="Digite o enunciado da questão..." />
+    <Dialog open={open} onOpenChange={onClose}>
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>Nova Questão</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Label>Enunciado</Label>
+            <Textarea value={form.enunciado} onChange={e => setForm(f => ({...f, enunciado: e.target.value}))}
+              rows={3} placeholder="Digite o enunciado da questão..." className="resize-none" />
           </div>
           <div className="grid grid-cols-3 gap-4">
-            <div>
-              <label className="block text-sm font-medium mb-1.5">Eixo Temático</label>
-              <select value={form.eixo} onChange={e => setForm(f => ({...f, eixo: e.target.value}))}
-                className="w-full px-3 py-2.5 bg-input-background border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary/20 outline-none">
-                <option value="">Selecione...</option>
-                {eixos.filter(e => e !== 'Todos').map(e => <option key={e}>{e}</option>)}
-              </select>
+            <div className="space-y-2">
+              <Label>Eixo Temático</Label>
+              <Select value={form.eixo} onValueChange={v => setForm(f => ({...f, eixo: v}))}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {eixos.filter(e => e !== 'Todos').map(e => (
+                    <SelectItem key={e} value={e}>{e}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
-            <div>
-              <label className="block text-sm font-medium mb-1.5">Curso</label>
-              <select value={form.curso} onChange={e => setForm(f => ({...f, curso: e.target.value}))}
-                className="w-full px-3 py-2.5 bg-input-background border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary/20 outline-none">
-                <option value="">Selecione...</option>
-                {cursos.filter(c => c !== 'Todos os Cursos').map(c => <option key={c}>{c}</option>)}
-              </select>
+            <div className="space-y-2">
+              <Label>Curso</Label>
+              <Select value={form.curso} onValueChange={v => setForm(f => ({...f, curso: v}))}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {cursos.filter(c => c !== 'Todos os Cursos').map(c => (
+                    <SelectItem key={c} value={c}>{c}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
-            <div>
-              <label className="block text-sm font-medium mb-1.5">Dificuldade</label>
-              <select value={form.dificuldade} onChange={e => setForm(f => ({...f, dificuldade: e.target.value}))}
-                className="w-full px-3 py-2.5 bg-input-background border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary/20 outline-none">
-                <option value="facil">Fácil</option>
-                <option value="media">Média</option>
-                <option value="dificil">Difícil</option>
-              </select>
+            <div className="space-y-2">
+              <Label>Dificuldade</Label>
+              <Select value={form.dificuldade} onValueChange={v => setForm(f => ({...f, dificuldade: v}))}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="facil">Fácil</SelectItem>
+                  <SelectItem value="media">Média</SelectItem>
+                  <SelectItem value="dificil">Difícil</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium mb-2">Alternativas (marque a correta)</label>
-            <div className="space-y-2">
-              {form.alternativas.map((alt) => (
-                <div key={alt.id} className={`flex items-center gap-3 p-3 rounded-lg border transition-colors ${
-                  alt.correta ? 'border-green-500 bg-green-500/5' : 'border-border'
-                }`}>
-                  <button onClick={() => setCorreta(alt.id)}
-                    className={`w-6 h-6 rounded-full border-2 flex-shrink-0 flex items-center justify-center transition-colors ${
-                      alt.correta ? 'border-green-500 bg-green-500' : 'border-border hover:border-primary'
-                    }`}>
-                    {alt.correta && <div className="w-2 h-2 rounded-full bg-white" />}
-                  </button>
-                  <span className="text-sm font-medium text-muted-foreground w-4">{alt.id.toUpperCase()})</span>
-                  <input value={alt.texto}
-                    onChange={e => setForm(f => ({...f, alternativas: f.alternativas.map(a => a.id === alt.id ? {...a, texto: e.target.value} : a)}))}
-                    className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
-                    placeholder={`Alternativa ${alt.id.toUpperCase()}...`} />
-                </div>
-              ))}
-            </div>
+            <Label className="mb-2 block">Alternativas (marque a correta)</Label>
+            <RadioGroup value={form.alternativas.find(a => a.correta)?.id} onValueChange={setCorreta}>
+              <div className="space-y-2">
+                {form.alternativas.map((alt) => (
+                  <div key={alt.id} className={`flex items-center gap-3 p-3 rounded-lg border transition-colors ${
+                    alt.correta ? 'border-green-500 bg-green-500/5' : 'border-border'
+                  }`}>
+                    <RadioGroupItem value={alt.id} id={`alt-${alt.id}`} />
+                    <span className="text-sm font-medium text-muted-foreground w-4">{alt.id.toUpperCase()})</span>
+                    <Input value={alt.texto}
+                      onChange={e => setForm(f => ({...f, alternativas: f.alternativas.map(a => a.id === alt.id ? {...a, texto: e.target.value} : a)}))}
+                      className="flex-1 border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
+                      placeholder={`Alternativa ${alt.id.toUpperCase()}...`} />
+                  </div>
+                ))}
+              </div>
+            </RadioGroup>
           </div>
         </div>
-        <div className="p-6 border-t border-border flex gap-3 justify-end">
-          <button onClick={onClose} className="px-4 py-2 text-sm border border-border rounded-lg hover:bg-accent transition-colors">Cancelar</button>
-          <button onClick={onClose} className="px-4 py-2 text-sm bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors">Salvar Questão</button>
-        </div>
-      </div>
-    </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={onClose}>Cancelar</Button>
+          <Button onClick={onClose}>Salvar Questão</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
 
@@ -154,30 +172,36 @@ export function BancoQuestoes() {
               <h1 className="text-3xl mb-2">Banco de Questões</h1>
               <p className="text-muted-foreground">Questões organizadas por curso e eixo temático</p>
             </div>
-            <button onClick={() => setShowModal(true)}
-              className="flex items-center gap-2 px-4 py-2.5 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors text-sm font-medium">
-              <Plus className="w-4 h-4" /> Nova Questão
-            </button>
+            <Button onClick={() => setShowModal(true)}>
+              <Plus className="w-4 h-4 mr-2" /> Nova Questão
+            </Button>
           </div>
 
           <div className="flex gap-3 mb-4 flex-wrap">
             <div className="relative flex-1 min-w-[200px]">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Buscar questões..."
-                className="w-full pl-9 pr-4 py-2.5 bg-card border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary/20 outline-none" />
+              <Input value={search} onChange={e => setSearch(e.target.value)}
+                placeholder="Buscar questões..."
+                className="pl-9" />
             </div>
-            <select value={cursoFilter} onChange={e => setCursoFilter(e.target.value)}
-              className="px-3 py-2.5 bg-card border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary/20 outline-none">
-              {cursos.map(c => <option key={c}>{c}</option>)}
-            </select>
+            <Select value={cursoFilter} onValueChange={setCursoFilter}>
+              <SelectTrigger className="w-[220px]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {cursos.map(c => (
+                  <SelectItem key={c} value={c}>{c}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="flex flex-wrap gap-1.5 mb-6">
             {eixos.map(e => (
-              <button key={e} onClick={() => setEixoFilter(e)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${eixoFilter === e ? 'bg-primary text-primary-foreground' : 'bg-muted hover:bg-accent'}`}>
+              <Button key={e} variant={eixoFilter === e ? 'default' : 'outline'} size="sm"
+                onClick={() => setEixoFilter(e)}>
                 {e}
-              </button>
+              </Button>
             ))}
           </div>
 
@@ -186,23 +210,25 @@ export function BancoQuestoes() {
               const dif = dificuldadeConfig[q.dificuldade];
               const isExp = expanded === q.id;
               return (
-                <div key={q.id} className="bg-card border border-border rounded-xl overflow-hidden">
-                  <div className="p-5 flex items-start gap-4 cursor-pointer hover:bg-muted/30 transition-colors" onClick={() => setExpanded(isExp ? null : q.id)}>
+                <Card key={q.id} className="overflow-hidden">
+                  <div className="p-5 flex items-start gap-4 cursor-pointer hover:bg-muted/30 transition-colors"
+                    onClick={() => setExpanded(isExp ? null : q.id)}>
                     <div className="w-8 h-8 rounded-full bg-purple-500/10 flex items-center justify-center flex-shrink-0 mt-0.5">
                       <HelpCircle className="w-4 h-4 text-purple-500" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium leading-relaxed">{q.enunciado}</p>
                       <div className="flex items-center gap-2 mt-2">
-                        <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">{q.eixo}</span>
-                        <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">{q.curso}</span>
-                        <span className={`text-xs px-2 py-0.5 rounded-full ${dif.color}`}>{dif.label}</span>
+                        <Badge variant="secondary">{q.eixo}</Badge>
+                        <Badge variant="secondary">{q.curso}</Badge>
+                        <Badge variant="outline" className={dif.color}>{dif.label}</Badge>
                       </div>
                     </div>
                     <div className="flex items-center gap-2 flex-shrink-0">
-                      <button className="p-1.5 hover:bg-accent rounded-lg transition-colors" onClick={e => e.stopPropagation()}>
+                      <Button variant="ghost" size="icon" className="h-8 w-8"
+                        onClick={e => e.stopPropagation()}>
                         <Edit2 className="w-3.5 h-3.5 text-muted-foreground" />
-                      </button>
+                      </Button>
                       {isExp ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
                     </div>
                   </div>
@@ -219,13 +245,13 @@ export function BancoQuestoes() {
                       </div>
                     </div>
                   )}
-                </div>
+                </Card>
               );
             })}
           </div>
         </div>
       </div>
-      {showModal && <QuestaoModal onClose={() => setShowModal(false)} />}
+      <QuestaoModal open={showModal} onClose={() => setShowModal(false)} />
     </div>
   );
 }

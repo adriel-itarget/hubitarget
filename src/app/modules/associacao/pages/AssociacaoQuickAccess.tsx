@@ -1,5 +1,7 @@
 import { Users, FileText, UserCog, Smartphone, DollarSign, BarChart3, Calendar, Award, Settings } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { Card, CardContent, CardHeader, CardTitle } from '@/app/components/ui/card';
+import { Badge } from '@/app/components/ui/badge';
 
 const quickAccessItems = [
   {
@@ -89,74 +91,77 @@ export function AssociacaoQuickAccess() {
             {quickAccessItems.map((item) => {
               const Icon = item.icon;
               return (
-                <div
+                <Card
                   key={item.id}
                   onClick={() => navigate(item.route)}
-                  className="group bg-card border border-border rounded-xl p-6 hover:shadow-lg transition-all cursor-pointer"
+                  className="group hover:shadow-lg transition-all cursor-pointer"
                 >
-                  <div className="flex items-start justify-between mb-4">
-                    <div className={`w-14 h-14 rounded-xl ${item.color} flex items-center justify-center`}>
-                      <Icon className="w-7 h-7 text-white" />
+                  <CardContent className="p-6">
+                    <div className="flex items-start justify-between mb-4">
+                      <div className={`w-14 h-14 rounded-xl ${item.color} flex items-center justify-center`}>
+                        <Icon className="w-7 h-7 text-white" />
+                      </div>
+                      <Badge variant="secondary">{item.stats}</Badge>
                     </div>
-                    <span className="text-xs px-2 py-1 bg-muted rounded-full text-muted-foreground">
-                      {item.stats}
-                    </span>
-                  </div>
-
-                  <h3 className="text-lg font-semibold mb-2 group-hover:text-primary transition-colors">
-                    {item.title}
-                  </h3>
-                  <p className="text-sm text-muted-foreground">
-                    {item.description}
-                  </p>
-                </div>
+                    <h3 className="text-lg font-semibold mb-2 group-hover:text-primary transition-colors">
+                      {item.title}
+                    </h3>
+                    <p className="text-sm text-muted-foreground">
+                      {item.description}
+                    </p>
+                  </CardContent>
+                </Card>
               );
             })}
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="bg-card border border-border rounded-xl p-6">
-              <h3 className="font-semibold mb-4">Ações Recentes</h3>
-              <div className="space-y-3">
-                {recentActions.map((action) => {
-                  const Icon = action.icon;
-                  return (
-                    <div key={action.id} className="flex items-start gap-3 p-3 bg-muted/30 rounded-lg">
-                      <div className="w-10 h-10 rounded-lg bg-background flex items-center justify-center flex-shrink-0">
-                        <Icon className={`w-5 h-5 ${action.color}`} />
+            <Card>
+              <CardContent className="p-6">
+                <h3 className="font-semibold mb-4">Ações Recentes</h3>
+                <div className="space-y-3">
+                  {recentActions.map((action) => {
+                    const Icon = action.icon;
+                    return (
+                      <div key={action.id} className="flex items-start gap-3 p-3 bg-muted/30 rounded-lg">
+                        <div className="w-10 h-10 rounded-lg bg-background flex items-center justify-center flex-shrink-0">
+                          <Icon className={`w-5 h-5 ${action.color}`} />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-sm">{action.action}</p>
+                          <p className="text-xs text-muted-foreground">{action.user}</p>
+                        </div>
+                        <span className="text-xs text-muted-foreground whitespace-nowrap">{action.time}</span>
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="font-medium text-sm">{action.action}</p>
-                        <p className="text-xs text-muted-foreground">{action.user}</p>
-                      </div>
-                      <span className="text-xs text-muted-foreground whitespace-nowrap">{action.time}</span>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
+                    );
+                  })}
+                </div>
+              </CardContent>
+            </Card>
 
-            <div className="bg-card border border-border rounded-xl p-6">
-              <h3 className="font-semibold mb-4">Próximos Eventos</h3>
-              <div className="space-y-3">
-                {upcomingEvents.map((event) => {
-                  const Icon = event.icon;
-                  return (
-                    <div key={event.id} className="flex items-start gap-3 p-3 bg-muted/30 rounded-lg">
-                      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                        <Icon className="w-5 h-5 text-primary" />
+            <Card>
+              <CardContent className="p-6">
+                <h3 className="font-semibold mb-4">Próximos Eventos</h3>
+                <div className="space-y-3">
+                  {upcomingEvents.map((event) => {
+                    const Icon = event.icon;
+                    return (
+                      <div key={event.id} className="flex items-start gap-3 p-3 bg-muted/30 rounded-lg">
+                        <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                          <Icon className="w-5 h-5 text-primary" />
+                        </div>
+                        <div className="flex-1">
+                          <p className="font-medium text-sm mb-1">{event.title}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {event.date} às {event.time}
+                          </p>
+                        </div>
                       </div>
-                      <div className="flex-1">
-                        <p className="font-medium text-sm mb-1">{event.title}</p>
-                        <p className="text-xs text-muted-foreground">
-                          {event.date} às {event.time}
-                        </p>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
+                    );
+                  })}
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>

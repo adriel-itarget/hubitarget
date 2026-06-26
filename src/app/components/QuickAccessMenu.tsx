@@ -782,144 +782,283 @@ export function QuickAccessMenu({ currentModule }: QuickAccessMenuProps) {
             {/* === QUICK ACCESS TAB === */}
             {activeTab === 'quick' && (
               <>
-                {(() => {
-                  const visibleModules = MODULES.filter(m => deptIds.includes(m.id));
-                  const filteredVisible = visibleModules.filter(m =>
-                    !search || m.label.toLowerCase().includes(search)
-                  );
-                  return filteredVisible.length > 0 ? (
-                    <div className="p-4 border-b border-border">
-                      <div className="flex items-center justify-between mb-3">
-                        <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Departamentos</h4>
-                        <div className="flex items-center gap-1">
-                          <button onClick={() => handleNav('/hub/modulos')} className="text-xs text-primary hover:underline">Ver todos</button>
-                          <div className="relative">
-                            <button
-                              onClick={() => setDeptContextMenu(!deptContextMenu)}
-                              className="p-1 rounded-md hover:bg-muted transition-colors"
-                            >
-                              <MoreVertical className="w-3.5 h-3.5 text-muted-foreground" />
-                            </button>
-                            {deptContextMenu && (
-                              <DeptContextMenu
-                                onClose={() => setDeptContextMenu(false)}
-                                onCustomize={() => { setDeptContextMenu(false); setDeptCustomizeOpen(true); }}
-                              />
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                      <div className="grid grid-cols-4 gap-1">
-                        {filteredVisible.map(mod => (
-                          <button
-                            key={mod.id}
-                            onClick={() => handleNav(mod.route)}
-                            className="flex flex-col items-center gap-1.5 py-2.5 px-1 rounded-xl hover:bg-muted/60 transition-colors text-center group"
-                          >
-                            <div
-                              className="w-10 h-10 rounded-full flex items-center justify-center transition-all group-hover:scale-105 group-hover:shadow-sm"
-                              style={{ backgroundColor: `${mod.color}12` }}
-                            >
-                              <mod.Icon className="w-5 h-5" style={{ color: mod.color }} />
-                            </div>
-                            <span className="text-[11px] text-muted-foreground leading-tight group-hover:text-foreground transition-colors">{mod.label}</span>
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  ) : null;
-                })()}
+                {search ? (
+                  /* ── Global search results ── */
+                  <div className="p-4">
+                    {(() => {
+                      const s = search;
+                      const results: { group: string; groupIcon: React.ReactNode; groupColor: string; items: { id: string; label: string; icon: React.ReactNode; route: string; description?: string }[] }[] = [];
 
-                {/* Customizable blocks */}
-                <div className="p-4">
-                  <div className="grid grid-cols-2 gap-3">
-                    {blocks.map((block, idx) => {
-                      const isLastAlone = idx === blocks.length - 1 && blocks.length % 2 !== 0;
-                      const isExpanded = expandedBlocks.has(block.id);
-                      const maxItems = isLastAlone ? 8 : 4;
-                      const visibleItems = isExpanded ? block.items : block.items.slice(0, maxItems);
-                      const hasMore = block.items.length > maxItems;
+                      // 1. Departments
+                      const deptResults = MODULES.filter(m => m.label.toLowerCase().includes(s));
+                      if (deptResults.length > 0) {
+                        results.push({
+                          group: 'Departamentos',
+                          groupIcon: <LayoutGrid className="w-3.5 h-3.5" />,
+                          groupColor: '#94a3b8',
+                          items: deptResults.map(m => ({ id: m.id, label: m.label, icon: <m.Icon className="w-4 h-4" style={{ color: m.color }} />, route: m.route })),
+                        });
+                      }
+
+                      // 2. System items (ALL_AVAILABLE_ITEMS)
+                      const systemResults = ALL_AVAILABLE_ITEMS.filter(i => i.label.toLowerCase().includes(s));
+                      const groupMap: Record<string, typeof systemResults> = {};
+                      systemResults.forEach(item => {
+                        const g = item.group;
+                        if (!groupMap[g]) groupMap[g] = [];
+                        groupMap[g].push(item);
+                      });
+                      const groupLabels: Record<string, { label: string; icon: React.ReactNode; color: string }> = {
+                        hub: { label: 'Hub', icon: <Package className="w-3.5 h-3.5" />, color: '#94a3b8' },
+                        entidade: { label: 'Entidade', icon: <Building2 className="w-3.5 h-3.5" />, color: '#60a5fa' },
+                        criar: { label: 'Criar', icon: <Plus className="w-3.5 h-3.5" />, color: '#34d399' },
+                        config: { label: 'Configurações', icon: <Settings className="w-3.5 h-3.5" />, color: '#a78bfa' },
+                        modulos: { label: 'Módulos', icon: <Package className="w-3.5 h-3.5" />, color: '#fbbf24' },
+                      };
+                      Object.entries(groupMap).forEach(([g, items]) => {
+                        const meta = groupLabels[g] || { label: g, icon: <Settings className="w-3.5 h-3.5" />, color: '#94a3b8' };
+                        results.push({
+                          group: meta.label,
+                          groupIcon: meta.icon,
+                          groupColor: meta.color,
+                          items: items.map(i => ({ id: i.id, label: i.label, icon: i.icon, route: i.route })),
+                        });
+                      });
+
+                      // 3. Settings items
+                      SETTINGS_CATEGORIES.forEach(cat => {
+                        const matched = cat.items.filter(i =>
+                          i.label.toLowerCase().includes(s) || i.description.toLowerCase().includes(s)
+                        );
+                        if (matched.length > 0) {
+                          results.push({
+                            group: cat.label,
+                            groupIcon: <cat.Icon className="w-3.5 h-3.5" />,
+                            groupColor: cat.color,
+                            items: matched.map(i => ({
+                              id: i.id,
+                              label: i.label,
+                              icon: <div className="w-2 h-2 rounded-full" style={{ backgroundColor: cat.color }} />,
+                              route: '',
+                              description: i.description,
+                            })),
+                          });
+                        }
+                      });
+
+                      // 4. Block items
+                      const blockResults: { id: string; label: string; icon: React.ReactNode; route: string; blockName: string }[] = [];
+                      blocks.forEach(block => {
+                        block.items.forEach(item => {
+                          if (item.label.toLowerCase().includes(s)) {
+                            blockResults.push({ ...item, blockName: block.name });
+                          }
+                        });
+                      });
+                      if (blockResults.length > 0) {
+                        const byBlock: Record<string, typeof blockResults> = {};
+                        blockResults.forEach(item => {
+                          if (!byBlock[item.blockName]) byBlock[item.blockName] = [];
+                          byBlock[item.blockName].push(item);
+                        });
+                        Object.entries(byBlock).forEach(([blockName, items]) => {
+                          results.push({
+                            group: `Bloco: ${blockName}`,
+                            groupIcon: <Zap className="w-3.5 h-3.5" />,
+                            groupColor: '#fbbf24',
+                            items: items.map(i => ({ id: i.id, label: i.label, icon: i.icon, route: i.route })),
+                          });
+                        });
+                      }
+
+                      const totalResults = results.reduce((sum, g) => sum + g.items.length, 0);
+
+                      if (totalResults === 0) {
+                        return (
+                          <div className="py-12 text-center">
+                            <Search className="w-8 h-8 text-muted-foreground/30 mx-auto mb-3" />
+                            <p className="text-sm text-muted-foreground">Nenhum resultado para "{searchTerm}"</p>
+                            <p className="text-xs text-muted-foreground/60 mt-1">Tente buscar por outro termo</p>
+                          </div>
+                        );
+                      }
+
                       return (
-                        <div key={block.id} className={`relative bg-muted/30 border border-border rounded-xl overflow-hidden hover:border-primary/20 transition-colors ${isLastAlone ? 'col-span-2' : ''}`}>
-                          <div className="flex items-center justify-between px-3 py-2 border-b border-border/50">
-                            <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{block.name}</h4>
-                            <div className="relative">
-                              <button
-                                onClick={() => setContextMenuBlockId(contextMenuBlockId === block.id ? null : block.id)}
-                                className="p-1 rounded-md hover:bg-muted transition-colors"
-                              >
-                                <MoreVertical className="w-3.5 h-3.5 text-muted-foreground" />
-                              </button>
-                              {contextMenuBlockId === block.id && (
-                                <BlockContextMenu
-                                  block={block}
-                                  onRename={() => setRenameBlockId(block.id)}
-                                  onCustomize={() => setCustomizeBlockId(block.id)}
-                                  onDelete={() => handleDeleteBlock(block.id)}
-                                  onClose={() => setContextMenuBlockId(null)}
-                                />
-                              )}
-                            </div>
-                          </div>
-                          <div className="relative">
-                            <div className={`p-2 ${isLastAlone ? 'grid grid-cols-2 gap-0.5' : 'space-y-0.5'}`}>
-                              {visibleItems.map(item => (
-                                <button
-                                  key={item.id}
-                                  onClick={() => handleNav(item.route)}
-                                  className="w-full flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-card transition-colors text-left group"
-                                >
-                                  <div className="w-6 h-6 rounded-md bg-card border border-border flex items-center justify-center text-muted-foreground group-hover:text-foreground transition-colors flex-shrink-0">
-                                    {item.icon}
-                                  </div>
-                                  <span className="text-xs font-medium truncate">{item.label}</span>
-                                </button>
-                              ))}
-                              {block.items.length === 0 && (
-                                <p className="text-[11px] text-muted-foreground py-2 text-center">Vazio. Use ⋮ para adicionar.</p>
-                              )}
-                            </div>
-                            {hasMore && !isExpanded && (
-                              <div className="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-muted/30 to-transparent flex items-end justify-center pb-1.5">
-                                <button
-                                  onClick={() => toggleExpanded(block.id)}
-                                  className="text-[11px] font-medium text-primary hover:underline"
-                                >
-                                  +{block.items.length - 4} mais
-                                </button>
+                        <div className="space-y-4">
+                          <p className="text-xs text-muted-foreground">{totalResults} resultado{totalResults !== 1 ? 's' : ''} encontrado{totalResults !== 1 ? 's' : ''}</p>
+                          {results.map(group => (
+                            <div key={group.group}>
+                              <div className="flex items-center gap-2 mb-1.5">
+                                <div className="w-5 h-5 rounded-md flex items-center justify-center" style={{ backgroundColor: `${group.groupColor}15` }}>
+                                  <span style={{ color: group.groupColor }}>{group.groupIcon}</span>
+                                </div>
+                                <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{group.group}</h4>
+                                <span className="text-[10px] bg-muted px-1.5 py-0.5 rounded-full text-muted-foreground">{group.items.length}</span>
                               </div>
-                            )}
-                            {hasMore && isExpanded && (
-                              <div className="px-2 pb-2">
-                                <button
-                                  onClick={() => toggleExpanded(block.id)}
-                                  className="text-[11px] font-medium text-primary hover:underline"
-                                >
-                                  Mostrar menos
-                                </button>
+                              <div className="space-y-0.5">
+                                {group.items.map(item => (
+                                  <button
+                                    key={item.id}
+                                    onClick={() => handleNav(item.route)}
+                                    className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg hover:bg-primary/10 hover:text-primary transition-colors text-left group"
+                                  >
+                                    <div className="w-7 h-7 rounded-md bg-muted flex items-center justify-center text-muted-foreground group-hover:text-primary transition-colors flex-shrink-0">
+                                      {item.icon}
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                      <span className="text-sm font-medium truncate block">{item.label}</span>
+                                      {item.description && <span className="text-[11px] text-muted-foreground truncate block">{item.description}</span>}
+                                    </div>
+                                    <ChevronRight className="w-3.5 h-3.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
+                                  </button>
+                                ))}
                               </div>
-                            )}
-                          </div>
+                            </div>
+                          ))}
                         </div>
                       );
-                    })}
+                    })()}
                   </div>
+                ) : (
+                  /* ── Default blocks view ── */
+                  <>
+                    {(() => {
+                      const visibleModules = MODULES.filter(m => deptIds.includes(m.id));
+                      return visibleModules.length > 0 ? (
+                        <div className="p-4 border-b border-border">
+                          <div className="flex items-center justify-between mb-3">
+                            <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Departamentos</h4>
+                            <div className="flex items-center gap-1">
+                              <button onClick={() => handleNav('/hub/modulos')} className="text-xs text-primary hover:underline">Ver todos</button>
+                              <div className="relative">
+                                <button
+                                  onClick={() => setDeptContextMenu(!deptContextMenu)}
+                                  className="p-1 rounded-md hover:bg-muted transition-colors"
+                                >
+                                  <MoreVertical className="w-3.5 h-3.5 text-muted-foreground" />
+                                </button>
+                                {deptContextMenu && (
+                                  <DeptContextMenu
+                                    onClose={() => setDeptContextMenu(false)}
+                                    onCustomize={() => { setDeptContextMenu(false); setDeptCustomizeOpen(true); }}
+                                  />
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                          <div className="grid grid-cols-4 gap-1">
+                            {visibleModules.map(mod => (
+                              <button
+                                key={mod.id}
+                                onClick={() => handleNav(mod.route)}
+                                className="flex flex-col items-center gap-1.5 py-2.5 px-1 rounded-xl hover:bg-muted/60 transition-colors text-center group"
+                              >
+                                <div
+                                  className="w-10 h-10 rounded-full flex items-center justify-center transition-all group-hover:scale-105 group-hover:shadow-sm"
+                                  style={{ backgroundColor: `${mod.color}12` }}
+                                >
+                                  <mod.Icon className="w-5 h-5" style={{ color: mod.color }} />
+                                </div>
+                                <span className="text-[11px] text-muted-foreground leading-tight group-hover:text-foreground transition-colors">{mod.label}</span>
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      ) : null;
+                    })()}
 
-                  {/* Add new block */}
-                  <div className="mt-3">
-                    {addBlockMode ? (
-                      <AddBlockInline onSave={handleAddBlock} onCancel={() => setAddBlockMode(false)} />
-                    ) : (
-                      <button
-                        onClick={() => setAddBlockMode(true)}
-                        className="w-full flex items-center justify-center gap-2 py-2.5 border border-dashed border-border rounded-xl text-sm text-muted-foreground hover:text-foreground hover:border-primary/30 hover:bg-primary/5 transition-all"
-                      >
-                        <Plus className="w-4 h-4" />
-                        Adicionar bloco
-                      </button>
-                    )}
-                  </div>
-                </div>
+                    {/* Customizable blocks */}
+                    <div className="p-4">
+                      <div className="grid grid-cols-2 gap-3">
+                        {blocks.map((block, idx) => {
+                          const isLastAlone = idx === blocks.length - 1 && blocks.length % 2 !== 0;
+                          const isExpanded = expandedBlocks.has(block.id);
+                          const maxItems = isLastAlone ? 8 : 4;
+                          const visibleItems = isExpanded ? block.items : block.items.slice(0, maxItems);
+                          const hasMore = block.items.length > maxItems;
+                          return (
+                            <div key={block.id} className={`relative bg-muted/30 border border-border rounded-xl overflow-hidden hover:border-primary/20 transition-colors ${isLastAlone ? 'col-span-2' : ''}`}>
+                              <div className="flex items-center justify-between px-3 py-2 border-b border-border/50">
+                                <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{block.name}</h4>
+                                <div className="relative">
+                                  <button
+                                    onClick={() => setContextMenuBlockId(contextMenuBlockId === block.id ? null : block.id)}
+                                    className="p-1 rounded-md hover:bg-muted transition-colors"
+                                  >
+                                    <MoreVertical className="w-3.5 h-3.5 text-muted-foreground" />
+                                  </button>
+                                  {contextMenuBlockId === block.id && (
+                                    <BlockContextMenu
+                                      block={block}
+                                      onRename={() => setRenameBlockId(block.id)}
+                                      onCustomize={() => setCustomizeBlockId(block.id)}
+                                      onDelete={() => handleDeleteBlock(block.id)}
+                                      onClose={() => setContextMenuBlockId(null)}
+                                    />
+                                  )}
+                                </div>
+                              </div>
+                              <div className="relative">
+                                <div className={`p-2 ${isLastAlone ? 'grid grid-cols-2 gap-0.5' : 'space-y-0.5'}`}>
+                                  {visibleItems.map(item => (
+                                    <button
+                                      key={item.id}
+                                      onClick={() => handleNav(item.route)}
+                                      className="w-full flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-card transition-colors text-left group"
+                                    >
+                                      <div className="w-6 h-6 rounded-md bg-card border border-border flex items-center justify-center text-muted-foreground group-hover:text-foreground transition-colors flex-shrink-0">
+                                        {item.icon}
+                                      </div>
+                                      <span className="text-xs font-medium truncate">{item.label}</span>
+                                    </button>
+                                  ))}
+                                  {block.items.length === 0 && (
+                                    <p className="text-[11px] text-muted-foreground py-2 text-center">Vazio. Use ⋮ para adicionar.</p>
+                                  )}
+                                </div>
+                                {hasMore && !isExpanded && (
+                                  <div className="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-muted/30 to-transparent flex items-end justify-center pb-1.5">
+                                    <button
+                                      onClick={() => toggleExpanded(block.id)}
+                                      className="text-[11px] font-medium text-primary hover:underline"
+                                    >
+                                      +{block.items.length - 4} mais
+                                    </button>
+                                  </div>
+                                )}
+                                {hasMore && isExpanded && (
+                                  <div className="px-2 pb-2">
+                                    <button
+                                      onClick={() => toggleExpanded(block.id)}
+                                      className="text-[11px] font-medium text-primary hover:underline"
+                                    >
+                                      Mostrar menos
+                                    </button>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+
+                      {/* Add new block */}
+                      <div className="mt-3">
+                        {addBlockMode ? (
+                          <AddBlockInline onSave={handleAddBlock} onCancel={() => setAddBlockMode(false)} />
+                        ) : (
+                          <button
+                            onClick={() => setAddBlockMode(true)}
+                            className="w-full flex items-center justify-center gap-2 py-2.5 border border-dashed border-border rounded-xl text-sm text-muted-foreground hover:text-foreground hover:border-primary/30 hover:bg-primary/5 transition-all"
+                          >
+                            <Plus className="w-4 h-4" />
+                            Adicionar bloco
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  </>
+                )}
               </>
             )}
 

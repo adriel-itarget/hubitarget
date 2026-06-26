@@ -1,5 +1,13 @@
 import { useState } from 'react';
-import { Search, Wallet, Star, Trophy, X, ArrowUpRight, ArrowDownLeft, Gift } from 'lucide-react';
+import { Search, Wallet, Star, Trophy, ArrowUpRight, ArrowDownLeft, Gift } from 'lucide-react';
+import { Card, CardContent } from '@/app/components/ui/card';
+import { Button } from '@/app/components/ui/button';
+import { Input } from '@/app/components/ui/input';
+import { Badge } from '@/app/components/ui/badge';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/app/components/ui/select';
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/app/components/ui/sheet';
+import { Progress } from '@/app/components/ui/progress';
+import { Avatar, AvatarFallback } from '@/app/components/ui/avatar';
 
 type Nivel = 'bronze' | 'prata' | 'ouro' | 'platina' | 'diamante';
 
@@ -74,15 +82,15 @@ const mockTransacoes: Record<number, { data: string; desc: string; tipo: 'credit
 function NivelBadge({ nivel }: { nivel: Nivel }) {
   const cfg = NIVEL[nivel];
   return (
-    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold"
-      style={{ color: cfg.color, backgroundColor: cfg.bgColor, border: `1px solid ${cfg.borderColor}` }}>
-      <Trophy className="w-3 h-3" />
+    <Badge variant="outline" className="text-xs font-semibold"
+      style={{ color: cfg.color, backgroundColor: cfg.bgColor, borderColor: cfg.borderColor }}>
+      <Trophy className="w-3 h-3 mr-1" />
       {cfg.label}
-    </span>
+    </Badge>
   );
 }
 
-function MiniProfile({ usuario, onClose }: { usuario: Usuario; onClose: () => void }) {
+function MiniProfile({ usuario, open, onClose }: { usuario: Usuario; open: boolean; onClose: () => void }) {
   const nivel = getNivel(usuario.saldoPontos);
   const progresso = getProgresso(usuario.saldoPontos, nivel);
   const nivelIdx = NIVEL_ORDER.indexOf(nivel);
@@ -91,20 +99,19 @@ function MiniProfile({ usuario, onClose }: { usuario: Usuario; onClose: () => vo
   const nivelCfg = NIVEL[nivel];
 
   return (
-    <div className="fixed inset-0 z-40 flex justify-end" onClick={onClose}>
-      <div className="w-[380px] h-full bg-card border-l border-border shadow-2xl overflow-y-auto flex flex-col"
-        onClick={e => e.stopPropagation()}>
-        <div className="p-5 border-b border-border flex items-center justify-between">
-          <h3 className="font-semibold">Perfil da Carteira</h3>
-          <button onClick={onClose} className="p-1 hover:bg-accent rounded-lg transition-colors"><X className="w-4 h-4" /></button>
-        </div>
+    <Sheet open={open} onOpenChange={onClose}>
+      <SheetContent className="w-[380px] sm:max-w-[380px] p-0">
+        <SheetHeader className="p-5 border-b border-border">
+          <SheetTitle>Perfil da Carteira</SheetTitle>
+        </SheetHeader>
 
         <div className="p-5 border-b border-border">
           <div className="flex items-start gap-4">
-            <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-lg font-bold text-white flex-shrink-0"
-              style={{ backgroundColor: nivelCfg.color }}>
-              {usuario.avatar}
-            </div>
+            <Avatar className="h-14 w-14">
+              <AvatarFallback className="text-lg font-bold text-white" style={{ backgroundColor: nivelCfg.color }}>
+                {usuario.avatar}
+              </AvatarFallback>
+            </Avatar>
             <div className="flex-1 min-w-0">
               <p className="font-semibold truncate">{usuario.nome}</p>
               <p className="text-sm text-muted-foreground truncate">{usuario.email}</p>
@@ -118,9 +125,7 @@ function MiniProfile({ usuario, onClose }: { usuario: Usuario; onClose: () => vo
                 ? <span>Próximo: {NIVEL[proximoNivel].label} ({NIVEL[proximoNivel].pontosMin} pts)</span>
                 : <span>Nível máximo</span>}
             </div>
-            <div className="h-2 bg-muted rounded-full overflow-hidden">
-              <div className="h-full rounded-full transition-all" style={{ width: `${progresso}%`, backgroundColor: nivelCfg.color }} />
-            </div>
+            <Progress value={progresso} className="h-2" style={{ '--progress-color': nivelCfg.color } as React.CSSProperties} />
             <p className="text-xs text-muted-foreground mt-1">{usuario.saldoPontos.toLocaleString()} pts acumulados · {progresso}% para o próximo nível</p>
           </div>
         </div>
@@ -175,15 +180,15 @@ function MiniProfile({ usuario, onClose }: { usuario: Usuario; onClose: () => vo
             </div>
           )}
         </div>
-      </div>
-    </div>
+      </SheetContent>
+    </Sheet>
   );
 }
 
 export function UsuariosCarteiras() {
   const [search, setSearch] = useState('');
-  const [filtroStatus, setFiltroStatus] = useState<'todos' | 'ativo' | 'inativo'>('todos');
-  const [filtroNivel, setFiltroNivel] = useState<Nivel | 'todos'>('todos');
+  const [filtroStatus, setFiltroStatus] = useState<string>('todos');
+  const [filtroNivel, setFiltroNivel] = useState<string>('todos');
   const [selectedUser, setSelectedUser] = useState<Usuario | null>(null);
 
   const filtered = mockUsuarios.filter(u => {
@@ -208,112 +213,130 @@ export function UsuariosCarteiras() {
           </div>
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-            <div className="bg-card border border-border rounded-xl p-4">
-              <p className="text-xs text-muted-foreground mb-1">Total de Usuários</p>
-              <p className="text-2xl font-semibold">{mockUsuarios.length}</p>
-              <p className="text-xs text-muted-foreground">{mockUsuarios.filter(u => u.status === 'ativo').length} ativos</p>
-            </div>
-            <div className="bg-card border border-border rounded-xl p-4">
-              <div className="flex items-center gap-1.5 text-muted-foreground mb-1"><Wallet className="w-3.5 h-3.5" /><p className="text-xs">Total em Cash</p></div>
-              <p className="text-2xl font-semibold text-green-600">
-                {totalCash.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-              </p>
-            </div>
-            <div className="bg-card border border-border rounded-xl p-4">
-              <div className="flex items-center gap-1.5 text-muted-foreground mb-1"><Star className="w-3.5 h-3.5" /><p className="text-xs">Total em Pontos</p></div>
-              <p className="text-2xl font-semibold text-violet-600">{totalPontos.toLocaleString()} pts</p>
-            </div>
-            <div className="bg-card border border-border rounded-xl p-4">
-              <div className="flex items-center gap-1.5 text-muted-foreground mb-1"><Trophy className="w-3.5 h-3.5" /><p className="text-xs">Por Nível</p></div>
-              <div className="flex gap-1 mt-1 flex-wrap">
-                {NIVEL_ORDER.map(n => {
-                  const count = mockUsuarios.filter(u => getNivel(u.saldoPontos) === n).length;
-                  if (!count) return null;
-                  return (
-                    <span key={n} className="text-xs px-1.5 py-0.5 rounded font-semibold"
-                      style={{ color: NIVEL[n].color, backgroundColor: NIVEL[n].bgColor }}>
-                      {NIVEL[n].label[0]}{count}
-                    </span>
-                  );
-                })}
-              </div>
-            </div>
+            <Card>
+              <CardContent className="pt-6">
+                <p className="text-xs text-muted-foreground mb-1">Total de Usuários</p>
+                <p className="text-2xl font-semibold">{mockUsuarios.length}</p>
+                <p className="text-xs text-muted-foreground">{mockUsuarios.filter(u => u.status === 'ativo').length} ativos</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="pt-6">
+                <div className="flex items-center gap-1.5 text-muted-foreground mb-1"><Wallet className="w-3.5 h-3.5" /><p className="text-xs">Total em Cash</p></div>
+                <p className="text-2xl font-semibold text-green-600">
+                  {totalCash.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                </p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="pt-6">
+                <div className="flex items-center gap-1.5 text-muted-foreground mb-1"><Star className="w-3.5 h-3.5" /><p className="text-xs">Total em Pontos</p></div>
+                <p className="text-2xl font-semibold text-violet-600">{totalPontos.toLocaleString()} pts</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="pt-6">
+                <div className="flex items-center gap-1.5 text-muted-foreground mb-1"><Trophy className="w-3.5 h-3.5" /><p className="text-xs">Por Nível</p></div>
+                <div className="flex gap-1 mt-1 flex-wrap">
+                  {NIVEL_ORDER.map(n => {
+                    const count = mockUsuarios.filter(u => getNivel(u.saldoPontos) === n).length;
+                    if (!count) return null;
+                    return (
+                      <Badge key={n} variant="outline" className="text-xs font-semibold"
+                        style={{ color: NIVEL[n].color, backgroundColor: NIVEL[n].bgColor }}>
+                        {NIVEL[n].label[0]}{count}
+                      </Badge>
+                    );
+                  })}
+                </div>
+              </CardContent>
+            </Card>
           </div>
 
           <div className="flex gap-3 mb-5 flex-wrap">
             <div className="relative flex-1 min-w-[200px]">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Buscar usuário..."
-                className="w-full pl-9 pr-4 py-2 bg-card border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary/20 outline-none" />
+              <Input value={search} onChange={e => setSearch(e.target.value)} placeholder="Buscar usuário..."
+                className="pl-9" />
             </div>
-            <select value={filtroStatus} onChange={e => setFiltroStatus(e.target.value as any)}
-              className="px-3 py-2 bg-card border border-border rounded-lg text-sm outline-none">
-              <option value="todos">Todos os status</option>
-              <option value="ativo">Ativo</option>
-              <option value="inativo">Inativo</option>
-            </select>
-            <select value={filtroNivel} onChange={e => setFiltroNivel(e.target.value as any)}
-              className="px-3 py-2 bg-card border border-border rounded-lg text-sm outline-none">
-              <option value="todos">Todos os níveis</option>
-              {NIVEL_ORDER.map(n => <option key={n} value={n}>{NIVEL[n].label}</option>)}
-            </select>
+            <Select value={filtroStatus} onValueChange={setFiltroStatus}>
+              <SelectTrigger className="w-[160px]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="todos">Todos os status</SelectItem>
+                <SelectItem value="ativo">Ativo</SelectItem>
+                <SelectItem value="inativo">Inativo</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={filtroNivel} onValueChange={setFiltroNivel}>
+              <SelectTrigger className="w-[160px]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="todos">Todos os níveis</SelectItem>
+                {NIVEL_ORDER.map(n => (
+                  <SelectItem key={n} value={n}>{NIVEL[n].label}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
-          <div className="bg-card border border-border rounded-xl overflow-hidden">
-            {filtered.length === 0 ? (
-              <div className="py-12 text-center text-muted-foreground text-sm">Nenhum usuário encontrado</div>
-            ) : (
-              <div className="divide-y divide-border">
-                {filtered.map(u => {
-                  const nivel = getNivel(u.saldoPontos);
-                  const progresso = getProgresso(u.saldoPontos, nivel);
-                  const nivelCfg = NIVEL[nivel];
-                  return (
-                    <div key={u.id} onClick={() => setSelectedUser(u)}
-                      className="flex items-center gap-4 px-5 py-4 hover:bg-muted/30 transition-colors cursor-pointer group">
-                      <div className="w-10 h-10 rounded-xl flex items-center justify-center text-sm font-bold text-white flex-shrink-0"
-                        style={{ backgroundColor: nivelCfg.color }}>
-                        {u.avatar}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="font-medium text-sm group-hover:text-primary transition-colors truncate">{u.nome}</p>
-                        <p className="text-xs text-muted-foreground truncate">{u.email}</p>
-                      </div>
-                      <div className="hidden md:flex flex-col items-end gap-1 w-32 flex-shrink-0">
-                        <NivelBadge nivel={nivel} />
-                        <div className="w-full h-1 bg-muted rounded-full overflow-hidden">
-                          <div className="h-full rounded-full" style={{ width: `${progresso}%`, backgroundColor: nivelCfg.color }} />
+          <Card>
+            <CardContent className="p-0">
+              {filtered.length === 0 ? (
+                <div className="py-12 text-center text-muted-foreground text-sm">Nenhum usuário encontrado</div>
+              ) : (
+                <div className="divide-y divide-border">
+                  {filtered.map(u => {
+                    const nivel = getNivel(u.saldoPontos);
+                    const progresso = getProgresso(u.saldoPontos, nivel);
+                    const nivelCfg = NIVEL[nivel];
+                    return (
+                      <div key={u.id} onClick={() => setSelectedUser(u)}
+                        className="flex items-center gap-4 px-5 py-4 hover:bg-muted/30 transition-colors cursor-pointer group">
+                        <Avatar className="h-10 w-10">
+                          <AvatarFallback className="text-sm font-bold text-white" style={{ backgroundColor: nivelCfg.color }}>
+                            {u.avatar}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-sm group-hover:text-primary transition-colors truncate">{u.nome}</p>
+                          <p className="text-xs text-muted-foreground truncate">{u.email}</p>
+                        </div>
+                        <div className="hidden md:flex flex-col items-end gap-1 w-32 flex-shrink-0">
+                          <NivelBadge nivel={nivel} />
+                          <Progress value={progresso} className="h-1 w-full" />
+                        </div>
+                        <div className="hidden lg:block text-right w-28 flex-shrink-0">
+                          <div className="flex items-center justify-end gap-1 text-muted-foreground mb-0.5">
+                            <Wallet className="w-3 h-3" /><span className="text-xs">Cash</span>
+                          </div>
+                          <p className="text-sm font-semibold text-green-600">
+                            {u.saldoCash.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                          </p>
+                        </div>
+                        <div className="text-right w-28 flex-shrink-0">
+                          <div className="flex items-center justify-end gap-1 text-muted-foreground mb-0.5">
+                            <Star className="w-3 h-3" /><span className="text-xs">Pontos</span>
+                          </div>
+                          <p className="text-sm font-semibold text-violet-600">{u.saldoPontos.toLocaleString()} pts</p>
+                        </div>
+                        <div className="flex-shrink-0">
+                          <Badge variant={u.status === 'ativo' ? 'default' : 'secondary'}>
+                            {u.status === 'ativo' ? 'Ativo' : 'Inativo'}
+                          </Badge>
                         </div>
                       </div>
-                      <div className="hidden lg:block text-right w-28 flex-shrink-0">
-                        <div className="flex items-center justify-end gap-1 text-muted-foreground mb-0.5">
-                          <Wallet className="w-3 h-3" /><span className="text-xs">Cash</span>
-                        </div>
-                        <p className="text-sm font-semibold text-green-600">
-                          {u.saldoCash.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-                        </p>
-                      </div>
-                      <div className="text-right w-28 flex-shrink-0">
-                        <div className="flex items-center justify-end gap-1 text-muted-foreground mb-0.5">
-                          <Star className="w-3 h-3" /><span className="text-xs">Pontos</span>
-                        </div>
-                        <p className="text-sm font-semibold text-violet-600">{u.saldoPontos.toLocaleString()} pts</p>
-                      </div>
-                      <div className="flex-shrink-0">
-                        <span className={`text-xs px-2 py-1 rounded-full font-medium ${
-                          u.status === 'ativo' ? 'bg-green-500/10 text-green-600' : 'bg-muted text-muted-foreground'}`}>
-                          {u.status === 'ativo' ? 'Ativo' : 'Inativo'}
-                        </span>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </div>
+                    );
+                  })}
+                </div>
+              )}
+            </CardContent>
+          </Card>
         </div>
       </div>
-      {selectedUser && <MiniProfile usuario={selectedUser} onClose={() => setSelectedUser(null)} />}
+      {selectedUser && <MiniProfile usuario={selectedUser} open={!!selectedUser} onClose={() => setSelectedUser(null)} />}
     </div>
   );
 }

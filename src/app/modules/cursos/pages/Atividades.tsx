@@ -1,5 +1,14 @@
 import { useState } from 'react';
-import { Plus, Search, Star, Users, DollarSign, BookOpen, X, Edit2, Trash2 } from 'lucide-react';
+import { Plus, Search, Star, Users, BookOpen, Edit2 } from 'lucide-react';
+import { Card, CardContent } from '@/app/components/ui/card';
+import { Button } from '@/app/components/ui/button';
+import { Input } from '@/app/components/ui/input';
+import { Badge } from '@/app/components/ui/badge';
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/app/components/ui/dialog';
+import { Label } from '@/app/components/ui/label';
+import { Textarea } from '@/app/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/app/components/ui/select';
+import { Progress } from '@/app/components/ui/progress';
 
 const categorias = ['Todas', 'Cardiologia Intervencionista', 'Ecocardiografia', 'Eletrofisiologia', 'Insuficiência Cardíaca', 'Prevenção Cardiovascular'];
 
@@ -11,9 +20,9 @@ const mockAtividades = [
   { id: 5, name: 'Prevenção Cardiovascular Primária', categoria: 'Prevenção Cardiovascular', tipo: 'Curso Online', inscricoes: 54, vagas: 200, valor: 490, avaliacao: 4.5, status: 'rascunho', inicio: '01/08/2026', fim: '30/09/2026' },
 ];
 
-interface AtividadeModalProps { onClose: () => void; atividade?: typeof mockAtividades[0] | null; }
+interface AtividadeModalProps { open: boolean; onClose: () => void; atividade?: typeof mockAtividades[0] | null; }
 
-function AtividadeModal({ onClose, atividade }: AtividadeModalProps) {
+function AtividadeModal({ open, onClose, atividade }: AtividadeModalProps) {
   const [form, setForm] = useState({
     name: atividade?.name || '',
     categoria: atividade?.categoria || '',
@@ -25,73 +34,79 @@ function AtividadeModal({ onClose, atividade }: AtividadeModalProps) {
   });
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-card rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
-        <div className="p-6 border-b border-border flex items-center justify-between sticky top-0 bg-card">
-          <h2 className="text-lg font-semibold">{atividade ? 'Editar Atividade' : 'Nova Atividade'}</h2>
-          <button onClick={onClose} className="p-1.5 hover:bg-accent rounded-lg transition-colors"><X className="w-4 h-4" /></button>
-        </div>
-        <div className="p-6 space-y-4">
-          <div>
-            <label className="block text-sm font-medium mb-1.5">Nome da Atividade</label>
-            <input value={form.name} onChange={e => setForm(f => ({...f, name: e.target.value}))}
-              className="w-full px-3 py-2.5 bg-input-background border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary/20 outline-none"
+    <Dialog open={open} onOpenChange={onClose}>
+      <DialogContent className="max-w-lg">
+        <DialogHeader>
+          <DialogTitle>{atividade ? 'Editar Atividade' : 'Nova Atividade'}</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Label>Nome da Atividade</Label>
+            <Input value={form.name} onChange={e => setForm(f => ({...f, name: e.target.value}))}
               placeholder="Nome do curso ou atividade" />
           </div>
           <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium mb-1.5">Categoria</label>
-              <select value={form.categoria} onChange={e => setForm(f => ({...f, categoria: e.target.value}))}
-                className="w-full px-3 py-2.5 bg-input-background border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary/20 outline-none">
-                <option value="">Selecione...</option>
-                {categorias.filter(c => c !== 'Todas').map(c => <option key={c}>{c}</option>)}
-              </select>
+            <div className="space-y-2">
+              <Label>Categoria</Label>
+              <Select value={form.categoria} onValueChange={v => setForm(f => ({...f, categoria: v}))}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {categorias.filter(c => c !== 'Todas').map(c => (
+                    <SelectItem key={c} value={c}>{c}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
-            <div>
-              <label className="block text-sm font-medium mb-1.5">Tipo</label>
-              <select value={form.tipo} onChange={e => setForm(f => ({...f, tipo: e.target.value}))}
-                className="w-full px-3 py-2.5 bg-input-background border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary/20 outline-none">
-                {['Curso Online', 'Curso Presencial', 'Híbrido', 'Workshop', 'Congresso'].map(t => <option key={t}>{t}</option>)}
-              </select>
+            <div className="space-y-2">
+              <Label>Tipo</Label>
+              <Select value={form.tipo} onValueChange={v => setForm(f => ({...f, tipo: v}))}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {['Curso Online', 'Curso Presencial', 'Híbrido', 'Workshop', 'Congresso'].map(t => (
+                    <SelectItem key={t} value={t}>{t}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium mb-1.5">Vagas</label>
-              <input type="number" value={form.vagas} onChange={e => setForm(f => ({...f, vagas: e.target.value}))}
-                className="w-full px-3 py-2.5 bg-input-background border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary/20 outline-none" placeholder="0" />
+            <div className="space-y-2">
+              <Label>Vagas</Label>
+              <Input type="number" value={form.vagas} onChange={e => setForm(f => ({...f, vagas: e.target.value}))}
+                placeholder="0" />
             </div>
-            <div>
-              <label className="block text-sm font-medium mb-1.5">Valor (R$)</label>
-              <input type="number" value={form.valor} onChange={e => setForm(f => ({...f, valor: e.target.value}))}
-                className="w-full px-3 py-2.5 bg-input-background border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary/20 outline-none" placeholder="0,00" />
+            <div className="space-y-2">
+              <Label>Valor (R$)</Label>
+              <Input type="number" value={form.valor} onChange={e => setForm(f => ({...f, valor: e.target.value}))}
+                placeholder="0,00" />
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium mb-1.5">Data de Início</label>
-              <input type="date" value={form.inicio} onChange={e => setForm(f => ({...f, inicio: e.target.value}))}
-                className="w-full px-3 py-2.5 bg-input-background border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary/20 outline-none" />
+            <div className="space-y-2">
+              <Label>Data de Início</Label>
+              <Input type="date" value={form.inicio} onChange={e => setForm(f => ({...f, inicio: e.target.value}))} />
             </div>
-            <div>
-              <label className="block text-sm font-medium mb-1.5">Data de Fim</label>
-              <input type="date" value={form.fim} onChange={e => setForm(f => ({...f, fim: e.target.value}))}
-                className="w-full px-3 py-2.5 bg-input-background border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary/20 outline-none" />
+            <div className="space-y-2">
+              <Label>Data de Fim</Label>
+              <Input type="date" value={form.fim} onChange={e => setForm(f => ({...f, fim: e.target.value}))} />
             </div>
           </div>
-          <div>
-            <label className="block text-sm font-medium mb-1.5">Descrição</label>
-            <textarea value={form.descricao} onChange={e => setForm(f => ({...f, descricao: e.target.value}))}
-              rows={3} className="w-full px-3 py-2.5 bg-input-background border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary/20 outline-none resize-none"
-              placeholder="Descrição da atividade..." />
+          <div className="space-y-2">
+            <Label>Descrição</Label>
+            <Textarea value={form.descricao} onChange={e => setForm(f => ({...f, descricao: e.target.value}))}
+              rows={3} placeholder="Descrição da atividade..." className="resize-none" />
           </div>
         </div>
-        <div className="p-6 border-t border-border flex gap-3 justify-end">
-          <button onClick={onClose} className="px-4 py-2 text-sm border border-border rounded-lg hover:bg-accent transition-colors">Cancelar</button>
-          <button onClick={onClose} className="px-4 py-2 text-sm bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors">Salvar</button>
-        </div>
-      </div>
-    </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={onClose}>Cancelar</Button>
+          <Button onClick={onClose}>Salvar</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
 
@@ -116,41 +131,39 @@ export function Atividades() {
               <h1 className="text-3xl mb-2">Atividades (Cursos)</h1>
               <p className="text-muted-foreground">Gerencie cursos, workshops e atividades educacionais</p>
             </div>
-            <button onClick={() => setShowModal(true)}
-              className="flex items-center gap-2 px-4 py-2.5 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors text-sm font-medium">
-              <Plus className="w-4 h-4" /> Nova Atividade
-            </button>
+            <Button onClick={() => setShowModal(true)}>
+              <Plus className="w-4 h-4 mr-2" /> Nova Atividade
+            </Button>
           </div>
 
           <div className="flex items-center gap-3 mb-6 flex-wrap">
             <div className="relative flex-1 min-w-[200px]">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Buscar atividades..."
-                className="w-full pl-9 pr-4 py-2.5 bg-card border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary/20 outline-none" />
+              <Input value={search} onChange={e => setSearch(e.target.value)}
+                placeholder="Buscar atividades..."
+                className="pl-9" />
             </div>
             <div className="flex flex-wrap gap-1.5">
               {categorias.map(c => (
-                <button key={c} onClick={() => setCatFilter(c)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${catFilter === c ? 'bg-primary text-primary-foreground' : 'bg-muted hover:bg-accent'}`}>
+                <Button key={c} variant={catFilter === c ? 'default' : 'outline'} size="sm"
+                  onClick={() => setCatFilter(c)}>
                   {c}
-                </button>
+                </Button>
               ))}
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filtered.map(a => (
-              <div key={a.id} className="group bg-card border border-border rounded-xl overflow-hidden hover:shadow-md transition-all">
-                <div className="p-5">
+              <Card key={a.id} className="group overflow-hidden hover:shadow-md transition-all">
+                <CardContent className="pt-6">
                   <div className="flex items-start justify-between mb-3">
                     <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center">
                       <BookOpen className="w-5 h-5 text-purple-500" />
                     </div>
-                    <div className="flex items-center gap-2">
-                      <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                        a.status === 'ativo' ? 'bg-green-500/10 text-green-600' : 'bg-yellow-500/10 text-yellow-600'
-                      }`}>{a.status === 'ativo' ? 'Ativo' : 'Rascunho'}</span>
-                    </div>
+                    <Badge variant={a.status === 'ativo' ? 'default' : 'secondary'}>
+                      {a.status === 'ativo' ? 'Ativo' : 'Rascunho'}
+                    </Badge>
                   </div>
                   <p className="text-xs text-muted-foreground mb-1">{a.categoria} · {a.tipo}</p>
                   <h3 className="font-semibold text-sm mb-3 line-clamp-2 group-hover:text-primary transition-colors">{a.name}</h3>
@@ -170,25 +183,23 @@ export function Atividades() {
                       </p>
                     </div>
                   </div>
-                  <div className="w-full bg-muted rounded-full h-1.5 mb-4">
-                    <div className="bg-purple-500 h-1.5 rounded-full" style={{ width: `${(a.inscricoes / a.vagas) * 100}%` }} />
-                  </div>
+                  <Progress value={(a.inscricoes / a.vagas) * 100} className="h-1.5 mb-4" />
                   <div className="flex gap-2 pt-3 border-t border-border">
-                    <button onClick={() => { setEditItem(a); setShowModal(true); }}
-                      className="flex-1 flex items-center justify-center gap-1.5 py-1.5 text-xs border border-border rounded-lg hover:bg-accent transition-colors">
-                      <Edit2 className="w-3 h-3" /> Editar
-                    </button>
-                    <button className="flex-1 flex items-center justify-center gap-1.5 py-1.5 text-xs border border-border rounded-lg hover:bg-accent transition-colors">
-                      <Users className="w-3 h-3" /> Inscrições
-                    </button>
+                    <Button variant="outline" size="sm" className="flex-1"
+                      onClick={() => { setEditItem(a); setShowModal(true); }}>
+                      <Edit2 className="w-3 h-3 mr-1.5" /> Editar
+                    </Button>
+                    <Button variant="outline" size="sm" className="flex-1">
+                      <Users className="w-3 h-3 mr-1.5" /> Inscrições
+                    </Button>
                   </div>
-                </div>
-              </div>
+                </CardContent>
+              </Card>
             ))}
           </div>
         </div>
       </div>
-      {showModal && <AtividadeModal onClose={() => { setShowModal(false); setEditItem(null); }} atividade={editItem} />}
+      <AtividadeModal open={showModal} onClose={() => { setShowModal(false); setEditItem(null); }} atividade={editItem} />
     </div>
   );
 }

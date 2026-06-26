@@ -2,6 +2,10 @@ import { X } from 'lucide-react';
 import { useState } from 'react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from './ui/tabs';
 import { Switch } from './ui/switch';
+import { Button } from './ui/button';
+import { Input } from './ui/input';
+import { Label } from './ui/label';
+import { Textarea } from './ui/textarea';
 
 interface ConfigSection {
   id: string;
@@ -31,33 +35,28 @@ export function EntityConfigForm({ section, onClose }: EntityConfigFormProps) {
         return (
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium mb-2">Nome da Entidade</label>
-              <input
-                type="text"
+              <Label className="mb-2">Nome da Entidade</Label>
+              <Input
                 value={formData.entityName || ''}
                 onChange={(e) => setFormData({ ...formData, entityName: e.target.value })}
                 placeholder="Nome oficial da entidade"
-                className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-2">Nome Fantasia</label>
-              <input
-                type="text"
+              <Label className="mb-2">Nome Fantasia</Label>
+              <Input
                 value={formData.fantasyName || ''}
                 onChange={(e) => setFormData({ ...formData, fantasyName: e.target.value })}
                 placeholder="Como a entidade é conhecida"
-                className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-2">Descrição</label>
-              <textarea
+              <Label className="mb-2">Descrição</Label>
+              <Textarea
                 value={formData.description || ''}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 placeholder="Descreva a missão e objetivos da entidade"
                 rows={4}
-                className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none resize-none"
               />
             </div>
           </div>
@@ -68,65 +67,53 @@ export function EntityConfigForm({ section, onClose }: EntityConfigFormProps) {
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium mb-2">CNPJ</label>
-                <input
-                  type="text"
+                <Label className="mb-2">CNPJ</Label>
+                <Input
                   value={formData.cnpj || ''}
                   onChange={(e) => setFormData({ ...formData, cnpj: e.target.value })}
                   placeholder="00.000.000/0000-00"
-                  className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2">Inscrição Estadual</label>
-                <input
-                  type="text"
+                <Label className="mb-2">Inscrição Estadual</Label>
+                <Input
                   value={formData.stateRegistration || ''}
                   onChange={(e) => setFormData({ ...formData, stateRegistration: e.target.value })}
                   placeholder="000.000.000.000"
-                  className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
                 />
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium mb-2">Endereço</label>
-              <input
-                type="text"
+              <Label className="mb-2">Endereço</Label>
+              <Input
                 value={formData.address || ''}
                 onChange={(e) => setFormData({ ...formData, address: e.target.value })}
                 placeholder="Rua, número, complemento"
-                className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
               />
             </div>
             <div className="grid grid-cols-3 gap-4">
               <div>
-                <label className="block text-sm font-medium mb-2">CEP</label>
-                <input
-                  type="text"
+                <Label className="mb-2">CEP</Label>
+                <Input
                   value={formData.cep || ''}
                   onChange={(e) => setFormData({ ...formData, cep: e.target.value })}
                   placeholder="00000-000"
-                  className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2">Cidade</label>
-                <input
-                  type="text"
+                <Label className="mb-2">Cidade</Label>
+                <Input
                   value={formData.city || ''}
                   onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                   placeholder="Cidade"
-                  className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2">Estado</label>
-                <input
-                  type="text"
+                <Label className="mb-2">Estado</Label>
+                <Input
                   value={formData.state || ''}
                   onChange={(e) => setFormData({ ...formData, state: e.target.value })}
                   placeholder="UF"
-                  className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
                 />
               </div>
             </div>
@@ -137,7 +124,7 @@ export function EntityConfigForm({ section, onClose }: EntityConfigFormProps) {
         return (
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium mb-2">Logo da Entidade</label>
+              <Label className="mb-2">Logo da Entidade</Label>
               <div className="border-2 border-dashed border-border rounded-lg p-8 text-center">
                 <p className="text-sm text-muted-foreground mb-2">Clique para fazer upload ou arraste aqui</p>
                 <p className="text-xs text-muted-foreground">PNG, JPG ou SVG (máx. 2MB)</p>
@@ -145,21 +132,21 @@ export function EntityConfigForm({ section, onClose }: EntityConfigFormProps) {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium mb-2">Cor Primária</label>
-                <input
+                <Label className="mb-2">Cor Primária</Label>
+                <Input
                   type="color"
                   value={formData.primaryColor || '#3B82F6'}
                   onChange={(e) => setFormData({ ...formData, primaryColor: e.target.value })}
-                  className="w-full h-12 px-2 bg-background border border-border rounded-lg cursor-pointer"
+                  className="h-12 px-2 cursor-pointer"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2">Cor Secundária</label>
-                <input
+                <Label className="mb-2">Cor Secundária</Label>
+                <Input
                   type="color"
                   value={formData.secondaryColor || '#8B5CF6'}
                   onChange={(e) => setFormData({ ...formData, secondaryColor: e.target.value })}
-                  className="w-full h-12 px-2 bg-background border border-border rounded-lg cursor-pointer"
+                  className="h-12 px-2 cursor-pointer"
                 />
               </div>
             </div>
@@ -170,23 +157,21 @@ export function EntityConfigForm({ section, onClose }: EntityConfigFormProps) {
         return (
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium mb-2">Termos de Uso</label>
-              <textarea
+              <Label className="mb-2">Termos de Uso</Label>
+              <Textarea
                 value={formData.terms || ''}
                 onChange={(e) => setFormData({ ...formData, terms: e.target.value })}
                 placeholder="Digite os termos de uso da plataforma..."
                 rows={6}
-                className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none resize-none"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-2">Política de Privacidade</label>
-              <textarea
+              <Label className="mb-2">Política de Privacidade</Label>
+              <Textarea
                 value={formData.privacy || ''}
                 onChange={(e) => setFormData({ ...formData, privacy: e.target.value })}
                 placeholder="Digite a política de privacidade..."
                 rows={6}
-                className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none resize-none"
               />
             </div>
           </div>
@@ -196,20 +181,12 @@ export function EntityConfigForm({ section, onClose }: EntityConfigFormProps) {
         return (
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium mb-2">Campo de Configuração</label>
-              <input
-                type="text"
-                placeholder="Digite aqui..."
-                className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
-              />
+              <Label className="mb-2">Campo de Configuração</Label>
+              <Input placeholder="Digite aqui..." />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-2">Descrição</label>
-              <textarea
-                rows={4}
-                placeholder="Digite uma descrição..."
-                className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none resize-none"
-              />
+              <Label className="mb-2">Descrição</Label>
+              <Textarea rows={4} placeholder="Digite uma descrição..." />
             </div>
           </div>
         );
@@ -220,55 +197,50 @@ export function EntityConfigForm({ section, onClose }: EntityConfigFormProps) {
     return (
       <div className="space-y-4">
         <div>
-          <label className="block text-sm font-medium mb-2">Email Principal</label>
-          <input
+          <Label className="mb-2">Email Principal</Label>
+          <Input
             type="email"
             value={formData.email || ''}
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
             placeholder="contato@entidade.com"
-            className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-2">Email Secundário</label>
-          <input
+          <Label className="mb-2">Email Secundário</Label>
+          <Input
             type="email"
             value={formData.secondaryEmail || ''}
             onChange={(e) => setFormData({ ...formData, secondaryEmail: e.target.value })}
             placeholder="suporte@entidade.com"
-            className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
           />
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium mb-2">Telefone</label>
-            <input
+            <Label className="mb-2">Telefone</Label>
+            <Input
               type="tel"
               value={formData.phone || ''}
               onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
               placeholder="(00) 0000-0000"
-              className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-2">WhatsApp</label>
-            <input
+            <Label className="mb-2">WhatsApp</Label>
+            <Input
               type="tel"
               value={formData.whatsapp || ''}
               onChange={(e) => setFormData({ ...formData, whatsapp: e.target.value })}
               placeholder="(00) 00000-0000"
-              className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
             />
           </div>
         </div>
         <div>
-          <label className="block text-sm font-medium mb-2">Website</label>
-          <input
+          <Label className="mb-2">Website</Label>
+          <Input
             type="url"
             value={formData.website || ''}
             onChange={(e) => setFormData({ ...formData, website: e.target.value })}
             placeholder="https://www.entidade.com"
-            className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
           />
         </div>
       </div>
@@ -336,12 +308,9 @@ export function EntityConfigForm({ section, onClose }: EntityConfigFormProps) {
               <p className="text-sm text-muted-foreground">{section.description}</p>
             </div>
           </div>
-          <button
-            onClick={onClose}
-            className="p-2 hover:bg-muted rounded-lg transition-colors"
-          >
+          <Button variant="ghost" size="icon" onClick={onClose}>
             <X className="w-5 h-5" />
-          </button>
+          </Button>
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="p-6">
@@ -365,18 +334,8 @@ export function EntityConfigForm({ section, onClose }: EntityConfigFormProps) {
         </Tabs>
 
         <div className="p-6 border-t border-border flex justify-end gap-3 sticky bottom-0 bg-card">
-          <button
-            onClick={onClose}
-            className="px-4 py-2 border border-border rounded-lg hover:bg-accent transition-colors"
-          >
-            Cancelar
-          </button>
-          <button
-            onClick={handleSave}
-            className="px-6 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
-          >
-            Salvar Configurações
-          </button>
+          <Button variant="outline" onClick={onClose}>Cancelar</Button>
+          <Button onClick={handleSave}>Salvar Configurações</Button>
         </div>
       </div>
     </div>

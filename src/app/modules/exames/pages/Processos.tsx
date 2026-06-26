@@ -1,5 +1,12 @@
 import { useState } from 'react';
-import { Plus, Search, ChevronRight, Users, Clock, FileText, MapPin, Tag, BookOpen, X, ChevronLeft, Check } from 'lucide-react';
+import { Plus, Search, ChevronRight, Users, Clock, FileText, MapPin, Tag, BookOpen, ChevronLeft, Check, ClipboardList } from 'lucide-react';
+import { Card, CardContent } from '@/app/components/ui/card';
+import { Button } from '@/app/components/ui/button';
+import { Input } from '@/app/components/ui/input';
+import { Badge } from '@/app/components/ui/badge';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/app/components/ui/dialog';
+import { Label } from '@/app/components/ui/label';
+import { Textarea } from '@/app/components/ui/textarea';
 
 const mockProcessos = [
   {
@@ -30,7 +37,7 @@ const statusConfig: Record<string, { label: string; color: string }> = {
 
 const wizardSteps = ['Identificação', 'Modalidades', 'Categorias', 'Locais', 'Documentos', 'Revisão'];
 
-function ProcessoWizard({ onClose }: { onClose: () => void }) {
+function ProcessoWizard({ open, onClose }: { open: boolean; onClose: () => void }) {
   const [step, setStep] = useState(0);
   const [form, setForm] = useState({
     name: '', descricao: '', inicio: '', encerramento: '',
@@ -49,17 +56,14 @@ function ProcessoWizard({ onClose }: { onClose: () => void }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-card rounded-2xl shadow-2xl w-full max-w-2xl">
-        <div className="p-6 border-b border-border flex items-center justify-between">
-          <div>
-            <h2 className="text-lg font-semibold">Novo Processo de Inscrição</h2>
-            <p className="text-sm text-muted-foreground mt-0.5">Passo {step + 1} de {wizardSteps.length}</p>
-          </div>
-          <button onClick={onClose} className="p-1.5 hover:bg-accent rounded-lg transition-colors"><X className="w-4 h-4" /></button>
-        </div>
+    <Dialog open={open} onOpenChange={onClose}>
+      <DialogContent className="max-w-2xl">
+        <DialogHeader>
+          <DialogTitle>Novo Processo de Inscrição</DialogTitle>
+          <p className="text-sm text-muted-foreground">Passo {step + 1} de {wizardSteps.length}</p>
+        </DialogHeader>
 
-        <div className="px-6 pt-4">
+        <div className="px-1 pt-2">
           <div className="flex items-center gap-0">
             {wizardSteps.map((s, i) => (
               <div key={i} className="flex items-center flex-1 last:flex-none">
@@ -83,31 +87,27 @@ function ProcessoWizard({ onClose }: { onClose: () => void }) {
           </div>
         </div>
 
-        <div className="px-6 pb-2 min-h-[280px]">
+        <div className="min-h-[280px]">
           {step === 0 && (
             <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium mb-1.5">Nome do Processo</label>
-                <input value={form.name} onChange={e => setForm(f => ({...f, name: e.target.value}))}
-                  className="w-full px-3 py-2.5 bg-input-background border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary/20 outline-none"
+              <div className="space-y-2">
+                <Label>Nome do Processo</Label>
+                <Input value={form.name} onChange={e => setForm(f => ({...f, name: e.target.value}))}
                   placeholder="Ex: Prova de Título 2026 - 1ª Fase" />
               </div>
-              <div>
-                <label className="block text-sm font-medium mb-1.5">Descrição</label>
-                <textarea value={form.descricao} onChange={e => setForm(f => ({...f, descricao: e.target.value}))}
-                  rows={3} className="w-full px-3 py-2.5 bg-input-background border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary/20 outline-none resize-none"
-                  placeholder="Descrição do processo..." />
+              <div className="space-y-2">
+                <Label>Descrição</Label>
+                <Textarea value={form.descricao} onChange={e => setForm(f => ({...f, descricao: e.target.value}))}
+                  rows={3} placeholder="Descrição do processo..." className="resize-none" />
               </div>
               <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium mb-1.5">Início das Inscrições</label>
-                  <input type="date" value={form.inicio} onChange={e => setForm(f => ({...f, inicio: e.target.value}))}
-                    className="w-full px-3 py-2.5 bg-input-background border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary/20 outline-none" />
+                <div className="space-y-2">
+                  <Label>Início das Inscrições</Label>
+                  <Input type="date" value={form.inicio} onChange={e => setForm(f => ({...f, inicio: e.target.value}))} />
                 </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1.5">Encerramento</label>
-                  <input type="date" value={form.encerramento} onChange={e => setForm(f => ({...f, encerramento: e.target.value}))}
-                    className="w-full px-3 py-2.5 bg-input-background border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary/20 outline-none" />
+                <div className="space-y-2">
+                  <Label>Encerramento</Label>
+                  <Input type="date" value={form.encerramento} onChange={e => setForm(f => ({...f, encerramento: e.target.value}))} />
                 </div>
               </div>
             </div>
@@ -117,14 +117,12 @@ function ProcessoWizard({ onClose }: { onClose: () => void }) {
               <p className="text-sm text-muted-foreground mb-3">Selecione as modalidades de inscrição disponíveis</p>
               <div className="grid grid-cols-2 gap-2">
                 {modalidadesOptions.map(m => (
-                  <button key={m} onClick={() => toggle('modalidades', m)}
-                    className={`flex items-center gap-2 p-3 rounded-lg border text-sm text-left transition-colors ${
-                      form.modalidades.includes(m) ? 'border-primary bg-primary/5 text-primary' : 'border-border hover:bg-accent'
-                    }`}>
+                  <Button key={m} variant={form.modalidades.includes(m) ? 'default' : 'outline'}
+                    onClick={() => toggle('modalidades', m)}
+                    className="justify-start gap-2 h-auto py-3">
                     {form.modalidades.includes(m) && <Check className="w-4 h-4 flex-shrink-0" />}
-                    {!form.modalidades.includes(m) && <div className="w-4 h-4 flex-shrink-0" />}
                     {m}
-                  </button>
+                  </Button>
                 ))}
               </div>
             </div>
@@ -134,13 +132,12 @@ function ProcessoWizard({ onClose }: { onClose: () => void }) {
               <p className="text-sm text-muted-foreground mb-3">Categorias de candidatos habilitados a se inscrever</p>
               <div className="grid grid-cols-2 gap-2">
                 {categoriasOptions.map(c => (
-                  <button key={c} onClick={() => toggle('categorias', c)}
-                    className={`flex items-center gap-2 p-3 rounded-lg border text-sm text-left transition-colors ${
-                      form.categorias.includes(c) ? 'border-primary bg-primary/5 text-primary' : 'border-border hover:bg-accent'
-                    }`}>
-                    {form.categorias.includes(c) ? <Check className="w-4 h-4 flex-shrink-0" /> : <div className="w-4 h-4 flex-shrink-0" />}
+                  <Button key={c} variant={form.categorias.includes(c) ? 'default' : 'outline'}
+                    onClick={() => toggle('categorias', c)}
+                    className="justify-start gap-2 h-auto py-3">
+                    {form.categorias.includes(c) && <Check className="w-4 h-4 flex-shrink-0" />}
                     {c}
-                  </button>
+                  </Button>
                 ))}
               </div>
             </div>
@@ -150,14 +147,13 @@ function ProcessoWizard({ onClose }: { onClose: () => void }) {
               <p className="text-sm text-muted-foreground mb-3">Locais onde a prova será realizada</p>
               <div className="space-y-2">
                 {locaisOptions.map(l => (
-                  <button key={l} onClick={() => toggle('locais', l)}
-                    className={`w-full flex items-center gap-3 p-3 rounded-lg border text-sm text-left transition-colors ${
-                      form.locais.includes(l) ? 'border-primary bg-primary/5 text-primary' : 'border-border hover:bg-accent'
-                    }`}>
+                  <Button key={l} variant={form.locais.includes(l) ? 'default' : 'outline'}
+                    onClick={() => toggle('locais', l)}
+                    className="w-full justify-start gap-3 h-auto py-3">
                     <MapPin className="w-4 h-4 flex-shrink-0" />
                     {l}
                     {form.locais.includes(l) && <Check className="w-4 h-4 ml-auto" />}
-                  </button>
+                  </Button>
                 ))}
               </div>
             </div>
@@ -167,14 +163,13 @@ function ProcessoWizard({ onClose }: { onClose: () => void }) {
               <p className="text-sm text-muted-foreground mb-3">Documentos obrigatórios para inscrição</p>
               <div className="space-y-2">
                 {documentosOptions.map(d => (
-                  <button key={d} onClick={() => toggle('documentos', d)}
-                    className={`w-full flex items-center gap-3 p-3 rounded-lg border text-sm text-left transition-colors ${
-                      form.documentos.includes(d) ? 'border-primary bg-primary/5 text-primary' : 'border-border hover:bg-accent'
-                    }`}>
+                  <Button key={d} variant={form.documentos.includes(d) ? 'default' : 'outline'}
+                    onClick={() => toggle('documentos', d)}
+                    className="w-full justify-start gap-3 h-auto py-3">
                     <FileText className="w-4 h-4 flex-shrink-0" />
                     {d}
                     {form.documentos.includes(d) && <Check className="w-4 h-4 ml-auto" />}
-                  </button>
+                  </Button>
                 ))}
               </div>
             </div>
@@ -196,24 +191,20 @@ function ProcessoWizard({ onClose }: { onClose: () => void }) {
           )}
         </div>
 
-        <div className="p-6 border-t border-border flex justify-between">
-          <button
-            onClick={() => step === 0 ? onClose() : setStep(s => s - 1)}
-            className="flex items-center gap-2 px-4 py-2 text-sm border border-border rounded-lg hover:bg-accent transition-colors"
-          >
-            <ChevronLeft className="w-4 h-4" />
+        <div className="flex justify-between pt-4 border-t">
+          <Button variant="outline"
+            onClick={() => step === 0 ? onClose() : setStep(s => s - 1)}>
+            <ChevronLeft className="w-4 h-4 mr-2" />
             {step === 0 ? 'Cancelar' : 'Anterior'}
-          </button>
-          <button
-            onClick={() => step < wizardSteps.length - 1 ? setStep(s => s + 1) : onClose()}
-            className="flex items-center gap-2 px-4 py-2 text-sm bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
-          >
+          </Button>
+          <Button
+            onClick={() => step < wizardSteps.length - 1 ? setStep(s => s + 1) : onClose()}>
             {step < wizardSteps.length - 1 ? 'Próximo' : 'Criar Processo'}
-            {step < wizardSteps.length - 1 && <ChevronRight className="w-4 h-4" />}
-          </button>
+            {step < wizardSteps.length - 1 && <ChevronRight className="w-4 h-4 ml-2" />}
+          </Button>
         </div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }
 
@@ -233,17 +224,16 @@ export function Processos() {
               <h1 className="text-3xl mb-2">Processos de Inscrição</h1>
               <p className="text-muted-foreground">Gerencie processos de provas e títulos de especialista</p>
             </div>
-            <button onClick={() => setShowWizard(true)}
-              className="flex items-center gap-2 px-4 py-2.5 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors text-sm font-medium">
-              <Plus className="w-4 h-4" /> Novo Processo
-            </button>
+            <Button onClick={() => setShowWizard(true)}>
+              <Plus className="w-4 h-4 mr-2" /> Novo Processo
+            </Button>
           </div>
 
           <div className="relative mb-6">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <input value={search} onChange={e => setSearch(e.target.value)}
+            <Input value={search} onChange={e => setSearch(e.target.value)}
               placeholder="Buscar processos..."
-              className="w-full pl-9 pr-4 py-2.5 bg-card border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary/20 outline-none" />
+              className="pl-9" />
           </div>
 
           <div className="space-y-4">
@@ -251,7 +241,7 @@ export function Processos() {
               const s = statusConfig[p.status];
               const isExp = expanded === p.id;
               return (
-                <div key={p.id} className="bg-card border border-border rounded-xl overflow-hidden">
+                <Card key={p.id} className="overflow-hidden">
                   <div
                     className="p-5 flex items-center justify-between cursor-pointer hover:bg-muted/30 transition-colors"
                     onClick={() => setExpanded(isExp ? null : p.id)}
@@ -269,7 +259,7 @@ export function Processos() {
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
-                      <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${s.color}`}>{s.label}</span>
+                      <Badge variant="outline" className={s.color}>{s.label}</Badge>
                       <ChevronRight className={`w-4 h-4 text-muted-foreground transition-transform ${isExp ? 'rotate-90' : ''}`} />
                     </div>
                   </div>
@@ -279,13 +269,13 @@ export function Processos() {
                         <div className="bg-card rounded-lg p-3 border border-border">
                           <p className="text-xs text-muted-foreground mb-1 flex items-center gap-1"><BookOpen className="w-3 h-3" /> Modalidades</p>
                           <div className="flex flex-wrap gap-1 mt-1">
-                            {p.modalidades.map(m => <span key={m} className="text-xs bg-indigo-500/10 text-indigo-600 px-1.5 py-0.5 rounded">{m}</span>)}
+                            {p.modalidades.map(m => <Badge key={m} variant="secondary" className="text-xs">{m}</Badge>)}
                           </div>
                         </div>
                         <div className="bg-card rounded-lg p-3 border border-border">
                           <p className="text-xs text-muted-foreground mb-1 flex items-center gap-1"><Tag className="w-3 h-3" /> Categorias</p>
                           <div className="flex flex-wrap gap-1 mt-1">
-                            {p.categorias.map(c => <span key={c} className="text-xs bg-blue-500/10 text-blue-600 px-1.5 py-0.5 rounded">{c}</span>)}
+                            {p.categorias.map(c => <Badge key={c} variant="secondary" className="text-xs">{c}</Badge>)}
                           </div>
                         </div>
                         <div className="bg-card rounded-lg p-3 border border-border">
@@ -299,13 +289,13 @@ export function Processos() {
                       </div>
                     </div>
                   )}
-                </div>
+                </Card>
               );
             })}
           </div>
         </div>
       </div>
-      {showWizard && <ProcessoWizard onClose={() => setShowWizard(false)} />}
+      <ProcessoWizard open={showWizard} onClose={() => setShowWizard(false)} />
     </div>
   );
 }

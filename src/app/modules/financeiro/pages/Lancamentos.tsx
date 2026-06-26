@@ -1,5 +1,14 @@
 import { useState } from 'react';
-import { Search, Plus, TrendingUp, TrendingDown, ChevronDown, Filter, X } from 'lucide-react';
+import { Search, Plus, TrendingUp, TrendingDown, Filter } from 'lucide-react';
+import { Card, CardContent } from '@/app/components/ui/card';
+import { Button } from '@/app/components/ui/button';
+import { Input } from '@/app/components/ui/input';
+import { Badge } from '@/app/components/ui/badge';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/app/components/ui/table';
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/app/components/ui/dialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/app/components/ui/select';
+import { Textarea } from '@/app/components/ui/textarea';
+import { Label } from '@/app/components/ui/label';
 
 const costCenters = ['Todos', 'Associação', 'Eventos', 'Cursos', 'Cashback', 'Exames'];
 const tipos = ['Todos', 'Receita', 'Despesa'];
@@ -18,111 +27,103 @@ const mockLancamentos = [
 ];
 
 interface LancamentoModalProps {
+  open: boolean;
   onClose: () => void;
 }
 
-function LancamentoModal({ onClose }: LancamentoModalProps) {
+function LancamentoModal({ open, onClose }: LancamentoModalProps) {
   const [form, setForm] = useState({ desc: '', type: 'receita', value: '', date: '', center: 'Associação', category: '', obs: '' });
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-card rounded-2xl shadow-2xl w-full max-w-lg">
-        <div className="p-6 border-b border-border flex items-center justify-between">
-          <h2 className="text-lg font-semibold">Novo Lançamento</h2>
-          <button onClick={onClose} className="p-1.5 hover:bg-accent rounded-lg transition-colors">
-            <X className="w-4 h-4" />
-          </button>
-        </div>
-        <div className="p-6 space-y-4">
-          <div className="grid grid-cols-2 gap-1 bg-muted p-1 rounded-lg">
+    <Dialog open={open} onOpenChange={onClose}>
+      <DialogContent className="max-w-lg">
+        <DialogHeader>
+          <DialogTitle>Novo Lançamento</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-4">
+          <div className="grid grid-cols-2 gap-2">
             {(['receita', 'despesa'] as const).map(t => (
-              <button
+              <Button
                 key={t}
+                variant={form.type === t ? 'default' : 'outline'}
                 onClick={() => setForm(f => ({ ...f, type: t }))}
-                className={`py-2 rounded-md text-sm font-medium transition-colors capitalize ${
-                  form.type === t ? 'bg-background shadow-sm' : 'hover:bg-background/50'
-                }`}
+                className="capitalize"
               >
                 {t === 'receita' ? 'Receita' : 'Despesa'}
-              </button>
+              </Button>
             ))}
           </div>
 
-          <div>
-            <label className="block text-sm font-medium mb-1.5">Descrição</label>
-            <input
+          <div className="space-y-2">
+            <Label>Descrição</Label>
+            <Input
               value={form.desc}
               onChange={e => setForm(f => ({ ...f, desc: e.target.value }))}
-              className="w-full px-3 py-2.5 bg-input-background border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary/20 outline-none"
               placeholder="Descrição do lançamento"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium mb-1.5">Valor (R$)</label>
-              <input
+            <div className="space-y-2">
+              <Label>Valor (R$)</Label>
+              <Input
                 type="number"
                 value={form.value}
                 onChange={e => setForm(f => ({ ...f, value: e.target.value }))}
-                className="w-full px-3 py-2.5 bg-input-background border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary/20 outline-none"
                 placeholder="0,00"
               />
             </div>
-            <div>
-              <label className="block text-sm font-medium mb-1.5">Data</label>
-              <input
+            <div className="space-y-2">
+              <Label>Data</Label>
+              <Input
                 type="date"
                 value={form.date}
                 onChange={e => setForm(f => ({ ...f, date: e.target.value }))}
-                className="w-full px-3 py-2.5 bg-input-background border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary/20 outline-none"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium mb-1.5">Centro de Custo</label>
-              <select
-                value={form.center}
-                onChange={e => setForm(f => ({ ...f, center: e.target.value }))}
-                className="w-full px-3 py-2.5 bg-input-background border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary/20 outline-none"
-              >
-                {costCenters.filter(c => c !== 'Todos').map(c => <option key={c}>{c}</option>)}
-              </select>
+            <div className="space-y-2">
+              <Label>Centro de Custo</Label>
+              <Select value={form.center} onValueChange={v => setForm(f => ({ ...f, center: v }))}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {costCenters.filter(c => c !== 'Todos').map(c => (
+                    <SelectItem key={c} value={c}>{c}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
-            <div>
-              <label className="block text-sm font-medium mb-1.5">Categoria</label>
-              <input
+            <div className="space-y-2">
+              <Label>Categoria</Label>
+              <Input
                 value={form.category}
                 onChange={e => setForm(f => ({ ...f, category: e.target.value }))}
-                className="w-full px-3 py-2.5 bg-input-background border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary/20 outline-none"
                 placeholder="Ex: Anuidade, Aluguel..."
               />
             </div>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium mb-1.5">Observações</label>
-            <textarea
+          <div className="space-y-2">
+            <Label>Observações</Label>
+            <Textarea
               value={form.obs}
               onChange={e => setForm(f => ({ ...f, obs: e.target.value }))}
               rows={3}
-              className="w-full px-3 py-2.5 bg-input-background border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary/20 outline-none resize-none"
               placeholder="Observações adicionais..."
+              className="resize-none"
             />
           </div>
         </div>
-        <div className="p-6 border-t border-border flex gap-3 justify-end">
-          <button onClick={onClose} className="px-4 py-2 text-sm border border-border rounded-lg hover:bg-accent transition-colors">
-            Cancelar
-          </button>
-          <button onClick={onClose} className="px-4 py-2 text-sm bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors">
-            Salvar Lançamento
-          </button>
-        </div>
-      </div>
-    </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={onClose}>Cancelar</Button>
+          <Button onClick={onClose}>Salvar Lançamento</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
 
@@ -148,112 +149,111 @@ export function Lancamentos() {
               <h1 className="text-3xl mb-2">Lançamentos</h1>
               <p className="text-muted-foreground">Histórico de receitas e despesas</p>
             </div>
-            <button
-              onClick={() => setShowModal(true)}
-              className="flex items-center gap-2 px-4 py-2.5 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors text-sm font-medium"
-            >
-              <Plus className="w-4 h-4" />
+            <Button onClick={() => setShowModal(true)}>
+              <Plus className="w-4 h-4 mr-2" />
               Novo Lançamento
-            </button>
+            </Button>
           </div>
 
-          <div className="bg-card border border-border rounded-xl mb-6 p-4">
-            <div className="flex items-center gap-3 flex-wrap">
-              <div className="relative flex-1 min-w-[200px]">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                <input
-                  value={search}
-                  onChange={e => setSearch(e.target.value)}
-                  placeholder="Buscar lançamentos..."
-                  className="w-full pl-9 pr-4 py-2 bg-input-background border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary/20 outline-none"
-                />
+          <Card className="mb-6">
+            <CardContent className="pt-6">
+              <div className="flex items-center gap-3 flex-wrap">
+                <div className="relative flex-1 min-w-[200px]">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <Input
+                    value={search}
+                    onChange={e => setSearch(e.target.value)}
+                    placeholder="Buscar lançamentos..."
+                    className="pl-9"
+                  />
+                </div>
+                <div className="flex items-center gap-2">
+                  <Filter className="w-4 h-4 text-muted-foreground" />
+                  {costCenters.map(c => (
+                    <Button
+                      key={c}
+                      variant={centerFilter === c ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => setCenterFilter(c)}
+                    >
+                      {c}
+                    </Button>
+                  ))}
+                </div>
+                <div className="flex items-center gap-1">
+                  {tipos.map(t => (
+                    <Button
+                      key={t}
+                      variant={tipoFilter === t ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => setTipoFilter(t)}
+                    >
+                      {t}
+                    </Button>
+                  ))}
+                </div>
               </div>
-              <div className="flex items-center gap-2">
-                <Filter className="w-4 h-4 text-muted-foreground" />
-                {costCenters.map(c => (
-                  <button
-                    key={c}
-                    onClick={() => setCenterFilter(c)}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                      centerFilter === c ? 'bg-primary text-primary-foreground' : 'bg-muted hover:bg-accent'
-                    }`}
-                  >
-                    {c}
-                  </button>
-                ))}
-              </div>
-              <div className="flex items-center gap-1">
-                {tipos.map(t => (
-                  <button
-                    key={t}
-                    onClick={() => setTipoFilter(t)}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                      tipoFilter === t ? 'bg-primary text-primary-foreground' : 'bg-muted hover:bg-accent'
-                    }`}
-                  >
-                    {t}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
 
-          <div className="bg-card border border-border rounded-xl overflow-hidden">
-            <table className="w-full">
-              <thead className="bg-muted/50 border-b border-border">
-                <tr>
-                  <th className="text-left px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Descrição</th>
-                  <th className="text-left px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Tipo</th>
-                  <th className="text-left px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Centro</th>
-                  <th className="text-left px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Data</th>
-                  <th className="text-right px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Valor</th>
-                  <th className="text-left px-6 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Status</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
-                {filtered.map(l => (
-                  <tr key={l.id} className="hover:bg-muted/30 transition-colors">
-                    <td className="px-6 py-4">
-                      <p className="text-sm font-medium">{l.desc}</p>
-                      <p className="text-xs text-muted-foreground">{l.category}</p>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className={`flex items-center gap-1.5 text-sm ${l.type === 'receita' ? 'text-green-600' : 'text-red-500'}`}>
-                        {l.type === 'receita' ? <TrendingUp className="w-3.5 h-3.5" /> : <TrendingDown className="w-3.5 h-3.5" />}
-                        {l.type === 'receita' ? 'Receita' : 'Despesa'}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className="text-sm text-muted-foreground">{l.center}</span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className="text-sm">{l.date}</span>
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      <span className={`text-sm font-semibold ${l.type === 'receita' ? 'text-green-600' : 'text-red-500'}`}>
-                        {l.type === 'receita' ? '+' : '-'} R$ {l.value.toLocaleString('pt-BR')}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className={`text-xs px-2 py-1 rounded-full font-medium ${
-                        l.status === 'confirmado' ? 'bg-green-500/10 text-green-600' : 'bg-yellow-500/10 text-yellow-600'
-                      }`}>
-                        {l.status}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            {filtered.length === 0 && (
-              <div className="text-center py-12 text-muted-foreground">
-                <p>Nenhum lançamento encontrado</p>
-              </div>
-            )}
-          </div>
+          <Card>
+            <CardContent className="p-0">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Descrição</TableHead>
+                    <TableHead>Tipo</TableHead>
+                    <TableHead>Centro</TableHead>
+                    <TableHead>Data</TableHead>
+                    <TableHead className="text-right">Valor</TableHead>
+                    <TableHead>Status</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filtered.map(l => (
+                    <TableRow key={l.id}>
+                      <TableCell>
+                        <p className="text-sm font-medium">{l.desc}</p>
+                        <p className="text-xs text-muted-foreground">{l.category}</p>
+                      </TableCell>
+                      <TableCell>
+                        <div className={`flex items-center gap-1.5 text-sm ${l.type === 'receita' ? 'text-green-600' : 'text-red-500'}`}>
+                          {l.type === 'receita' ? <TrendingUp className="w-3.5 h-3.5" /> : <TrendingDown className="w-3.5 h-3.5" />}
+                          {l.type === 'receita' ? 'Receita' : 'Despesa'}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <span className="text-sm text-muted-foreground">{l.center}</span>
+                      </TableCell>
+                      <TableCell>
+                        <span className="text-sm">{l.date}</span>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <span className={`text-sm font-semibold ${l.type === 'receita' ? 'text-green-600' : 'text-red-500'}`}>
+                          {l.type === 'receita' ? '+' : '-'} R$ {l.value.toLocaleString('pt-BR')}
+                        </span>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant={l.status === 'confirmado' ? 'default' : 'secondary'}>
+                          {l.status}
+                        </Badge>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                  {filtered.length === 0 && (
+                    <TableRow>
+                      <TableCell colSpan={6} className="text-center py-12 text-muted-foreground">
+                        Nenhum lançamento encontrado
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
         </div>
       </div>
-      {showModal && <LancamentoModal onClose={() => setShowModal(false)} />}
+      <LancamentoModal open={showModal} onOpenChange={setShowModal} onClose={() => setShowModal(false)} />
     </div>
   );
 }

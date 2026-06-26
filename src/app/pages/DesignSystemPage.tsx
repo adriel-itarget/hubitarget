@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  Sun, Moon, ChevronRight, Check, X, AlertCircle, Info, CheckCircle, AlertTriangle,
+  Sun, Moon, ChevronLeft, ChevronRight, Check, X, AlertCircle, Info, CheckCircle, AlertTriangle,
   Plus, Pencil, Trash2, Eye, EyeOff, Lock, Mail, User, Users, Calendar, DollarSign,
   Gift, BookOpen, ClipboardList, LayoutGrid, Star, Download, Search, Home, Settings,
   Package, Wallet, Trophy, Zap, Loader2, ExternalLink, Copy, ArrowUpRight, Bell,
@@ -11,6 +11,23 @@ import {
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from 'recharts';
 import { useAppTheme } from '../components/AppThemeContext';
+import { Button } from '@/app/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/app/components/ui/card';
+import { Badge } from '@/app/components/ui/badge';
+import { Input } from '@/app/components/ui/input';
+import { Label } from '@/app/components/ui/label';
+import { Textarea } from '@/app/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/app/components/ui/select';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/app/components/ui/dialog';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/app/components/ui/table';
+import { Checkbox } from '@/app/components/ui/checkbox';
+import { RadioGroup, RadioGroupItem } from '@/app/components/ui/radio-group';
+import { Progress } from '@/app/components/ui/progress';
+import { Separator } from '@/app/components/ui/separator';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/app/components/ui/tabs';
+import { Avatar, AvatarFallback } from '@/app/components/ui/avatar';
+import { ScrollArea } from '@/app/components/ui/scroll-area';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/app/components/ui/sheet';
 
 // ── Syntax Highlighter ────────────────────────────────────────────────────────
 function esc(s: string) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
@@ -126,258 +143,247 @@ const GAMIFICATION = [
   {label:'Diamante',color:'#6d28d9',bg:'#f5f3ff'},
 ];
 
-// ── Code snippets ─────────────────────────────────────────────────────────────
+// ── Code snippets (shadcn/ui) ─────────────────────────────────────────────────
 const CODES: Record<string, string> = {
-button: `import { Plus, Download } from 'lucide-react';
+button: `import { Button } from '@/app/components/ui/button';
 
 // Primário
-<button className="px-4 py-2 bg-primary text-primary-foreground
-  rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors">
-  Primário
-</button>
+<Button>Primário</Button>
 
-// Secundário (outline)
-<button className="px-4 py-2 border border-border rounded-xl
-  text-sm font-medium hover:bg-accent transition-colors">
-  Secundário
-</button>
+// Variantes
+<Button variant="secondary">Secundário</Button>
+<Button variant="destructive">Destrutivo</Button>
+<Button variant="outline">Outline</Button>
+<Button variant="ghost">Ghost</Button>
+<Button variant="link">Link</Button>
+<Button disabled>Desativado</Button>
 
-// Ghost
-<button className="px-4 py-2 text-primary text-sm font-medium
-  hover:bg-primary/10 rounded-xl transition-colors">
-  Ghost
-</button>
-
-// Destrutivo
-<button className="px-4 py-2 bg-destructive text-destructive-foreground
-  rounded-xl text-sm font-medium hover:bg-destructive/90 transition-colors">
-  Destrutivo
-</button>
-
-// Desativado
-<button disabled className="px-4 py-2 bg-muted text-muted-foreground
-  rounded-xl text-sm font-medium cursor-not-allowed opacity-50">
-  Desativado
-</button>
+// Tamanhos
+<Button size="sm">Pequeno</Button>
+<Button size="default">Padrão</Button>
+<Button size="lg">Grande</Button>
+<Button size="icon"><Plus className="w-4 h-4" /></Button>
 
 // Com ícone
-<button className="flex items-center gap-2 px-4 py-2 bg-primary
-  text-primary-foreground rounded-xl text-sm font-medium
-  hover:bg-primary/90 transition-colors">
-  <Plus className="w-4 h-4" /> Adicionar
-</button>`,
+<Button><Plus className="w-4 h-4 mr-2" /> Adicionar</Button>`,
 
-input: `import { Mail, Lock, Eye, EyeOff, AlertCircle } from 'lucide-react';
-import { useState } from 'react';
+input: `import { Input } from '@/app/components/ui/input';
+import { Label } from '@/app/components/ui/label';
 
 // Campo padrão
-<input
-  placeholder="Digite algo..."
-  className="w-full px-3 py-2.5 bg-background border border-border
-    rounded-xl text-sm focus:ring-2 focus:ring-primary/30
-    focus:border-primary outline-none transition-all"
-/>
+<Input placeholder="Digite algo..." />
 
-// Com ícone à esquerda
-<div className="relative">
-  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-  <input
-    placeholder="seu@email.com"
-    className="w-full pl-10 pr-4 py-2.5 bg-background border border-border
-      rounded-xl text-sm focus:ring-2 focus:ring-primary/30 outline-none"
-  />
-</div>
+// Com label
+<Label>Nome</Label>
+<Input placeholder="Nome completo" />
 
 // Senha com toggle
-const [show, setShow] = useState(false);
-<div className="relative">
-  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-  <input
-    type={show ? 'text' : 'password'}
-    className="w-full pl-10 pr-10 py-2.5 bg-background border border-border
-      rounded-xl text-sm focus:ring-2 focus:ring-primary/30 outline-none"
-  />
-  <button onClick={() => setShow(s => !s)}
-    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">
-    {show ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-  </button>
-</div>
+<Input type="password" placeholder="••••••••" />
 
-// Estado de erro
-<input
-  className="w-full px-3 py-2.5 bg-background border border-red-500/50
-    rounded-xl text-sm ring-2 ring-red-500/20 outline-none"
-/>
-<p className="text-xs text-red-500 mt-1 flex items-center gap-1">
-  <AlertCircle className="w-3 h-3" /> Campo obrigatório
-</p>`,
+// Desativado
+<Input disabled value="Valor fixo" />`,
 
-select: `// Select nativo
-<select
-  className="w-full px-3 py-2.5 bg-background border border-border
-    rounded-xl text-sm focus:ring-2 focus:ring-primary/30
-    outline-none transition-all cursor-pointer">
-  <option>Opção A</option>
-  <option>Opção B</option>
-  <option>Opção C</option>
-</select>`,
+textarea: `import { Textarea } from '@/app/components/ui/textarea';
+import { Label } from '@/app/components/ui/label';
 
-card: `import { Package, ChevronRight, ArrowUpRight, Star } from 'lucide-react';
+<Label>Observações</Label>
+<Textarea placeholder="Digite suas observações..." rows={4} />`,
+
+select: `import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue }
+  from '@/app/components/ui/select';
+
+<Select>
+  <SelectTrigger className="w-full">
+    <SelectValue placeholder="Selecione..." />
+  </SelectTrigger>
+  <SelectContent>
+    <SelectItem value="sp">São Paulo</SelectItem>
+    <SelectItem value="rj">Rio de Janeiro</SelectItem>
+    <SelectItem value="mg">Minas Gerais</SelectItem>
+  </SelectContent>
+</Select>`,
+
+card: `import { Card, CardContent, CardHeader, CardTitle }
+  from '@/app/components/ui/card';
 
 // Card básico
-<div className="bg-card border border-border rounded-2xl p-5">
-  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
-    <Package className="w-5 h-5 text-primary" />
-  </div>
-  <h4 className="mb-1">Título do Card</h4>
-  <p className="text-sm text-muted-foreground">
-    Descrição breve do conteúdo presente neste cartão.
-  </p>
-  <button className="mt-4 text-sm text-primary hover:underline flex items-center gap-1">
-    Ver detalhes <ChevronRight className="w-3.5 h-3.5" />
-  </button>
+<Card>
+  <CardContent className="p-6">
+    <h4>Título do Card</h4>
+    <p className="text-sm text-muted-foreground">
+      Descrição do conteúdo.
+    </p>
+  </CardContent>
+</Card>
+
+// Card com header
+<Card>
+  <CardHeader>
+    <CardTitle>Métricas</CardTitle>
+  </CardHeader>
+  <CardContent>
+    <p className="text-2xl font-semibold">1.284</p>
+    <p className="text-sm text-muted-foreground">Total</p>
+  </CardContent>
+</Card>`,
+
+badge: `import { Badge } from '@/app/components/ui/badge';
+
+// Variantes
+<Badge>Padrão</Badge>
+<Badge variant="secondary">Secundário</Badge>
+<Badge variant="destructive">Destrutivo</Badge>
+<Badge variant="outline">Outline</Badge>
+
+// Status (uso comum)
+<Badge variant="default">Inscrições Abertas</Badge>
+<Badge variant="secondary">Em Andamento</Badge>
+<Badge variant="outline">Planejamento</Badge>`,
+
+avatar: `import { Avatar, AvatarFallback } from '@/app/components/ui/avatar';
+
+// Avatar com iniciais
+<Avatar className="w-10 h-10">
+  <AvatarFallback>CE</AvatarFallback>
+</Avatar>
+
+// Avatar grande
+<Avatar className="w-14 h-14">
+  <AvatarFallback className="text-lg">RM</AvatarFallback>
+</Avatar>`,
+
+table: `import { Table, TableBody, TableCell, TableHead,
+  TableHeader, TableRow } from '@/app/components/ui/table';
+
+<Table>
+  <TableHeader>
+    <TableRow>
+      <TableHead>Nome</TableHead>
+      <TableHead>Status</TableHead>
+      <TableHead className="text-right">Ação</TableHead>
+    </TableRow>
+  </TableHeader>
+  <TableBody>
+    <TableRow>
+      <TableCell className="font-medium">Dr. Carlos</TableCell>
+      <TableCell><Badge>Ativo</Badge></TableCell>
+      <TableCell className="text-right">
+        <Button variant="ghost" size="sm">Editar</Button>
+      </TableCell>
+    </TableRow>
+  </TableBody>
+</Table>`,
+
+dialog: `import { Dialog, DialogContent, DialogHeader,
+  DialogTitle, DialogFooter } from '@/app/components/ui/dialog';
+import { Button } from '@/app/components/ui/button';
+
+<Dialog open={open} onOpenChange={setOpen}>
+  <DialogContent>
+    <DialogHeader>
+      <DialogTitle>Título do Modal</DialogTitle>
+    </DialogHeader>
+    <p className="text-sm text-muted-foreground">
+      Conteúdo do modal aqui.
+    </p>
+    <DialogFooter>
+      <Button variant="outline" onClick={() => setOpen(false)}>
+        Cancelar
+      </Button>
+      <Button onClick={() => setOpen(false)}>
+        Confirmar
+      </Button>
+    </DialogFooter>
+  </DialogContent>
+</Dialog>`,
+
+formControls: `import { Checkbox } from '@/app/components/ui/checkbox';
+import { RadioGroup, RadioGroupItem } from '@/app/components/ui/radio-group';
+import { Label } from '@/app/components/ui/label';
+
+// Checkbox
+<div className="flex items-center gap-2">
+  <Checkbox id="terms" />
+  <Label htmlFor="terms">Aceito os termos</Label>
 </div>
 
-// Card KPI
-<div className="bg-card border border-border rounded-2xl p-5">
-  <div className="flex items-center justify-between mb-4">
-    <div className="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center">
-      <ArrowUpRight className="w-5 h-5 text-green-500" />
-    </div>
-    <span className="text-xs text-green-600 font-medium bg-green-500/10 px-2 py-0.5 rounded-full">
-      +18%
-    </span>
+// Radio Group
+<RadioGroup defaultValue="option-a">
+  <div className="flex items-center gap-2">
+    <RadioGroupItem value="option-a" id="r1" />
+    <Label htmlFor="r1">Opção A</Label>
   </div>
-  <p className="text-2xl font-semibold mb-1">1.284</p>
-  <p className="text-sm text-muted-foreground">Total de Associados</p>
+  <div className="flex items-center gap-2">
+    <RadioGroupItem value="option-b" id="r2" />
+    <Label htmlFor="r2">Opção B</Label>
+  </div>
+</RadioGroup>`,
+
+progress: `import { Progress } from '@/app/components/ui/progress';
+
+// Barra de progresso
+<Progress value={68} className="h-2" />
+
+// Com valor explícito
+<div className="space-y-1">
+  <div className="flex justify-between text-xs">
+    <span>Progresso</span><span>68%</span>
+  </div>
+  <Progress value={68} className="h-2" />
 </div>`,
 
-badge: `import { CheckCircle, Info, AlertTriangle, AlertCircle } from 'lucide-react';
+tabs: `import { Tabs, TabsContent, TabsList, TabsTrigger }
+  from '@/app/components/ui/tabs';
 
-// Sucesso
-<span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full
-  text-xs font-medium bg-green-500/10 border border-green-500/30 text-green-600">
-  <CheckCircle className="w-3 h-3" /> Sucesso
-</span>
+<Tabs defaultValue="dashboard">
+  <TabsList>
+    <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
+    <TabsTrigger value="associados">Associados</TabsTrigger>
+    <TabsTrigger value="financeiro">Financeiro</TabsTrigger>
+  </TabsList>
+  <TabsContent value="dashboard">
+    Conteúdo do dashboard
+  </TabsContent>
+  <TabsContent value="associados">
+    Conteúdo de associados
+  </TabsContent>
+</Tabs>`,
 
-// Informação
-<span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full
-  text-xs font-medium bg-blue-500/10 border border-blue-500/30 text-blue-600">
-  <Info className="w-3 h-3" /> Informação
-</span>
+sheet: `import { Sheet, SheetContent, SheetHeader,
+  SheetTitle, SheetTrigger } from '@/app/components/ui/sheet';
+import { Button } from '@/app/components/ui/button';
 
-// Aviso
-<span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full
-  text-xs font-medium bg-amber-500/10 border border-amber-500/30 text-amber-600">
-  <AlertTriangle className="w-3 h-3" /> Aviso
-</span>
-
-// Erro
-<span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full
-  text-xs font-medium bg-red-500/10 border border-red-500/30 text-red-600">
-  <AlertCircle className="w-3 h-3" /> Erro
-</span>
-
-// Neutro
-<span className="inline-flex items-center px-2.5 py-1 rounded-full
-  text-xs font-medium bg-muted text-muted-foreground border border-border">
-  Neutro
-</span>
-
-// Primário sólido
-<span className="inline-flex items-center px-2.5 py-1 rounded-full
-  text-xs font-medium bg-primary text-primary-foreground">
-  Primário
-</span>
-
-// Badge de módulo (com cor customizada)
-const color = '#60a5fa';
-<span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium"
-  style={{ backgroundColor: \`\${color}18\`, border: \`1px solid \${color}33\`, color }}>
-  <Users className="w-3 h-3" /> Associação
-</span>`,
-
-avatar: `// Avatar com iniciais — tamanhos
-<div className="w-7 h-7 rounded-xl bg-primary/20 text-primary
-  flex items-center justify-center text-xs font-bold">CE</div>  // xs
-
-<div className="w-10 h-10 rounded-xl bg-primary/20 text-primary
-  flex items-center justify-center text-sm font-bold">CE</div>  // md
-
-<div className="w-14 h-14 rounded-xl bg-primary/20 text-primary
-  flex items-center justify-center text-lg font-bold">CE</div>  // xl
-
-// Avatar com cor customizada
-<div className="w-10 h-10 rounded-xl flex items-center justify-center
-  text-sm font-bold text-white" style={{ backgroundColor: '#60a5fa' }}>
-  CE
-</div>
-
-// Avatar em grupo (stack)
-<div className="flex -space-x-2">
-  {['#60a5fa','#34d399','#fbbf24'].map((color, i) => (
-    <div key={i} className="w-8 h-8 rounded-full border-2 border-background
-      flex items-center justify-center text-xs font-bold text-white"
-      style={{ backgroundColor: color }}>
-      {String.fromCharCode(65 + i)}
+<Sheet>
+  <SheetTrigger asChild>
+    <Button>Abrir Painel</Button>
+  </SheetTrigger>
+  <SheetContent>
+    <SheetHeader>
+      <SheetTitle>Título do Painel</SheetTitle>
+    </SheetHeader>
+    <div className="py-4">
+      Conteúdo do painel lateral
     </div>
-  ))}
+  </SheetContent>
+</Sheet>`,
+
+separator: `import { Separator } from '@/app/components/ui/separator';
+
+<Separator />
+
+// Vertical
+<div className="flex h-4 items-center">
+  <Separator orientation="vertical" className="h-4" />
 </div>`,
 
-table: `import { Eye, Pencil, Trash2 } from 'lucide-react';
+search: `import { Input } from '@/app/components/ui/input';
+import { Search } from 'lucide-react';
 
-<div className="bg-card border border-border rounded-2xl overflow-hidden">
-  <table className="w-full text-sm">
-    <thead>
-      <tr className="border-b border-border bg-muted/50">
-        {['Nome', 'E-mail', 'Status', 'Ação'].map(h => (
-          <th key={h} className="text-left px-4 py-3 text-xs font-semibold
-            text-muted-foreground uppercase tracking-wider">
-            {h}
-          </th>
-        ))}
-      </tr>
-    </thead>
-    <tbody className="divide-y divide-border">
-      {rows.map((row, i) => (
-        <tr key={i} className="hover:bg-muted/30 transition-colors">
-          <td className="px-4 py-3">
-            <div className="flex items-center gap-2.5">
-              <div className="w-7 h-7 rounded-lg bg-primary/20 text-primary
-                flex items-center justify-center text-xs font-bold">
-                {row.initials}
-              </div>
-              {row.name}
-            </div>
-          </td>
-          <td className="px-4 py-3 text-muted-foreground">{row.email}</td>
-          <td className="px-4 py-3">
-            <span className={\`text-xs px-2 py-0.5 rounded-full font-medium \${
-              row.status === 'Ativo'
-                ? 'bg-green-500/10 text-green-600'
-                : 'bg-muted text-muted-foreground'
-            }\`}>
-              {row.status}
-            </span>
-          </td>
-          <td className="px-4 py-3">
-            <div className="flex items-center gap-1">
-              <button className="p-1.5 hover:bg-accent rounded-lg transition-colors">
-                <Eye className="w-3.5 h-3.5" />
-              </button>
-              <button className="p-1.5 hover:bg-accent rounded-lg transition-colors">
-                <Pencil className="w-3.5 h-3.5" />
-              </button>
-              <button className="p-1.5 hover:bg-red-500/10 hover:text-red-500
-                rounded-lg transition-colors">
-                <Trash2 className="w-3.5 h-3.5" />
-              </button>
-            </div>
-          </td>
-        </tr>
-      ))}
-    </tbody>
-  </table>
+// Barra de busca com ícone
+<div className="relative">
+  <Search className="absolute left-3 top-1/2 -translate-y-1/2
+    w-4 h-4 text-muted-foreground" />
+  <Input placeholder="Buscar associados..." className="pl-9" />
 </div>`,
 
 charts: `import {
@@ -386,230 +392,60 @@ charts: `import {
   Tooltip, ResponsiveContainer,
 } from 'recharts';
 
-const data = [
-  { n: 'Jan', a: 40, b: 24 },
-  { n: 'Fev', a: 55, b: 38 },
-  { n: 'Mar', a: 48, b: 42 },
-];
-
 // BarChart
 <ResponsiveContainer width="100%" height={200}>
   <BarChart data={data}>
     <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-    <XAxis dataKey="n" tick={{ fontSize: 12, fill: 'var(--muted-foreground)' }}
-      axisLine={false} tickLine={false} />
-    <YAxis tick={{ fontSize: 11, fill: 'var(--muted-foreground)' }}
-      axisLine={false} tickLine={false} />
-    <Tooltip contentStyle={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 8 }} />
+    <XAxis dataKey="n" tick={{ fontSize: 12 }} />
+    <YAxis tick={{ fontSize: 11 }} />
+    <Tooltip />
     <Bar dataKey="a" fill="var(--chart-1)" radius={[4, 4, 0, 0]} />
-    <Bar dataKey="b" fill="var(--chart-2)" radius={[4, 4, 0, 0]} />
   </BarChart>
 </ResponsiveContainer>
 
-// AreaChart
-<ResponsiveContainer width="100%" height={200}>
-  <AreaChart data={data}>
-    <defs>
-      <linearGradient id="grad" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="5%"  stopColor="var(--chart-1)" stopOpacity={0.2} />
-        <stop offset="95%" stopColor="var(--chart-1)" stopOpacity={0}   />
-      </linearGradient>
-    </defs>
-    <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-    <XAxis dataKey="n" tick={{ fontSize: 12, fill: 'var(--muted-foreground)' }} axisLine={false} />
-    <Area type="monotone" dataKey="a" stroke="var(--chart-1)"
-      strokeWidth={2} fill="url(#grad)" />
-  </AreaChart>
-</ResponsiveContainer>
+// AreaChart / LineChart / PieChart
+// (mesma estrutura, trocar o componente raiz)`,
 
-// PieChart / Donut
-const pieData = [
-  { name: 'Ativos',  value: 524, color: '#22c55e' },
-  { name: 'Pausados',value: 183, color: '#94a3b8' },
-];
-<ResponsiveContainer width="100%" height={200}>
-  <PieChart>
-    <Pie data={pieData} cx="50%" cy="50%"
-      innerRadius={50} outerRadius={80} paddingAngle={3} dataKey="value">
-      {pieData.map(e => <Cell key={e.name} fill={e.color} />)}
-    </Pie>
-    <Tooltip />
-  </PieChart>
-</ResponsiveContainer>`,
+moduleIcon: `// Badge de módulo — usado nas abas e cards do sistema
+const color = '#60a5fa';
 
-tabs: `import { useState } from 'react';
+// Badge pill
+<span className="inline-flex items-center gap-1.5 px-2.5 py-1
+  rounded-lg text-xs font-medium"
+  style={{ backgroundColor: \`\${color}18\`,
+    border: \`1px solid \${color}33\`, color }}>
+  <Users className="w-3 h-3" /> Associação
+</span>`,
 
-const tabs = ['Dashboard', 'Associados', 'Financeiro'];
-const [active, setActive] = useState(0);
+gamification: `// Nível de gamificação — Cashback
+import { Trophy } from 'lucide-react';
+import { Badge } from '@/app/components/ui/badge';
+import { Progress } from '@/app/components/ui/progress';
 
-<div className="flex border-b border-border">
-  {tabs.map((t, i) => (
-    <button key={t} onClick={() => setActive(i)}
-      className={\`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors whitespace-nowrap \${
-        active === i
-          ? 'border-primary text-primary'
-          : 'border-transparent text-muted-foreground hover:text-foreground'
-      }\`}>
-      {t}
-    </button>
-  ))}
-</div>
-<div className="pt-4 text-sm text-muted-foreground">
-  Conteúdo da aba: <strong className="text-foreground">{tabs[active]}</strong>
-</div>`,
+// Badge de nível
+<Badge variant="outline"
+  className="bg-yellow-500/10 text-yellow-600 border-yellow-500/20">
+  <Trophy className="w-3 h-3 mr-1" /> Nível Ouro
+</Badge>
 
-formControls: `import { useState } from 'react';
-
-// Checkbox
-const [checked, setChecked] = useState(true);
-<label className="flex items-center gap-2.5 cursor-pointer">
-  <input type="checkbox" checked={checked}
-    onChange={e => setChecked(e.target.checked)}
-    className="w-4 h-4 accent-primary rounded" />
-  <span className="text-sm">Aceito os termos</span>
-</label>
-
-// Radio group
-const [radio, setRadio] = useState('a');
-{['Opção A', 'Opção B', 'Opção C'].map(opt => (
-  <label key={opt} className="flex items-center gap-2.5 cursor-pointer">
-    <input type="radio" value={opt} checked={radio === opt}
-      onChange={() => setRadio(opt)}
-      className="w-4 h-4 accent-primary" />
-    <span className="text-sm">{opt}</span>
-  </label>
-))}
-
-// Toggle / Switch customizado
-const [on, setOn] = useState(false);
-<button onClick={() => setOn(t => !t)}
-  className={\`relative w-10 h-5 rounded-full transition-colors \${
-    on ? 'bg-primary' : 'bg-muted border border-border'
-  }\`}>
-  <span className={\`absolute top-0.5 left-0.5 w-4 h-4 rounded-full
-    bg-white shadow transition-transform \${on ? 'translate-x-5' : ''}\`} />
-</button>`,
-
-progress: `import { Loader2 } from 'lucide-react';
-
-// Barra de progresso
-const progress = 68;
-<div>
-  <div className="flex justify-between text-xs text-muted-foreground mb-1.5">
-    <span>Progresso</span>
-    <span>{progress}%</span>
-  </div>
-  <div className="h-2 bg-muted rounded-full overflow-hidden">
-    <div className="h-full bg-primary rounded-full transition-all"
-      style={{ width: \`\${progress}%\` }} />
-  </div>
-</div>
-
-// Barra com cor customizada (nível gamificação)
-<div className="h-2 bg-muted rounded-full overflow-hidden">
-  <div className="h-full rounded-full transition-all"
-    style={{ width: '72%', backgroundColor: '#b45309' }} />
-</div>
-
-// Spinner
-<Loader2 className="w-5 h-5 animate-spin text-primary" />
-<Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />`,
-
-alert: `import { CheckCircle, Info, AlertTriangle, AlertCircle } from 'lucide-react';
-
-// Sucesso
-<div className="flex items-start gap-2.5 p-3 rounded-xl
-  border bg-green-500/10 border-green-500/30">
-  <CheckCircle className="w-4 h-4 mt-0.5 text-green-600 flex-shrink-0" />
-  <p className="text-xs text-green-600">
-    <strong>Sucesso:</strong> Operação realizada com êxito.
-  </p>
-</div>
-
-// Informação
-<div className="flex items-start gap-2.5 p-3 rounded-xl
-  border bg-blue-500/10 border-blue-500/30">
-  <Info className="w-4 h-4 mt-0.5 text-blue-600 flex-shrink-0" />
-  <p className="text-xs text-blue-600">
-    <strong>Info:</strong> Esta ação afetará todos os registros.
-  </p>
-</div>
-
-// Aviso
-<div className="flex items-start gap-2.5 p-3 rounded-xl
-  border bg-amber-500/10 border-amber-500/30">
-  <AlertTriangle className="w-4 h-4 mt-0.5 text-amber-600 flex-shrink-0" />
-  <p className="text-xs text-amber-600">
-    <strong>Atenção:</strong> Verifique os dados antes de continuar.
-  </p>
-</div>
-
-// Erro
-<div className="flex items-start gap-2.5 p-3 rounded-xl
-  border bg-red-500/10 border-red-500/30">
-  <AlertCircle className="w-4 h-4 mt-0.5 text-red-600 flex-shrink-0" />
-  <p className="text-xs text-red-600">
-    <strong>Erro:</strong> Não foi possível salvar as alterações.
-  </p>
-</div>`,
-
-search: `import { Search } from 'lucide-react';
-
-// Variante padrão (bordas arredondadas)
-<div className="relative">
-  <Search className="absolute left-3 top-1/2 -translate-y-1/2
-    w-4 h-4 text-muted-foreground" />
-  <input
-    placeholder="Buscar associados..."
-    className="w-full pl-9 pr-4 py-2.5 bg-card border border-border
-      rounded-xl text-sm focus:ring-2 focus:ring-primary/20 outline-none"
-  />
-</div>
-
-// Variante compacta (fundo muted — usada em popovers)
-<div className="relative">
-  <Search className="absolute left-3 top-1/2 -translate-y-1/2
-    w-4 h-4 text-muted-foreground" />
-  <input
-    placeholder="Pesquisar..."
-    className="w-full pl-9 pr-4 py-2 bg-muted border border-border
-      rounded-lg text-sm focus:ring-2 focus:ring-primary/20 outline-none"
-  />
-</div>`,
-
-kpi: `import { Users, DollarSign, ArrowUpRight } from 'lucide-react';
-
-<div className="bg-card border border-border rounded-2xl p-5">
-  <div className="flex items-center justify-between mb-4">
-    <div className="w-10 h-10 rounded-full bg-blue-500/10
-      flex items-center justify-center">
-      <Users className="w-5 h-5 text-blue-500" />
-    </div>
-    <span className="text-xs text-green-600 font-medium
-      bg-green-500/10 px-2 py-0.5 rounded-full">
-      +18%
-    </span>
-  </div>
-  <p className="text-2xl font-semibold mb-1">1.284</p>
-  <p className="text-sm text-muted-foreground">Total de Associados</p>
-</div>`,
+// Barra de progresso de nível
+<Progress value={72} className="h-2" />`,
 
 emptyState: `import { Package, Plus } from 'lucide-react';
+import { Button } from '@/app/components/ui/button';
 
 <div className="flex flex-col items-center py-12 text-center">
   <div className="w-12 h-12 rounded-2xl bg-muted flex items-center
     justify-center mb-3">
     <Package className="w-6 h-6 text-muted-foreground" />
   </div>
-  <p className="text-sm font-medium mb-1">Nenhum resultado encontrado</p>
+  <p className="text-sm font-medium mb-1">Nenhum resultado</p>
   <p className="text-xs text-muted-foreground max-w-[200px]">
-    Tente ajustar os filtros ou realize uma nova busca.
+    Tente ajustar os filtros.
   </p>
-  <button className="mt-3 flex items-center gap-1.5 px-3 py-1.5
-    text-xs bg-primary text-primary-foreground rounded-lg
-    hover:bg-primary/90 transition-colors">
-    <Plus className="w-3.5 h-3.5" /> Criar novo
-  </button>
+  <Button size="sm" className="mt-3">
+    <Plus className="w-3.5 h-3.5 mr-1.5" /> Criar novo
+  </Button>
 </div>`,
 
 breadcrumb: `import { ChevronRight } from 'lucide-react';
@@ -620,143 +456,49 @@ const crumbs = ['Hub', 'Associação', 'Associados'];
   {crumbs.map((c, i) => (
     <div key={c} className="flex items-center gap-1.5">
       {i > 0 && <ChevronRight className="w-3.5 h-3.5 text-muted-foreground" />}
-      <span className={
-        i === crumbs.length - 1
-          ? 'text-foreground font-medium'
-          : 'text-muted-foreground hover:text-foreground transition-colors cursor-pointer'
-      }>
+      <span className={i === crumbs.length - 1
+        ? 'text-foreground font-medium'
+        : 'text-muted-foreground hover:text-foreground cursor-pointer'}>
         {c}
       </span>
     </div>
   ))}
 </nav>`,
 
-pagination: `const [page, setPage] = useState(1);
-const total = 12;
+pagination: `import { Button } from '@/app/components/ui/button';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-<div className="flex items-center gap-1">
-  <button onClick={() => setPage(p => Math.max(1, p - 1))}
-    className="w-8 h-8 rounded-lg text-sm hover:bg-accent
-      text-muted-foreground hover:text-foreground transition-colors">
-    ‹
-  </button>
-  {Array.from({ length: total }, (_, i) => i + 1)
-    .filter(p => p === 1 || p === total || Math.abs(p - page) <= 1)
-    .reduce((acc: (number|string)[], p, i, arr) => {
-      if (i > 0 && (p as number) - (arr[i-1] as number) > 1) acc.push('…');
-      acc.push(p);
-      return acc;
-    }, [])
-    .map((p, i) => (
-      <button key={i}
-        onClick={() => typeof p === 'number' && setPage(p)}
-        className={\`w-8 h-8 rounded-lg text-sm transition-colors \${
-          p === page
-            ? 'bg-primary text-primary-foreground'
-            : 'hover:bg-accent text-muted-foreground hover:text-foreground'
-        }\`}>
-        {p}
-      </button>
-    ))}
-  <button onClick={() => setPage(p => Math.min(total, p + 1))}
-    className="w-8 h-8 rounded-lg text-sm hover:bg-accent
-      text-muted-foreground hover:text-foreground transition-colors">
-    ›
-  </button>
-</div>`,
+<Button variant="outline" size="icon" className="h-8 w-8">«</Button>
+<Button variant="outline" size="sm">
+  <ChevronLeft className="w-3 h-3 mr-1" /> Anterior
+</Button>
+<Button variant="default" size="icon" className="h-8 w-8">1</Button>
+<Button variant="outline" size="icon" className="h-8 w-8">2</Button>
+<Button variant="outline" size="sm">
+  Próxima <ChevronRight className="w-3 h-3 ml-1" />
+</Button>`,
 
-moduleIcon: `// Badge de módulo — usado nas abas e cards do sistema
-const color = '#60a5fa'; // cor do módulo
+kpi: `import { Card, CardContent } from '@/app/components/ui/card';
+import { Users } from 'lucide-react';
 
-// Versão ícone (dentro de tabs)
-<div className="w-5 h-5 rounded flex items-center justify-center"
-  style={{ backgroundColor: \`\${color}22\`, border: \`1px solid \${color}44\` }}>
-  <Users className="w-3 h-3" style={{ color }} />
-</div>
-
-// Versão card (no hub de módulos)
-<div className="w-10 h-10 rounded-xl flex items-center justify-center"
-  style={{ backgroundColor: \`\${color}18\`, border: \`1px solid \${color}33\` }}>
-  <Users className="w-5 h-5" style={{ color }} />
-</div>
-
-// Badge completo (pill com nome)
-<span className="inline-flex items-center gap-1.5 px-2.5 py-1
-  rounded-lg text-xs font-medium"
-  style={{ backgroundColor: \`\${color}18\`, border: \`1px solid \${color}33\`, color }}>
-  <Users className="w-3 h-3" /> Associação
-</span>
-
-// Mapeamento de módulos do sistema
-const MODULE_META = {
-  associacao: { Icon: Users,         color: '#60a5fa' },
-  financeiro: { Icon: DollarSign,    color: '#34d399' },
-  exames:     { Icon: ClipboardList, color: '#818cf8' },
-  cursos:     { Icon: BookOpen,      color: '#a78bfa' },
-  cashback:   { Icon: Gift,          color: '#fbbf24' },
-  eventos:    { Icon: Calendar,      color: '#fb7185' },
-  hub:        { Icon: LayoutGrid,    color: '#94a3b8' },
-};`,
-
-gamification: `// Nível de gamificação — usado em Cashback / Usuários e Carteiras
-import { Trophy } from 'lucide-react';
-
-type Nivel = 'bronze' | 'prata' | 'ouro' | 'platina' | 'diamante';
-
-const NIVEL = {
-  bronze:   { label: 'Bronze',   color: '#92400e', bg: '#fef3c7', min: 0    },
-  prata:    { label: 'Prata',    color: '#475569', bg: '#f1f5f9', min: 501  },
-  ouro:     { label: 'Ouro',     color: '#b45309', bg: '#fffbeb', min: 1501 },
-  platina:  { label: 'Platina',  color: '#0e7490', bg: '#ecfeff', min: 3001 },
-  diamante: { label: 'Diamante', color: '#6d28d9', bg: '#f5f3ff', min: 5001 },
-};
-
-function getNivel(pontos: number): Nivel {
-  if (pontos >= 5001) return 'diamante';
-  if (pontos >= 3001) return 'platina';
-  if (pontos >= 1501) return 'ouro';
-  if (pontos >= 501)  return 'prata';
-  return 'bronze';
-}
-
-// Componente badge de nível
-function NivelBadge({ pontos }: { pontos: number }) {
-  const nivel = getNivel(pontos);
-  const cfg = NIVEL[nivel];
-  return (
-    <span className="inline-flex items-center gap-1 px-2 py-0.5
-      rounded-full text-xs font-semibold"
-      style={{ color: cfg.color, backgroundColor: cfg.bg,
-        border: \`1px solid \${cfg.color}33\` }}>
-      <Trophy className="w-3 h-3" />
-      {cfg.label}
-    </span>
-  );
-}
-
-// Barra de progresso de nível
-function NivelProgress({ pontos }: { pontos: number }) {
-  const nivel = getNivel(pontos);
-  const cfg = NIVEL[nivel];
-  const progress = Math.min(100, ((pontos - cfg.min) / (cfg.min * 2)) * 100);
-  return (
-    <div className="h-2 bg-muted rounded-full overflow-hidden">
-      <div className="h-full rounded-full transition-all"
-        style={{ width: \`\${progress}%\`, backgroundColor: cfg.color }} />
+<Card>
+  <CardContent className="p-6">
+    <div className="flex items-center justify-between mb-4">
+      <div className="w-12 h-12 rounded-full bg-blue-500/10
+        flex items-center justify-center">
+        <Users className="w-6 h-6 text-blue-500" />
+      </div>
+      <Badge variant="default">+18%</Badge>
     </div>
-  );
-}`,
+    <h3 className="text-2xl font-semibold mb-1">1.284</h3>
+    <p className="text-sm text-muted-foreground">Total de Associados</p>
+  </CardContent>
+</Card>`,
 };
 
 // ── Main ──────────────────────────────────────────────────────────────────────
 export function DesignSystemPage() {
   const { isDark, toggleDark } = useAppTheme();
-  const [inputVal, setInputVal] = useState('');
-  const [showPwd, setShowPwd] = useState(false);
-  const [checked, setChecked] = useState(true);
-  const [radio, setRadio] = useState('a');
-  const [toggled, setToggled] = useState(true);
-  const [activeTab, setActiveTab] = useState(0);
   const [page, setPage] = useState(2);
 
   return (
@@ -795,9 +537,11 @@ export function DesignSystemPage() {
             <Zap className="w-3 h-3" /> Design System
           </div>
           <h1 className="mb-3">iTARGET Hub</h1>
-          <p className="text-muted-foreground max-w-xl text-sm">Documentação visual e de código de todos os tokens, estilos e componentes utilizados no sistema.</p>
+          <p className="text-muted-foreground max-w-xl text-sm">
+            Documentação visual e de código de todos os tokens, estilos e componentes <strong>shadcn/ui</strong> utilizados no sistema.
+          </p>
           <div className="flex gap-2 mt-4 flex-wrap">
-            {['React 18','Tailwind CSS v4','Lucide React','Recharts','React Router v7'].map(t=>(
+            {['React 18','Tailwind CSS v4','shadcn/ui','Lucide React','Recharts','React Router v7'].map(t=>(
               <Code key={t}>{t}</Code>
             ))}
           </div>
@@ -1025,173 +769,310 @@ export function DesignSystemPage() {
           </div>
         </section>
 
-        {/* ═══════════ COMPONENTES ═══════════ */}
+        {/* ═══════════ COMPONENTES (shadcn/ui) ═══════════ */}
         <section id="componentes" className="scroll-mt-20">
           <SectionTitle id="componentes">Componentes</SectionTitle>
-          <p className="text-sm text-muted-foreground mb-8">Todos construídos com <strong>Tailwind CSS v4</strong>. Clique em <strong>Código</strong> para ver imports e implementação.</p>
+          <p className="text-sm text-muted-foreground mb-2">
+            Todos os componentes abaixo são do <strong>shadcn/ui</strong> (<Code>@/app/components/ui/</Code>).
+          </p>
+          <p className="text-xs text-muted-foreground mb-8">
+            Clique em <strong>Código</strong> para ver imports e implementação. Variantes e tamanhos disponíveis em cada componente.
+          </p>
 
           <div className="space-y-6">
 
-            {/* Botões */}
-            <ComponentBlock title="Botão" description="Primário · Secundário · Ghost · Destrutivo · Ícone" code={CODES.button}>
+            {/* ── Button ── */}
+            <ComponentBlock title="Button" description="default · secondary · destructive · outline · ghost · link" code={CODES.button}>
               <div className="flex flex-wrap gap-3 items-center">
-                <button className="px-4 py-2 bg-primary text-primary-foreground rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors">Primário</button>
-                <button className="px-4 py-2 border border-border rounded-xl text-sm font-medium hover:bg-accent transition-colors">Secundário</button>
-                <button className="px-4 py-2 text-primary text-sm font-medium hover:bg-primary/10 rounded-xl transition-colors">Ghost</button>
-                <button className="px-4 py-2 bg-destructive text-destructive-foreground rounded-xl text-sm font-medium hover:bg-destructive/90 transition-colors">Destrutivo</button>
-                <button disabled className="px-4 py-2 bg-muted text-muted-foreground rounded-xl text-sm font-medium cursor-not-allowed opacity-50">Desativado</button>
-                <button className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors">
-                  <Plus className="w-4 h-4"/> Adicionar
-                </button>
-                <button className="flex items-center gap-2 px-4 py-2 border border-border rounded-xl text-sm font-medium hover:bg-accent transition-colors">
-                  <Download className="w-4 h-4"/> Exportar
-                </button>
+                <Button>Primário</Button>
+                <Button variant="secondary">Secundário</Button>
+                <Button variant="destructive">Destrutivo</Button>
+                <Button variant="outline">Outline</Button>
+                <Button variant="ghost">Ghost</Button>
+                <Button variant="link">Link</Button>
+                <Button disabled>Desativado</Button>
+              </div>
+              <div className="flex flex-wrap gap-3 items-center mt-4 pt-4 border-t border-border">
+                <Button size="sm">Pequeno</Button>
+                <Button size="default">Padrão</Button>
+                <Button size="lg">Grande</Button>
+                <Button size="icon"><Plus className="w-4 h-4"/></Button>
+                <Button><Plus className="w-4 h-4 mr-2"/> Adicionar</Button>
+                <Button variant="outline"><Download className="w-4 h-4 mr-2"/> Exportar</Button>
               </div>
             </ComponentBlock>
 
-            {/* Input */}
-            <ComponentBlock title="Entrada (Input)" description="Padrão · Com ícone · Senha · Erro" code={CODES.input}>
+            {/* ── Input ── */}
+            <ComponentBlock title="Input" description="Padrão · Desativado" code={CODES.input}>
               <div className="w-full max-w-sm space-y-3">
-                <input value={inputVal} onChange={e=>setInputVal(e.target.value)} placeholder="Digite algo..."
-                  className="w-full px-3 py-2.5 bg-background border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition-all"/>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"/>
-                  <input placeholder="seu@email.com" className="w-full pl-10 pr-4 py-2.5 bg-background border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/30 outline-none"/>
-                </div>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"/>
-                  <input type={showPwd?'text':'password'} placeholder="••••••••" className="w-full pl-10 pr-10 py-2.5 bg-background border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/30 outline-none"/>
-                  <button onClick={()=>setShowPwd(s=>!s)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">
-                    {showPwd?<EyeOff className="w-4 h-4"/>:<Eye className="w-4 h-4"/>}
-                  </button>
+                <div>
+                  <Label>Nome completo</Label>
+                  <Input placeholder="Digite algo..." />
                 </div>
                 <div>
-                  <input defaultValue="email-inválido" className="w-full px-3 py-2.5 bg-background border border-red-500/50 rounded-xl text-sm ring-2 ring-red-500/20 outline-none"/>
-                  <p className="text-xs text-red-500 mt-1 flex items-center gap-1"><AlertCircle className="w-3 h-3"/>Campo obrigatório</p>
+                  <Label>E-mail</Label>
+                  <Input type="email" placeholder="seu@email.com" />
+                </div>
+                <div>
+                  <Label>Senha</Label>
+                  <Input type="password" placeholder="••••••••" />
+                </div>
+                <div>
+                  <Label>Desativado</Label>
+                  <Input disabled value="Valor fixo" />
                 </div>
               </div>
             </ComponentBlock>
 
-            {/* Select */}
-            <ComponentBlock title="Select" description="Nativo estilizado" code={CODES.select} centered>
-              <select className="w-full max-w-xs px-3 py-2.5 bg-background border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/30 outline-none cursor-pointer">
-                <option>Opção A</option><option>Opção B</option><option>Opção C</option>
-              </select>
+            {/* ── Textarea ── */}
+            <ComponentBlock title="Textarea" description="Campo de texto longo" code={CODES.textarea}>
+              <div className="w-full max-w-sm">
+                <Label>Observações</Label>
+                <Textarea placeholder="Digite suas observações..." rows={4} />
+              </div>
             </ComponentBlock>
 
-            {/* Card */}
-            <ComponentBlock title="Cartão (Card)" description="Básico · KPI · Interativo" code={CODES.card}>
+            {/* ── Select ── */}
+            <ComponentBlock title="Select" description="Dropdown de seleção" code={CODES.select} centered>
+              <div className="w-full max-w-xs">
+                <Select>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecione um estado..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="sp">São Paulo</SelectItem>
+                    <SelectItem value="rj">Rio de Janeiro</SelectItem>
+                    <SelectItem value="mg">Minas Gerais</SelectItem>
+                    <SelectItem value="rs">Rio Grande do Sul</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </ComponentBlock>
+
+            {/* ── Card ── */}
+            <ComponentBlock title="Card" description="Básico · Com header · KPI" code={CODES.card}>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full">
-                <div className="bg-card border border-border rounded-2xl p-5">
-                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center mb-4"><Package className="w-5 h-5 text-primary"/></div>
-                  <h4 className="mb-1">Título do Card</h4>
-                  <p className="text-sm text-muted-foreground">Descrição breve do conteúdo.</p>
-                  <button className="mt-4 text-sm text-primary hover:underline flex items-center gap-1">Ver detalhes<ChevronRight className="w-3.5 h-3.5"/></button>
-                </div>
-                <div className="bg-card border border-border rounded-2xl p-5">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center"><ArrowUpRight className="w-5 h-5 text-green-500"/></div>
-                    <span className="text-xs text-green-600 font-medium bg-green-500/10 px-2 py-0.5 rounded-full">+18%</span>
-                  </div>
-                  <p className="text-2xl font-semibold mb-1">1.284</p>
-                  <p className="text-sm text-muted-foreground">Total de Associados</p>
-                </div>
-                <div className="bg-card border border-border rounded-2xl p-5 hover:shadow-md transition-shadow cursor-pointer group">
-                  <div className="flex items-start justify-between">
-                    <div className="w-10 h-10 rounded-xl bg-violet-500/10 flex items-center justify-center"><Star className="w-5 h-5 text-violet-500"/></div>
-                    <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors"/>
-                  </div>
-                  <h4 className="mt-4 mb-1 group-hover:text-primary transition-colors">Card Interativo</h4>
-                  <p className="text-sm text-muted-foreground">Hover com sombra e transição de cor.</p>
-                </div>
+                <Card>
+                  <CardContent className="p-6">
+                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center mb-4"><Package className="w-5 h-5 text-primary"/></div>
+                    <h4 className="mb-1">Título do Card</h4>
+                    <p className="text-sm text-muted-foreground">Descrição breve do conteúdo.</p>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm">Métricas</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-2xl font-semibold mb-1">1.284</p>
+                    <p className="text-sm text-muted-foreground">Total de Associados</p>
+                  </CardContent>
+                </Card>
+                <Card className="hover:shadow-md transition-shadow cursor-pointer group">
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center"><ArrowUpRight className="w-5 h-5 text-green-500"/></div>
+                      <Badge variant="default">+18%</Badge>
+                    </div>
+                    <p className="text-2xl font-semibold mb-1">R$ 84k</p>
+                    <p className="text-sm text-muted-foreground">Receita Mensal</p>
+                  </CardContent>
+                </Card>
               </div>
             </ComponentBlock>
 
-            {/* Badge */}
-            <ComponentBlock title="Crachá / Etiqueta (Badge)" description="Sucesso · Info · Aviso · Erro · Neutro · Módulo" code={CODES.badge}>
+            {/* ── Badge ── */}
+            <ComponentBlock title="Badge" description="default · secondary · destructive · outline" code={CODES.badge}>
               <div className="space-y-3 w-full">
                 <div className="flex flex-wrap gap-2">
-                  {STATUS.map(s=>(
-                    <span key={s.label} className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium border ${s.bg} ${s.border} ${s.text}`}>
-                      <s.Icon className="w-3 h-3"/>{s.label}
-                    </span>
-                  ))}
-                  <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-muted-foreground border border-border">Neutro</span>
-                  <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-primary text-primary-foreground">Primário</span>
+                  <Badge>Padrão</Badge>
+                  <Badge variant="secondary">Secundário</Badge>
+                  <Badge variant="destructive">Destrutivo</Badge>
+                  <Badge variant="outline">Outline</Badge>
+                </div>
+                <div className="flex flex-wrap gap-2 pt-2 border-t border-border">
+                  <Badge variant="default">Inscrições Abertas</Badge>
+                  <Badge variant="secondary">Em Andamento</Badge>
+                  <Badge variant="outline">Planejamento</Badge>
+                  <Badge className="bg-green-500/10 text-green-600 border-green-500/20 border">Adimplente</Badge>
+                  <Badge className="bg-red-500/10 text-red-600 border-red-500/20 border">Em débito</Badge>
                 </div>
                 <div className="flex flex-wrap gap-2 pt-2 border-t border-border">
                   {MODULE_COLORS.map(m=>(
-                    <span key={m.label} className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium"
-                      style={{backgroundColor:`${m.color}18`,border:`1px solid ${m.color}33`,color:m.color}}>
-                      <m.Icon className="w-3 h-3"/>{m.label}
-                    </span>
+                    <Badge key={m.label} variant="outline"
+                      style={{backgroundColor:`${m.color}18`,borderColor:`${m.color}33`,color:m.color}}>
+                      <m.Icon className="w-3 h-3 mr-1"/>{m.label}
+                    </Badge>
                   ))}
                 </div>
               </div>
             </ComponentBlock>
 
-            {/* Avatar */}
-            <ComponentBlock title="Avatar" description="Tamanhos e paleta de cores" code={CODES.avatar}>
-              <div className="space-y-4 w-full">
-                <div className="flex items-end gap-4">
-                  {[{s:'w-7 h-7 text-xs',l:'xs'},{s:'w-9 h-9 text-sm',l:'sm'},{s:'w-10 h-10 text-sm',l:'md'},{s:'w-12 h-12 text-base',l:'lg'},{s:'w-14 h-14 text-lg',l:'xl'}].map(a=>(
-                    <div key={a.l} className="flex flex-col items-center gap-1">
-                      <div className={`${a.s} rounded-xl bg-primary/20 text-primary flex items-center justify-center font-bold`}>CE</div>
-                      <span className="text-[10px] text-muted-foreground">{a.l}</span>
-                    </div>
-                  ))}
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {['#60a5fa','#34d399','#818cf8','#a78bfa','#fbbf24','#fb7185','#f97316','#22d3ee','#92400e','#475569','#b45309','#0e7490'].map(color=>(
-                    <div key={color} className="w-9 h-9 rounded-xl flex items-center justify-center text-sm font-bold text-white" style={{backgroundColor:color}}>
-                      {color[1].toUpperCase()}
-                    </div>
-                  ))}
-                </div>
+            {/* ── Avatar ── */}
+            <ComponentBlock title="Avatar" description="Iniciais e tamanhos" code={CODES.avatar}>
+              <div className="flex items-end gap-4">
+                {[{s:'w-7 h-7 text-xs',l:'xs'},{s:'w-9 h-9 text-sm',l:'sm'},{s:'w-10 h-10 text-sm',l:'md'},{s:'w-12 h-12 text-base',l:'lg'},{s:'w-14 h-14 text-lg',l:'xl'}].map(a=>(
+                  <div key={a.l} className="flex flex-col items-center gap-1">
+                    <Avatar className={a.s}>
+                      <AvatarFallback>CE</AvatarFallback>
+                    </Avatar>
+                    <span className="text-[10px] text-muted-foreground">{a.l}</span>
+                  </div>
+                ))}
               </div>
             </ComponentBlock>
 
-            {/* Table */}
-            <ComponentBlock title="Tabela" description="Cabeçalho + linhas com ações" code={CODES.table} noPad>
+            {/* ── Table ── */}
+            <ComponentBlock title="Table" description="Tabela com cabeçalho e linhas" code={CODES.table} noPad>
               <div className="w-full overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead><tr className="border-b border-border bg-muted/50">
-                    {['Nome','E-mail','Status','Ação'].map(h=>(
-                      <th key={h} className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{h}</th>
-                    ))}
-                  </tr></thead>
-                  <tbody className="divide-y divide-border">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Nome</TableHead>
+                      <TableHead>E-mail</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead className="text-right">Ação</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
                     {[
                       {n:'Dr. Carlos Eduardo Silva',e:'carlos@sbcardio.org.br',s:'Ativo',av:'CE'},
                       {n:'Dra. Ana Paula Ferreira',e:'ana@sbcardio.org.br',s:'Inativo',av:'AP'},
                       {n:'Dr. Roberto Mendes Costa',e:'roberto@sbcardio.org.br',s:'Ativo',av:'RM'},
                     ].map((r,i)=>(
-                      <tr key={i} className="hover:bg-muted/30 transition-colors">
-                        <td className="px-4 py-3">
-                          <div className="flex items-center gap-2.5">
-                            <div className="w-7 h-7 rounded-lg bg-primary/20 text-primary flex items-center justify-center text-xs font-bold">{r.av}</div>
-                            {r.n}
-                          </div>
-                        </td>
-                        <td className="px-4 py-3 text-muted-foreground">{r.e}</td>
-                        <td className="px-4 py-3">
-                          <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${r.s==='Ativo'?'bg-green-500/10 text-green-600':'bg-muted text-muted-foreground'}`}>{r.s}</span>
-                        </td>
-                        <td className="px-4 py-3">
-                          <div className="flex items-center gap-1">
-                            <button className="p-1.5 hover:bg-accent rounded-lg transition-colors"><Eye className="w-3.5 h-3.5"/></button>
-                            <button className="p-1.5 hover:bg-accent rounded-lg transition-colors"><Pencil className="w-3.5 h-3.5"/></button>
-                            <button className="p-1.5 hover:bg-red-500/10 hover:text-red-500 rounded-lg transition-colors"><Trash2 className="w-3.5 h-3.5"/></button>
-                          </div>
-                        </td>
-                      </tr>
+                      <TableRow key={i}>
+                        <TableCell className="font-medium">{r.n}</TableCell>
+                        <TableCell className="text-muted-foreground">{r.e}</TableCell>
+                        <TableCell>
+                          <Badge variant={r.s==='Ativo'?'default':'secondary'}>{r.s}</Badge>
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <Button variant="ghost" size="icon" className="h-7 w-7"><Eye className="w-3.5 h-3.5"/></Button>
+                          <Button variant="ghost" size="icon" className="h-7 w-7"><Pencil className="w-3.5 h-3.5"/></Button>
+                          <Button variant="ghost" size="icon" className="h-7 w-7"><Trash2 className="w-3.5 h-3.5 text-red-500"/></Button>
+                        </TableCell>
+                      </TableRow>
                     ))}
-                  </tbody>
-                </table>
+                  </TableBody>
+                </Table>
               </div>
             </ComponentBlock>
 
-            {/* Charts */}
+            {/* ── Dialog ── */}
+            <ComponentBlock title="Dialog" description="Modal de confirmação" code={CODES.dialog}>
+              <DialogDemo />
+            </ComponentBlock>
+
+            {/* ── Form Controls ── */}
+            <ComponentBlock title="Checkbox & RadioGroup" description="Controles de formulário" code={CODES.formControls}>
+              <div className="space-y-4 w-full max-w-xs">
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <Checkbox id="terms" defaultChecked />
+                    <Label htmlFor="terms">Aceito os termos</Label>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Checkbox id="news" />
+                    <Label htmlFor="news">Receber novidades</Label>
+                  </div>
+                </div>
+                <Separator />
+                <RadioGroup defaultValue="option-a">
+                  <div className="flex items-center gap-2">
+                    <RadioGroupItem value="option-a" id="r1" />
+                    <Label htmlFor="r1">Opção A</Label>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <RadioGroupItem value="option-b" id="r2" />
+                    <Label htmlFor="r2">Opção B</Label>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <RadioGroupItem value="option-c" id="r3" />
+                    <Label htmlFor="r3">Opção C</Label>
+                  </div>
+                </RadioGroup>
+              </div>
+            </ComponentBlock>
+
+            {/* ── Progress ── */}
+            <ComponentBlock title="Progress" description="Barra de progresso" code={CODES.progress}>
+              <div className="space-y-4 w-full max-w-sm">
+                <div>
+                  <div className="flex justify-between text-xs text-muted-foreground mb-1.5"><span>Progresso</span><span>68%</span></div>
+                  <Progress value={68} className="h-2" />
+                </div>
+                <div>
+                  <div className="flex justify-between text-xs text-muted-foreground mb-1.5"><span>Nível Ouro</span><span>72%</span></div>
+                  <Progress value={72} className="h-2" />
+                </div>
+              </div>
+            </ComponentBlock>
+
+            {/* ── Tabs ── */}
+            <ComponentBlock title="Tabs" description="Navegação por abas" code={CODES.tabs}>
+              <div className="w-full">
+                <Tabs defaultValue="dashboard">
+                  <TabsList>
+                    <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
+                    <TabsTrigger value="associados">Associados</TabsTrigger>
+                    <TabsTrigger value="financeiro">Financeiro</TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="dashboard" className="pt-4 text-sm text-muted-foreground">
+                    Conteúdo do <strong>Dashboard</strong> com métricas e gráficos.
+                  </TabsContent>
+                  <TabsContent value="associados" className="pt-4 text-sm text-muted-foreground">
+                    Lista de <strong>Associados</strong> com filtros e paginação.
+                  </TabsContent>
+                  <TabsContent value="financeiro" className="pt-4 text-sm text-muted-foreground">
+                    Gestão <strong>Financeira</strong> com anuidades e relatórios.
+                  </TabsContent>
+                </Tabs>
+              </div>
+            </ComponentBlock>
+
+            {/* ── Sheet ── */}
+            <ComponentBlock title="Sheet" description="Painel lateral (drawer)" code={CODES.sheet}>
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button variant="outline">Abrir Painel</Button>
+                </SheetTrigger>
+                <SheetContent>
+                  <SheetHeader>
+                    <SheetTitle>Filtros</SheetTitle>
+                  </SheetHeader>
+                  <div className="py-4 space-y-4">
+                    <div>
+                      <Label>Buscar</Label>
+                      <Input placeholder="Nome ou CPF..." className="mt-1" />
+                    </div>
+                    <div>
+                      <Label>Status</Label>
+                      <Select>
+                        <SelectTrigger className="mt-1">
+                          <SelectValue placeholder="Todos" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="adimplente">Adimplente</SelectItem>
+                          <SelectItem value="inadimplente">Inadimplente</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <Button className="w-full">Aplicar Filtros</Button>
+                  </div>
+                </SheetContent>
+              </Sheet>
+            </ComponentBlock>
+
+            {/* ── Separator ── */}
+            <ComponentBlock title="Separator" description="Divisor visual" code={CODES.separator} centered>
+              <div className="w-full max-w-sm space-y-4">
+                <p className="text-sm text-muted-foreground">Conteúdo acima</p>
+                <Separator />
+                <p className="text-sm text-muted-foreground">Conteúdo abaixo</p>
+              </div>
+            </ComponentBlock>
+
+            {/* ── Charts ── */}
             <ComponentBlock title="Gráficos (Recharts)" description="Bar · Area · Line · Pie/Donut" code={CODES.charts}>
               <div className="grid grid-cols-2 gap-4 w-full">
                 <div>
@@ -1213,8 +1094,8 @@ export function DesignSystemPage() {
                     <AreaChart data={chartData} margin={{top:0,right:0,left:-20,bottom:0}}>
                       <defs><linearGradient id="ga2" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="var(--chart-1)" stopOpacity={0.2}/><stop offset="95%" stopColor="var(--chart-1)" stopOpacity={0}/></linearGradient></defs>
                       <CartesianGrid strokeDasharray="3 3" stroke="var(--border)"/>
-                      <XAxis dataKey="n" tick={{fontSize:10,fill:'var(--muted-foreground)'}} axisLine={false} tickLine={false}/>
-                      <YAxis tick={{fontSize:10,fill:'var(--muted-foreground)'}} axisLine={false} tickLine={false}/>
+                      <XAxis dataKey="n" tick={{fontSize:10,fill:'var(--muted-foreground)'}} axisLine={false}/>
+                      <YAxis tick={{fontSize:10,fill:'var(--muted-foreground)'}} axisLine={false}/>
                       <Tooltip contentStyle={{background:'var(--card)',border:'1px solid var(--border)',borderRadius:8,fontSize:11}}/>
                       <Area type="monotone" dataKey="a" stroke="var(--chart-1)" strokeWidth={2} fill="url(#ga2)"/>
                     </AreaChart>
@@ -1225,8 +1106,8 @@ export function DesignSystemPage() {
                   <ResponsiveContainer width="100%" height={120}>
                     <LineChart data={chartData} margin={{top:0,right:0,left:-20,bottom:0}}>
                       <CartesianGrid strokeDasharray="3 3" stroke="var(--border)"/>
-                      <XAxis dataKey="n" tick={{fontSize:10,fill:'var(--muted-foreground)'}} axisLine={false} tickLine={false}/>
-                      <YAxis tick={{fontSize:10,fill:'var(--muted-foreground)'}} axisLine={false} tickLine={false}/>
+                      <XAxis dataKey="n" tick={{fontSize:10,fill:'var(--muted-foreground)'}} axisLine={false}/>
+                      <YAxis tick={{fontSize:10,fill:'var(--muted-foreground)'}} axisLine={false}/>
                       <Tooltip contentStyle={{background:'var(--card)',border:'1px solid var(--border)',borderRadius:8,fontSize:11}}/>
                       <Line type="monotone" dataKey="a" stroke="var(--chart-1)" strokeWidth={2} dot={false}/>
                       <Line type="monotone" dataKey="b" stroke="var(--chart-2)" strokeWidth={2} dot={false}/>
@@ -1258,129 +1139,56 @@ export function DesignSystemPage() {
               </div>
             </ComponentBlock>
 
-            {/* Tabs */}
-            <ComponentBlock title="Abas (Tab Navigation)" description="Com indicador de borda inferior" code={CODES.tabs}>
-              <div className="w-full">
-                <div className="flex border-b border-border">
-                  {['Dashboard','Associados','Financeiro'].map((t,i)=>(
-                    <button key={t} onClick={()=>setActiveTab(i)}
-                      className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${activeTab===i?'border-primary text-primary':'border-transparent text-muted-foreground hover:text-foreground'}`}>
-                      {t}
-                    </button>
-                  ))}
-                </div>
-                <div className="pt-4 text-sm text-muted-foreground">
-                  Conteúdo da aba: <strong className="text-foreground">{['Dashboard','Associados','Financeiro'][activeTab]}</strong>
-                </div>
-              </div>
-            </ComponentBlock>
-
-            {/* Form Controls */}
-            <ComponentBlock title="Controles de Formulário" description="Checkbox · Radio · Switch/Toggle" code={CODES.formControls}>
-              <div className="space-y-3 w-full max-w-xs">
-                <label className="flex items-center gap-2.5 cursor-pointer">
-                  <input type="checkbox" checked={checked} onChange={e=>setChecked(e.target.checked)} className="w-4 h-4 accent-primary rounded"/>
-                  <span className="text-sm">Checkbox ativo</span>
-                </label>
-                <label className="flex items-center gap-2.5 cursor-pointer">
-                  <input type="checkbox" className="w-4 h-4 accent-primary rounded"/>
-                  <span className="text-sm">Checkbox inativo</span>
-                </label>
-                {['Opção A','Opção B'].map(o=>(
-                  <label key={o} className="flex items-center gap-2.5 cursor-pointer">
-                    <input type="radio" value={o} checked={radio===o} onChange={()=>setRadio(o)} className="w-4 h-4 accent-primary"/>
-                    <span className="text-sm">{o}</span>
-                  </label>
-                ))}
-                <div className="flex items-center gap-2.5">
-                  <button onClick={()=>setToggled(t=>!t)}
-                    className={`relative w-10 h-5 rounded-full transition-colors ${toggled?'bg-primary':'bg-muted border border-border'}`}>
-                    <span className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform ${toggled?'translate-x-5':''}`}/>
-                  </button>
-                  <span className="text-sm">Toggle {toggled?'ligado':'desligado'}</span>
-                </div>
-              </div>
-            </ComponentBlock>
-
-            {/* Progress + Spinner */}
-            <ComponentBlock title="Progresso e Spinner" description="Barra de progresso · Loading" code={CODES.progress}>
-              <div className="space-y-4 w-full max-w-sm">
-                <div>
-                  <div className="flex justify-between text-xs text-muted-foreground mb-1.5"><span>Progresso</span><span>68%</span></div>
-                  <div className="h-2 bg-muted rounded-full overflow-hidden"><div className="h-full bg-primary rounded-full" style={{width:'68%'}}/></div>
-                </div>
-                <div>
-                  <div className="flex justify-between text-xs text-muted-foreground mb-1.5"><span>Nível Ouro</span><span>72%</span></div>
-                  <div className="h-2 bg-muted rounded-full overflow-hidden"><div className="h-full rounded-full" style={{width:'72%',backgroundColor:'#b45309'}}/></div>
-                </div>
-                <div className="flex items-center gap-4">
-                  <Loader2 className="w-5 h-5 animate-spin text-primary"/>
-                  <Loader2 className="w-4 h-4 animate-spin text-muted-foreground"/>
-                  <Loader2 className="w-6 h-6 animate-spin text-green-500"/>
-                  <span className="text-sm text-muted-foreground">Carregando...</span>
-                </div>
-              </div>
-            </ComponentBlock>
-
-            {/* Alertas */}
-            <ComponentBlock title="Alertas / Banners" description="Sucesso · Info · Aviso · Erro" code={CODES.alert}>
-              <div className="space-y-2 w-full">
-                {STATUS.map(s=>(
-                  <div key={s.label} className={`flex items-start gap-2.5 p-3 rounded-xl border ${s.bg} ${s.border}`}>
-                    <s.Icon className={`w-4 h-4 mt-0.5 flex-shrink-0 ${s.text}`}/>
-                    <p className={`text-xs ${s.text}`}><strong>{s.label}:</strong> Mensagem de feedback para o usuário.</p>
-                  </div>
-                ))}
-              </div>
-            </ComponentBlock>
-
-            {/* Search */}
-            <ComponentBlock title="Barra de Busca" description="Padrão e compacta" code={CODES.search} centered>
-              <div className="w-full max-w-sm space-y-2">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"/>
-                  <input placeholder="Buscar associados..." className="w-full pl-9 pr-4 py-2.5 bg-card border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary/20 outline-none"/>
-                </div>
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"/>
-                  <input placeholder="Pesquisar..." className="w-full pl-9 pr-4 py-2 bg-muted border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary/20 outline-none"/>
-                </div>
-              </div>
-            </ComponentBlock>
-
-            {/* KPI */}
-            <ComponentBlock title="Card KPI" description="Indicador de métrica com badge de variação" code={CODES.kpi}>
-              <div className="grid grid-cols-2 gap-3">
-                {[
-                  {label:'Associados',value:'1.284',badge:'+18%',Icon:Users,bg:'bg-blue-500/10',ic:'text-blue-500'},
-                  {label:'Receita',value:'R$ 84k',badge:'+8%',Icon:DollarSign,bg:'bg-green-500/10',ic:'text-green-500'},
-                ].map(k=>(
-                  <div key={k.label} className="bg-card border border-border rounded-2xl p-5">
+            {/* ── KPI Card ── */}
+            <ComponentBlock title="KPI Card" description="Indicador de métrica" code={CODES.kpi}>
+              <div className="grid grid-cols-2 gap-3 w-full">
+                <Card>
+                  <CardContent className="p-6">
                     <div className="flex items-center justify-between mb-4">
-                      <div className={`w-10 h-10 rounded-full ${k.bg} flex items-center justify-center`}><k.Icon className={`w-5 h-5 ${k.ic}`}/></div>
-                      <span className="text-xs text-green-600 font-medium bg-green-500/10 px-2 py-0.5 rounded-full">{k.badge}</span>
+                      <div className="w-12 h-12 rounded-full bg-blue-500/10 flex items-center justify-center"><Users className="w-6 h-6 text-blue-500"/></div>
+                      <Badge variant="default">+18%</Badge>
                     </div>
-                    <p className="text-2xl font-semibold mb-1">{k.value}</p>
-                    <p className="text-sm text-muted-foreground">{k.label}</p>
-                  </div>
-                ))}
+                    <h3 className="text-2xl font-semibold mb-1">1.284</h3>
+                    <p className="text-sm text-muted-foreground">Total de Associados</p>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="w-12 h-12 rounded-full bg-green-500/10 flex items-center justify-center"><DollarSign className="w-6 h-6 text-green-500"/></div>
+                      <Badge variant="secondary">+8%</Badge>
+                    </div>
+                    <h3 className="text-2xl font-semibold mb-1">R$ 84k</h3>
+                    <p className="text-sm text-muted-foreground">Receita Mensal</p>
+                  </CardContent>
+                </Card>
               </div>
             </ComponentBlock>
 
-            {/* Empty State */}
-            <ComponentBlock title="Estado Vazio (Empty State)" description="Ícone · Mensagem · Ação" code={CODES.emptyState} centered>
+            {/* ── Search ── */}
+            <ComponentBlock title="Barra de Busca" description="Input com ícone" code={CODES.search} centered>
+              <div className="w-full max-w-sm">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"/>
+                  <Input placeholder="Buscar associados..." className="pl-9" />
+                </div>
+              </div>
+            </ComponentBlock>
+
+            {/* ── Empty State ── */}
+            <ComponentBlock title="Estado Vazio" description="Ícone · Mensagem · Ação" code={CODES.emptyState} centered>
               <div className="flex flex-col items-center py-8 text-center">
                 <div className="w-12 h-12 rounded-2xl bg-muted flex items-center justify-center mb-3"><Package className="w-6 h-6 text-muted-foreground"/></div>
                 <p className="text-sm font-medium mb-1">Nenhum resultado encontrado</p>
                 <p className="text-xs text-muted-foreground max-w-[180px]">Tente ajustar os filtros ou realize uma nova busca.</p>
-                <button className="mt-3 flex items-center gap-1.5 px-3 py-1.5 text-xs bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors">
-                  <Plus className="w-3.5 h-3.5"/> Criar novo
-                </button>
+                <Button size="sm" className="mt-3">
+                  <Plus className="w-3.5 h-3.5 mr-1.5"/> Criar novo
+                </Button>
               </div>
             </ComponentBlock>
 
-            {/* Breadcrumb */}
-            <ComponentBlock title="Breadcrumb" description="Caminho de navegação hierárquica" code={CODES.breadcrumb} centered>
+            {/* ── Breadcrumb ── */}
+            <ComponentBlock title="Breadcrumb" description="Caminho de navegação" code={CODES.breadcrumb} centered>
               <nav className="flex items-center gap-1.5 text-sm">
                 {['Hub','Associação','Associados'].map((c,i,arr)=>(
                   <div key={c} className="flex items-center gap-1.5">
@@ -1391,22 +1199,28 @@ export function DesignSystemPage() {
               </nav>
             </ComponentBlock>
 
-            {/* Pagination */}
-            <ComponentBlock title="Paginação" description="Páginas com ellipsis e navegação" code={CODES.pagination} centered>
+            {/* ── Pagination ── */}
+            <ComponentBlock title="Paginação" description="Navegação de páginas" code={CODES.pagination} centered>
               <div className="flex items-center gap-1">
-                <button onClick={()=>setPage(p=>Math.max(1,p-1))} className="w-8 h-8 rounded-lg text-sm hover:bg-accent text-muted-foreground hover:text-foreground transition-colors">‹</button>
+                <Button variant="outline" size="icon" className="h-8 w-8" onClick={()=>setPage(p=>Math.max(1,p-1))}>«</Button>
+                <Button variant="outline" size="sm" className="h-8" onClick={()=>setPage(p=>Math.max(1,p-1))}>
+                  <ChevronLeft className="w-3 h-3 mr-1"/> Anterior
+                </Button>
                 {[1,2,3,'…',12].map((p,i)=>(
-                  <button key={i} onClick={()=>typeof p==='number'&&setPage(p)}
-                    className={`w-8 h-8 rounded-lg text-sm transition-colors ${p===page?'bg-primary text-primary-foreground':'hover:bg-accent text-muted-foreground hover:text-foreground'}`}>
+                  <Button key={i} variant={p===page?'default':'outline'} size="icon" className="h-8 w-8 text-xs"
+                    onClick={()=>typeof p==='number'&&setPage(p)}>
                     {p}
-                  </button>
+                  </Button>
                 ))}
-                <button onClick={()=>setPage(p=>Math.min(12,p+1))} className="w-8 h-8 rounded-lg text-sm hover:bg-accent text-muted-foreground hover:text-foreground transition-colors">›</button>
+                <Button variant="outline" size="sm" className="h-8" onClick={()=>setPage(p=>Math.min(12,p+1))}>
+                  Próxima <ChevronRight className="w-3 h-3 ml-1"/>
+                </Button>
+                <Button variant="outline" size="icon" className="h-8 w-8" onClick={()=>setPage(p=>Math.min(12,p+1))}>»</Button>
               </div>
             </ComponentBlock>
 
-            {/* Module Icon */}
-            <ComponentBlock title="Ícone de Módulo" description="Badge colorido por módulo — tabs, cards, menus" code={CODES.moduleIcon}>
+            {/* ── Module Icon ── */}
+            <ComponentBlock title="Ícone de Módulo" description="Badge colorido por módulo" code={CODES.moduleIcon}>
               <div className="space-y-4 w-full">
                 <div className="flex flex-wrap gap-3 items-center">
                   {MODULE_COLORS.map(m=>(
@@ -1420,24 +1234,24 @@ export function DesignSystemPage() {
                 </div>
                 <div className="flex flex-wrap gap-2 pt-3 border-t border-border">
                   {MODULE_COLORS.map(m=>(
-                    <span key={m.label} className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium"
-                      style={{backgroundColor:`${m.color}18`,border:`1px solid ${m.color}33`,color:m.color}}>
-                      <m.Icon className="w-3 h-3"/>{m.label}
-                    </span>
+                    <Badge key={m.label} variant="outline"
+                      style={{backgroundColor:`${m.color}18`,borderColor:`${m.color}33`,color:m.color}}>
+                      <m.Icon className="w-3 h-3 mr-1"/>{m.label}
+                    </Badge>
                   ))}
                 </div>
               </div>
             </ComponentBlock>
 
-            {/* Gamification */}
-            <ComponentBlock title="Níveis de Gamificação" description="Cashback — Bronze · Prata · Ouro · Platina · Diamante" code={CODES.gamification}>
+            {/* ── Gamification ── */}
+            <ComponentBlock title="Gamificação" description="Níveis — Bronze · Prata · Ouro · Platina · Diamante" code={CODES.gamification}>
               <div className="space-y-4 w-full">
                 <div className="flex flex-wrap gap-2">
                   {GAMIFICATION.map(g=>(
-                    <span key={g.label} className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold"
-                      style={{color:g.color,backgroundColor:g.bg,border:`1px solid ${g.color}33`}}>
-                      <Trophy className="w-3 h-3"/>{g.label}
-                    </span>
+                    <Badge key={g.label} variant="outline"
+                      style={{color:g.color,backgroundColor:g.bg,borderColor:`${g.color}33`}}>
+                      <Trophy className="w-3 h-3 mr-1"/>{g.label}
+                    </Badge>
                   ))}
                 </div>
                 <div className="space-y-2 max-w-xs">
@@ -1446,7 +1260,7 @@ export function DesignSystemPage() {
                     return (
                       <div key={g.label}>
                         <div className="flex justify-between text-[11px] text-muted-foreground mb-1"><span>{g.label}</span><span>{pct}%</span></div>
-                        <div className="h-1.5 bg-muted rounded-full overflow-hidden"><div className="h-full rounded-full" style={{width:`${pct}%`,backgroundColor:g.color}}/></div>
+                        <Progress value={pct} className="h-1.5" />
                       </div>
                     );
                   })}
@@ -1459,11 +1273,35 @@ export function DesignSystemPage() {
 
         {/* Footer */}
         <footer className="border-t border-border pt-8 pb-12 text-center text-xs text-muted-foreground">
-          <p>iTARGET Hub Design System · <Code>React 18 + Tailwind CSS v4 + Lucide React + Recharts</Code></p>
+          <p>iTARGET Hub Design System · <Code>React 18 + Tailwind CSS v4 + shadcn/ui + Lucide React + Recharts</Code></p>
           <p className="mt-2">© 2026 Itarget · Todos os direitos reservados</p>
         </footer>
 
       </div>
     </div>
+  );
+}
+
+// ── Dialog Demo ───────────────────────────────────────────────────────────────
+function DialogDemo() {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <Button variant="outline" onClick={() => setOpen(true)}>Abrir Modal</Button>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Confirmar Ação</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground">
+            Tem certeza que deseja realizar esta ação? Esta operação não pode ser desfeita.
+          </p>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setOpen(false)}>Cancelar</Button>
+            <Button onClick={() => setOpen(false)}>Confirmar</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }

@@ -4,6 +4,13 @@ import {
   Plus, Trash2, Eye, EyeOff, ChevronDown, Upload, CheckCircle, AlignJustify,
   LayoutTemplate, PanelLeft, Star
 } from 'lucide-react';
+import { Card, CardContent } from '@/app/components/ui/card';
+import { Button } from '@/app/components/ui/button';
+import { Input } from '@/app/components/ui/input';
+import { Label } from '@/app/components/ui/label';
+import { Textarea } from '@/app/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/app/components/ui/select';
+import { Checkbox } from '@/app/components/ui/checkbox';
 
 type LayoutMode = 'accordion' | 'tabs' | 'sidebar';
 type SectionId = 'personal' | 'addresses' | 'phones' | 'graduation' | 'specialties' | 'documents' | 'indication' | 'professional';
@@ -51,16 +58,6 @@ interface AssociadoFormProps {
   onSave: () => void;
 }
 
-// ── Shared field components ──────────────────────────────────────────────────
-const Label = ({ text, required }: { text: string; required?: boolean }) => (
-  <label className="text-sm font-medium mb-1.5 block">
-    {text}{required && <span className="text-red-500 ml-1">*</span>}
-  </label>
-);
-
-const inp = 'w-full px-3 py-2 bg-background border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all';
-const selClass = 'w-full px-3 py-2 bg-background border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary/20 outline-none appearance-none';
-
 export function AssociadoForm({ associate, onBack, onSave }: AssociadoFormProps) {
   const [layoutMode, setLayoutMode] = useState<LayoutMode>('accordion');
   const [activeSection, setActiveSection] = useState<SectionId>('personal');
@@ -68,37 +65,29 @@ export function AssociadoForm({ associate, onBack, onSave }: AssociadoFormProps)
   const [showPwd, setShowPwd] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
-  // Personal state
   const [personal, setP] = useState({
     name: associate?.name || '', cpf: associate?.cpf || '', rg: '', birthdate: '',
     gender: '', maritalStatus: '', nationality: 'Brasileira', naturalness: '', crm: '',
     email: associate?.email || '', password: '', confirmPassword: '',
   });
 
-  // Addresses
   const [addresses, setAddresses] = useState<Address[]>([
     { id: 1, type: 'Residencial', zip: '', street: '', number: '', complement: '', neighborhood: '', city: '', state: '', isPrimary: true },
   ]);
 
-  // Phones
   const [phones, setPhones] = useState<PhoneEntry[]>([
     { id: 1, type: 'Celular', number: '', hasWhatsapp: true, isPrimary: true },
   ]);
 
-  // Graduation
   const [graduations, setGraduations] = useState<Graduation[]>([
     { id: 1, type: 'Graduação', course: '', institution: '', startYear: '', endYear: '', status: 'Concluído' },
   ]);
 
-  // Specialties
   const [specialties, setSpecialties] = useState<Specialty[]>([
     { id: 1, name: '', area: '', certYear: '', council: 'CFM', registry: '' },
   ]);
 
-  // Indication
   const [indication, setInd] = useState({ memberName: '', memberCRM: '', registryNumber: '', date: '', notes: '' });
-
-  // Professional
   const [professional, setPro] = useState({ institution: '', role: '', department: '', type: 'Privado', startDate: '', website: '' });
 
   const toggleExpand = (id: SectionId) => {
@@ -108,83 +97,85 @@ export function AssociadoForm({ associate, onBack, onSave }: AssociadoFormProps)
   const makePrimaryAddr = (id: number) => setAddresses(a => a.map(x => ({ ...x, isPrimary: x.id === id })));
   const makePrimaryPhone = (id: number) => setPhones(p => p.map(x => ({ ...x, isPrimary: x.id === id })));
 
-  // ── Section renderers ────────────────────────────────────────────────────────
   const renderSection = (id: SectionId) => {
     switch (id) {
-      // ─ Personal ─────────────────────────────────────────────────────────────
       case 'personal': return (
         <div className="space-y-5">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="md:col-span-2">
-              <Label text="Nome completo" required />
-              <input className={inp} placeholder="Nome completo do associado" value={personal.name} onChange={e => setP(p => ({ ...p, name: e.target.value }))} />
+              <Label>Nome completo <span className="text-red-500">*</span></Label>
+              <Input placeholder="Nome completo do associado" value={personal.name} onChange={e => setP(p => ({ ...p, name: e.target.value }))} />
             </div>
             <div>
-              <Label text="CPF" required />
-              <input className={inp} placeholder="000.000.000-00" value={personal.cpf} onChange={e => setP(p => ({ ...p, cpf: e.target.value }))} />
+              <Label>CPF <span className="text-red-500">*</span></Label>
+              <Input placeholder="000.000.000-00" value={personal.cpf} onChange={e => setP(p => ({ ...p, cpf: e.target.value }))} />
             </div>
             <div>
-              <Label text="RG" />
-              <input className={inp} placeholder="Número do RG" value={personal.rg} onChange={e => setP(p => ({ ...p, rg: e.target.value }))} />
+              <Label>RG</Label>
+              <Input placeholder="Número do RG" value={personal.rg} onChange={e => setP(p => ({ ...p, rg: e.target.value }))} />
             </div>
             <div>
-              <Label text="Data de nascimento" required />
-              <input className={inp} type="date" value={personal.birthdate} onChange={e => setP(p => ({ ...p, birthdate: e.target.value }))} />
+              <Label>Data de nascimento <span className="text-red-500">*</span></Label>
+              <Input type="date" value={personal.birthdate} onChange={e => setP(p => ({ ...p, birthdate: e.target.value }))} />
             </div>
             <div>
-              <Label text="CRM" required />
-              <input className={inp} placeholder="CRM SP 000000" value={personal.crm} onChange={e => setP(p => ({ ...p, crm: e.target.value }))} />
+              <Label>CRM <span className="text-red-500">*</span></Label>
+              <Input placeholder="CRM SP 000000" value={personal.crm} onChange={e => setP(p => ({ ...p, crm: e.target.value }))} />
             </div>
             <div>
-              <Label text="Sexo" />
-              <select className={selClass} value={personal.gender} onChange={e => setP(p => ({ ...p, gender: e.target.value }))}>
-                <option value="">Selecione</option>
-                {['Masculino', 'Feminino', 'Outro', 'Não informar'].map(o => <option key={o}>{o}</option>)}
-              </select>
+              <Label>Sexo</Label>
+              <Select value={personal.gender} onValueChange={v => setP(p => ({ ...p, gender: v }))}>
+                <SelectTrigger><SelectValue placeholder="Selecione" /></SelectTrigger>
+                <SelectContent>
+                  {['Masculino', 'Feminino', 'Outro', 'Não informar'].map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}
+                </SelectContent>
+              </Select>
             </div>
             <div>
-              <Label text="Estado civil" />
-              <select className={selClass} value={personal.maritalStatus} onChange={e => setP(p => ({ ...p, maritalStatus: e.target.value }))}>
-                <option value="">Selecione</option>
-                {['Solteiro(a)', 'Casado(a)', 'Divorciado(a)', 'Viúvo(a)', 'União estável'].map(o => <option key={o}>{o}</option>)}
-              </select>
+              <Label>Estado civil</Label>
+              <Select value={personal.maritalStatus} onValueChange={v => setP(p => ({ ...p, maritalStatus: v }))}>
+                <SelectTrigger><SelectValue placeholder="Selecione" /></SelectTrigger>
+                <SelectContent>
+                  {['Solteiro(a)', 'Casado(a)', 'Divorciado(a)', 'Viúvo(a)', 'União estável'].map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}
+                </SelectContent>
+              </Select>
             </div>
             <div>
-              <Label text="Naturalidade" />
-              <input className={inp} placeholder="Cidade natal" value={personal.naturalness} onChange={e => setP(p => ({ ...p, naturalness: e.target.value }))} />
+              <Label>Naturalidade</Label>
+              <Input placeholder="Cidade natal" value={personal.naturalness} onChange={e => setP(p => ({ ...p, naturalness: e.target.value }))} />
             </div>
             <div>
-              <Label text="Nacionalidade" />
-              <input className={inp} value={personal.nationality} onChange={e => setP(p => ({ ...p, nationality: e.target.value }))} />
+              <Label>Nacionalidade</Label>
+              <Input value={personal.nationality} onChange={e => setP(p => ({ ...p, nationality: e.target.value }))} />
             </div>
           </div>
           <div className="border-t border-border pt-5">
             <p className="text-sm font-semibold mb-4 text-muted-foreground flex items-center gap-2">
-              <span className="w-5 h-5 rounded bg-primary/10 flex items-center justify-center text-primary text-xs">🔐</span>
+              <span className="w-5 h-5 rounded bg-primary/10 flex items-center justify-center text-primary text-xs">Acesso</span>
               Acesso ao sistema
             </p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="md:col-span-1">
-                <Label text="E-mail" required />
-                <input className={inp} type="email" placeholder="email@exemplo.com" value={personal.email} onChange={e => setP(p => ({ ...p, email: e.target.value }))} />
+                <Label>E-mail <span className="text-red-500">*</span></Label>
+                <Input type="email" placeholder="email@exemplo.com" value={personal.email} onChange={e => setP(p => ({ ...p, email: e.target.value }))} />
                 <p className="text-xs text-muted-foreground mt-1">Usado para login no sistema</p>
               </div>
               <div>
-                <Label text="Senha" required />
+                <Label>Senha <span className="text-red-500">*</span></Label>
                 <div className="relative">
-                  <input className={`${inp} pr-10`} type={showPwd ? 'text' : 'password'} placeholder="••••••••" value={personal.password} onChange={e => setP(p => ({ ...p, password: e.target.value }))} />
-                  <button type="button" onClick={() => setShowPwd(!showPwd)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
+                  <Input type={showPwd ? 'text' : 'password'} placeholder="••••••••" value={personal.password} onChange={e => setP(p => ({ ...p, password: e.target.value }))} className="pr-10" />
+                  <Button type="button" variant="ghost" size="icon" onClick={() => setShowPwd(!showPwd)} className="absolute right-0 top-0 h-full px-3">
                     {showPwd ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                  </button>
+                  </Button>
                 </div>
               </div>
               <div>
-                <Label text="Confirmar senha" required />
+                <Label>Confirmar senha <span className="text-red-500">*</span></Label>
                 <div className="relative">
-                  <input className={`${inp} pr-10`} type={showConfirm ? 'text' : 'password'} placeholder="••••••••" value={personal.confirmPassword} onChange={e => setP(p => ({ ...p, confirmPassword: e.target.value }))} />
-                  <button type="button" onClick={() => setShowConfirm(!showConfirm)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
+                  <Input type={showConfirm ? 'text' : 'password'} placeholder="••••••••" value={personal.confirmPassword} onChange={e => setP(p => ({ ...p, confirmPassword: e.target.value }))} className="pr-10" />
+                  <Button type="button" variant="ghost" size="icon" onClick={() => setShowConfirm(!showConfirm)} className="absolute right-0 top-0 h-full px-3">
                     {showConfirm ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                  </button>
+                  </Button>
                 </div>
               </div>
             </div>
@@ -192,7 +183,6 @@ export function AssociadoForm({ associate, onBack, onSave }: AssociadoFormProps)
         </div>
       );
 
-      // ─ Addresses ─────────────────────────────────────────────────────────────
       case 'addresses': return (
         <div className="space-y-4">
           {addresses.map((addr, idx) => (
@@ -201,73 +191,77 @@ export function AssociadoForm({ associate, onBack, onSave }: AssociadoFormProps)
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-semibold">Endereço {idx + 1}</span>
                   {addr.isPrimary && (
-                    <span className="flex items-center gap-1 text-xs px-2 py-0.5 bg-primary/10 text-primary rounded-full">
+                    <Badge variant="secondary" className="gap-1">
                       <Star className="w-3 h-3" /> Principal
-                    </span>
+                    </Badge>
                   )}
                 </div>
                 <div className="flex items-center gap-2">
                   {!addr.isPrimary && (
-                    <button onClick={() => makePrimaryAddr(addr.id)} className="text-xs text-muted-foreground hover:text-primary transition-colors">
+                    <Button variant="ghost" size="sm" onClick={() => makePrimaryAddr(addr.id)} className="text-xs text-muted-foreground hover:text-primary">
                       Definir como principal
-                    </button>
+                    </Button>
                   )}
                   {addresses.length > 1 && (
-                    <button onClick={() => setAddresses(a => a.filter(x => x.id !== addr.id))} className="p-1 hover:bg-red-500/10 rounded text-muted-foreground hover:text-red-600 transition-colors">
+                    <Button variant="ghost" size="icon" onClick={() => setAddresses(a => a.filter(x => x.id !== addr.id))} className="h-8 w-8 text-muted-foreground hover:text-red-600">
                       <Trash2 className="w-4 h-4" />
-                    </button>
+                    </Button>
                   )}
                 </div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <div>
-                  <Label text="Tipo" />
-                  <select className={selClass} value={addr.type} onChange={e => setAddresses(a => a.map(x => x.id === addr.id ? { ...x, type: e.target.value } : x))}>
-                    {['Residencial', 'Comercial', 'Correspondência', 'Outro'].map(o => <option key={o}>{o}</option>)}
-                  </select>
+                  <Label>Tipo</Label>
+                  <Select value={addr.type} onValueChange={v => setAddresses(a => a.map(x => x.id === addr.id ? { ...x, type: v } : x))}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      {['Residencial', 'Comercial', 'Correspondência', 'Outro'].map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div>
-                  <Label text="CEP" />
-                  <input className={inp} placeholder="00000-000" value={addr.zip} onChange={e => setAddresses(a => a.map(x => x.id === addr.id ? { ...x, zip: e.target.value } : x))} />
+                  <Label>CEP</Label>
+                  <Input placeholder="00000-000" value={addr.zip} onChange={e => setAddresses(a => a.map(x => x.id === addr.id ? { ...x, zip: e.target.value } : x))} />
                 </div>
                 <div>
-                  <Label text="Estado" />
-                  <select className={selClass} value={addr.state} onChange={e => setAddresses(a => a.map(x => x.id === addr.id ? { ...x, state: e.target.value } : x))}>
-                    <option value="">UF</option>
-                    {['AC','AL','AP','AM','BA','CE','DF','ES','GO','MA','MT','MS','MG','PA','PB','PR','PE','PI','RJ','RN','RS','RO','RR','SC','SP','SE','TO'].map(s => <option key={s}>{s}</option>)}
-                  </select>
+                  <Label>Estado</Label>
+                  <Select value={addr.state} onValueChange={v => setAddresses(a => a.map(x => x.id === addr.id ? { ...x, state: v } : x))}>
+                    <SelectTrigger><SelectValue placeholder="UF" /></SelectTrigger>
+                    <SelectContent>
+                      {['AC','AL','AP','AM','BA','CE','DF','ES','GO','MA','MT','MS','MG','PA','PB','PR','PE','PI','RJ','RN','RS','RO','RR','SC','SP','SE','TO'].map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div className="md:col-span-2">
-                  <Label text="Logradouro" required />
-                  <input className={inp} placeholder="Rua, Avenida, etc." value={addr.street} onChange={e => setAddresses(a => a.map(x => x.id === addr.id ? { ...x, street: e.target.value } : x))} />
+                  <Label>Logradouro <span className="text-red-500">*</span></Label>
+                  <Input placeholder="Rua, Avenida, etc." value={addr.street} onChange={e => setAddresses(a => a.map(x => x.id === addr.id ? { ...x, street: e.target.value } : x))} />
                 </div>
                 <div>
-                  <Label text="Número" required />
-                  <input className={inp} placeholder="Nº" value={addr.number} onChange={e => setAddresses(a => a.map(x => x.id === addr.id ? { ...x, number: e.target.value } : x))} />
+                  <Label>Número <span className="text-red-500">*</span></Label>
+                  <Input placeholder="Nº" value={addr.number} onChange={e => setAddresses(a => a.map(x => x.id === addr.id ? { ...x, number: e.target.value } : x))} />
                 </div>
                 <div>
-                  <Label text="Complemento" />
-                  <input className={inp} placeholder="Apto, Bloco, etc." value={addr.complement} onChange={e => setAddresses(a => a.map(x => x.id === addr.id ? { ...x, complement: e.target.value } : x))} />
+                  <Label>Complemento</Label>
+                  <Input placeholder="Apto, Bloco, etc." value={addr.complement} onChange={e => setAddresses(a => a.map(x => x.id === addr.id ? { ...x, complement: e.target.value } : x))} />
                 </div>
                 <div>
-                  <Label text="Bairro" />
-                  <input className={inp} placeholder="Bairro" value={addr.neighborhood} onChange={e => setAddresses(a => a.map(x => x.id === addr.id ? { ...x, neighborhood: e.target.value } : x))} />
+                  <Label>Bairro</Label>
+                  <Input placeholder="Bairro" value={addr.neighborhood} onChange={e => setAddresses(a => a.map(x => x.id === addr.id ? { ...x, neighborhood: e.target.value } : x))} />
                 </div>
                 <div>
-                  <Label text="Cidade" required />
-                  <input className={inp} placeholder="Cidade" value={addr.city} onChange={e => setAddresses(a => a.map(x => x.id === addr.id ? { ...x, city: e.target.value } : x))} />
+                  <Label>Cidade <span className="text-red-500">*</span></Label>
+                  <Input placeholder="Cidade" value={addr.city} onChange={e => setAddresses(a => a.map(x => x.id === addr.id ? { ...x, city: e.target.value } : x))} />
                 </div>
               </div>
             </div>
           ))}
-          <button onClick={() => setAddresses(a => [...a, { id: Date.now(), type: 'Comercial', zip: '', street: '', number: '', complement: '', neighborhood: '', city: '', state: '', isPrimary: false }])}
-            className="w-full flex items-center justify-center gap-2 py-2.5 border border-dashed border-border rounded-xl text-sm text-muted-foreground hover:text-foreground hover:border-primary/50 transition-colors">
-            <Plus className="w-4 h-4" /> Adicionar endereço
-          </button>
+          <Button variant="outline" className="w-full border-dashed"
+            onClick={() => setAddresses(a => [...a, { id: Date.now(), type: 'Comercial', zip: '', street: '', number: '', complement: '', neighborhood: '', city: '', state: '', isPrimary: false }])}>
+            <Plus className="w-4 h-4 mr-2" /> Adicionar endereço
+          </Button>
         </div>
       );
 
-      // ─ Phones ─────────────────────────────────────────────────────────────────
       case 'phones': return (
         <div className="space-y-3">
           {phones.map((ph, idx) => (
@@ -275,79 +269,88 @@ export function AssociadoForm({ associate, onBack, onSave }: AssociadoFormProps)
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-semibold">Telefone {idx + 1}</span>
-                  {ph.isPrimary && <span className="text-xs px-2 py-0.5 bg-primary/10 text-primary rounded-full flex items-center gap-1"><Star className="w-3 h-3" /> Principal</span>}
+                  {ph.isPrimary && <Badge variant="secondary" className="gap-1"><Star className="w-3 h-3" /> Principal</Badge>}
                 </div>
                 <div className="flex items-center gap-2">
-                  {!ph.isPrimary && <button onClick={() => makePrimaryPhone(ph.id)} className="text-xs text-muted-foreground hover:text-primary">Definir como principal</button>}
-                  {phones.length > 1 && <button onClick={() => setPhones(p => p.filter(x => x.id !== ph.id))} className="p-1 hover:bg-red-500/10 rounded text-muted-foreground hover:text-red-600"><Trash2 className="w-4 h-4" /></button>}
+                  {!ph.isPrimary && <Button variant="ghost" size="sm" onClick={() => makePrimaryPhone(ph.id)} className="text-xs text-muted-foreground hover:text-primary">Definir como principal</Button>}
+                  {phones.length > 1 && <Button variant="ghost" size="icon" onClick={() => setPhones(p => p.filter(x => x.id !== ph.id))} className="h-7 w-7 text-muted-foreground hover:text-red-600"><Trash2 className="w-4 h-4" /></Button>}
                 </div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <div>
-                  <Label text="Tipo" />
-                  <select className={selClass} value={ph.type} onChange={e => setPhones(p => p.map(x => x.id === ph.id ? { ...x, type: e.target.value } : x))}>
-                    {['Celular', 'Fixo', 'Trabalho', 'Outro'].map(o => <option key={o}>{o}</option>)}
-                  </select>
+                  <Label>Tipo</Label>
+                  <Select value={ph.type} onValueChange={v => setPhones(p => p.map(x => x.id === ph.id ? { ...x, type: v } : x))}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      {['Celular', 'Fixo', 'Trabalho', 'Outro'].map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div className="md:col-span-2">
-                  <Label text="Número" required />
-                  <input className={inp} placeholder="(00) 00000-0000" value={ph.number} onChange={e => setPhones(p => p.map(x => x.id === ph.id ? { ...x, number: e.target.value } : x))} />
+                  <Label>Número <span className="text-red-500">*</span></Label>
+                  <Input placeholder="(00) 00000-0000" value={ph.number} onChange={e => setPhones(p => p.map(x => x.id === ph.id ? { ...x, number: e.target.value } : x))} />
                 </div>
               </div>
               <div className="mt-3 flex items-center gap-2">
-                <input type="checkbox" id={`wa-${ph.id}`} checked={ph.hasWhatsapp} onChange={e => setPhones(p => p.map(x => x.id === ph.id ? { ...x, hasWhatsapp: e.target.checked } : x))} className="rounded border-border" />
-                <label htmlFor={`wa-${ph.id}`} className="text-sm text-muted-foreground cursor-pointer select-none">Este número tem WhatsApp</label>
+                <Checkbox id={`wa-${ph.id}`} checked={ph.hasWhatsapp}
+                  onCheckedChange={c => setPhones(p => p.map(x => x.id === ph.id ? { ...x, hasWhatsapp: !!c } : x))} />
+                <Label htmlFor={`wa-${ph.id}`} className="text-sm text-muted-foreground cursor-pointer select-none">Este número tem WhatsApp</Label>
               </div>
             </div>
           ))}
-          <button onClick={() => setPhones(p => [...p, { id: Date.now(), type: 'Fixo', number: '', hasWhatsapp: false, isPrimary: false }])}
-            className="w-full flex items-center justify-center gap-2 py-2.5 border border-dashed border-border rounded-xl text-sm text-muted-foreground hover:text-foreground hover:border-primary/50 transition-colors">
-            <Plus className="w-4 h-4" /> Adicionar telefone
-          </button>
+          <Button variant="outline" className="w-full border-dashed"
+            onClick={() => setPhones(p => [...p, { id: Date.now(), type: 'Fixo', number: '', hasWhatsapp: false, isPrimary: false }])}>
+            <Plus className="w-4 h-4 mr-2" /> Adicionar telefone
+          </Button>
         </div>
       );
 
-      // ─ Graduation ────────────────────────────────────────────────────────────
       case 'graduation': return (
         <div className="space-y-4">
           {graduations.map((g, idx) => (
             <div key={g.id} className="border border-border rounded-xl p-5">
               <div className="flex items-center justify-between mb-4">
                 <span className="text-sm font-semibold">Formação {idx + 1}</span>
-                {graduations.length > 1 && <button onClick={() => setGraduations(gr => gr.filter(x => x.id !== g.id))} className="p-1 hover:bg-red-500/10 rounded text-muted-foreground hover:text-red-600"><Trash2 className="w-4 h-4" /></button>}
+                {graduations.length > 1 && <Button variant="ghost" size="icon" onClick={() => setGraduations(gr => gr.filter(x => x.id !== g.id))} className="h-7 w-7 text-muted-foreground hover:text-red-600"><Trash2 className="w-4 h-4" /></Button>}
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div>
-                  <Label text="Tipo" required />
-                  <select className={selClass} value={g.type} onChange={e => setGraduations(gr => gr.map(x => x.id === g.id ? { ...x, type: e.target.value } : x))}>
-                    {['Graduação', 'Especialização', 'Residência', 'Mestrado', 'Doutorado', 'Pós-doutorado'].map(o => <option key={o}>{o}</option>)}
-                  </select>
+                  <Label>Tipo <span className="text-red-500">*</span></Label>
+                  <Select value={g.type} onValueChange={v => setGraduations(gr => gr.map(x => x.id === g.id ? { ...x, type: v } : x))}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      {['Graduação', 'Especialização', 'Residência', 'Mestrado', 'Doutorado', 'Pós-doutorado'].map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div>
-                  <Label text="Status" />
-                  <select className={selClass} value={g.status} onChange={e => setGraduations(gr => gr.map(x => x.id === g.id ? { ...x, status: e.target.value } : x))}>
-                    {['Concluído', 'Em andamento', 'Trancado'].map(o => <option key={o}>{o}</option>)}
-                  </select>
+                  <Label>Status</Label>
+                  <Select value={g.status} onValueChange={v => setGraduations(gr => gr.map(x => x.id === g.id ? { ...x, status: v } : x))}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      {['Concluído', 'Em andamento', 'Trancado'].map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div className="md:col-span-2">
-                  <Label text="Curso / Programa" required />
-                  <input className={inp} placeholder="Nome do curso ou programa" value={g.course} onChange={e => setGraduations(gr => gr.map(x => x.id === g.id ? { ...x, course: e.target.value } : x))} />
+                  <Label>Curso / Programa <span className="text-red-500">*</span></Label>
+                  <Input placeholder="Nome do curso ou programa" value={g.course} onChange={e => setGraduations(gr => gr.map(x => x.id === g.id ? { ...x, course: e.target.value } : x))} />
                 </div>
                 <div className="md:col-span-2">
-                  <Label text="Instituição" required />
-                  <input className={inp} placeholder="Nome da instituição de ensino" value={g.institution} onChange={e => setGraduations(gr => gr.map(x => x.id === g.id ? { ...x, institution: e.target.value } : x))} />
+                  <Label>Instituição <span className="text-red-500">*</span></Label>
+                  <Input placeholder="Nome da instituição de ensino" value={g.institution} onChange={e => setGraduations(gr => gr.map(x => x.id === g.id ? { ...x, institution: e.target.value } : x))} />
                 </div>
                 <div>
-                  <Label text="Ano de início" />
-                  <input className={inp} placeholder="AAAA" maxLength={4} value={g.startYear} onChange={e => setGraduations(gr => gr.map(x => x.id === g.id ? { ...x, startYear: e.target.value } : x))} />
+                  <Label>Ano de início</Label>
+                  <Input placeholder="AAAA" maxLength={4} value={g.startYear} onChange={e => setGraduations(gr => gr.map(x => x.id === g.id ? { ...x, startYear: e.target.value } : x))} />
                 </div>
                 <div>
-                  <Label text="Ano de conclusão" />
-                  <input className={inp} placeholder="AAAA (ou previsão)" value={g.endYear} onChange={e => setGraduations(gr => gr.map(x => x.id === g.id ? { ...x, endYear: e.target.value } : x))} />
+                  <Label>Ano de conclusão</Label>
+                  <Input placeholder="AAAA (ou previsão)" value={g.endYear} onChange={e => setGraduations(gr => gr.map(x => x.id === g.id ? { ...x, endYear: e.target.value } : x))} />
                 </div>
               </div>
               <div className="mt-4 pt-4 border-t border-border">
-                <Label text="Documento comprobatório" />
+                <Label>Documento comprobatório</Label>
                 <div className="flex items-center gap-3">
                   <label className="flex items-center gap-2 px-4 py-2 border border-dashed border-border rounded-lg text-sm text-muted-foreground hover:text-foreground hover:border-primary/50 cursor-pointer transition-colors">
                     <Upload className="w-4 h-4" /> Anexar diploma / certificado
@@ -358,56 +361,57 @@ export function AssociadoForm({ associate, onBack, onSave }: AssociadoFormProps)
               </div>
             </div>
           ))}
-          <button onClick={() => setGraduations(gr => [...gr, { id: Date.now(), type: 'Especialização', course: '', institution: '', startYear: '', endYear: '', status: 'Concluído' }])}
-            className="w-full flex items-center justify-center gap-2 py-2.5 border border-dashed border-border rounded-xl text-sm text-muted-foreground hover:text-foreground hover:border-primary/50 transition-colors">
-            <Plus className="w-4 h-4" /> Adicionar formação
-          </button>
+          <Button variant="outline" className="w-full border-dashed"
+            onClick={() => setGraduations(gr => [...gr, { id: Date.now(), type: 'Especialização', course: '', institution: '', startYear: '', endYear: '', status: 'Concluído' }])}>
+            <Plus className="w-4 h-4 mr-2" /> Adicionar formação
+          </Button>
         </div>
       );
 
-      // ─ Specialties ───────────────────────────────────────────────────────────
       case 'specialties': return (
         <div className="space-y-4">
           {specialties.map((sp, idx) => (
             <div key={sp.id} className="border border-border rounded-xl p-5">
               <div className="flex items-center justify-between mb-4">
                 <span className="text-sm font-semibold">Especialidade {idx + 1}</span>
-                {specialties.length > 1 && <button onClick={() => setSpecialties(s => s.filter(x => x.id !== sp.id))} className="p-1 hover:bg-red-500/10 rounded text-muted-foreground hover:text-red-600"><Trash2 className="w-4 h-4" /></button>}
+                {specialties.length > 1 && <Button variant="ghost" size="icon" onClick={() => setSpecialties(s => s.filter(x => x.id !== sp.id))} className="h-7 w-7 text-muted-foreground hover:text-red-600"><Trash2 className="w-4 h-4" /></Button>}
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div>
-                  <Label text="Especialidade" required />
-                  <input className={inp} placeholder="Ex: Cardiologia Clínica" value={sp.name} onChange={e => setSpecialties(s => s.map(x => x.id === sp.id ? { ...x, name: e.target.value } : x))} />
+                  <Label>Especialidade <span className="text-red-500">*</span></Label>
+                  <Input placeholder="Ex: Cardiologia Clínica" value={sp.name} onChange={e => setSpecialties(s => s.map(x => x.id === sp.id ? { ...x, name: e.target.value } : x))} />
                 </div>
                 <div>
-                  <Label text="Área / Subespecialidade" />
-                  <input className={inp} placeholder="Ex: Ecocardiografia" value={sp.area} onChange={e => setSpecialties(s => s.map(x => x.id === sp.id ? { ...x, area: e.target.value } : x))} />
+                  <Label>Área / Subespecialidade</Label>
+                  <Input placeholder="Ex: Ecocardiografia" value={sp.area} onChange={e => setSpecialties(s => s.map(x => x.id === sp.id ? { ...x, area: e.target.value } : x))} />
                 </div>
                 <div>
-                  <Label text="Conselho" />
-                  <select className={selClass} value={sp.council} onChange={e => setSpecialties(s => s.map(x => x.id === sp.id ? { ...x, council: e.target.value } : x))}>
-                    {['CFM', 'SBC', 'AMB', 'Outro'].map(o => <option key={o}>{o}</option>)}
-                  </select>
+                  <Label>Conselho</Label>
+                  <Select value={sp.council} onValueChange={v => setSpecialties(s => s.map(x => x.id === sp.id ? { ...x, council: v } : x))}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      {['CFM', 'SBC', 'AMB', 'Outro'].map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div>
-                  <Label text="Nº de registro" />
-                  <input className={inp} placeholder="Número do título" value={sp.registry} onChange={e => setSpecialties(s => s.map(x => x.id === sp.id ? { ...x, registry: e.target.value } : x))} />
+                  <Label>Nº de registro</Label>
+                  <Input placeholder="Número do título" value={sp.registry} onChange={e => setSpecialties(s => s.map(x => x.id === sp.id ? { ...x, registry: e.target.value } : x))} />
                 </div>
                 <div>
-                  <Label text="Ano de certificação" />
-                  <input className={inp} placeholder="AAAA" maxLength={4} value={sp.certYear} onChange={e => setSpecialties(s => s.map(x => x.id === sp.id ? { ...x, certYear: e.target.value } : x))} />
+                  <Label>Ano de certificação</Label>
+                  <Input placeholder="AAAA" maxLength={4} value={sp.certYear} onChange={e => setSpecialties(s => s.map(x => x.id === sp.id ? { ...x, certYear: e.target.value } : x))} />
                 </div>
               </div>
             </div>
           ))}
-          <button onClick={() => setSpecialties(s => [...s, { id: Date.now(), name: '', area: '', certYear: '', council: 'CFM', registry: '' }])}
-            className="w-full flex items-center justify-center gap-2 py-2.5 border border-dashed border-border rounded-xl text-sm text-muted-foreground hover:text-foreground hover:border-primary/50 transition-colors">
-            <Plus className="w-4 h-4" /> Adicionar especialidade
-          </button>
+          <Button variant="outline" className="w-full border-dashed"
+            onClick={() => setSpecialties(s => [...s, { id: Date.now(), name: '', area: '', certYear: '', council: 'CFM', registry: '' }])}>
+            <Plus className="w-4 h-4 mr-2" /> Adicionar especialidade
+          </Button>
         </div>
       );
 
-      // ─ Documents ─────────────────────────────────────────────────────────────
       case 'documents': return (
         <div>
           <p className="text-sm text-muted-foreground mb-4">
@@ -422,7 +426,6 @@ export function AssociadoForm({ associate, onBack, onSave }: AssociadoFormProps)
               }`}>
                 {doc.status === 'uploaded' ? (
                   <>
-                    {/* Simulated document preview */}
                     <div className={`h-24 ${doc.previewBg} flex items-center justify-center relative`}>
                       <FileText className="w-10 h-10 text-muted-foreground/30" />
                       <div className="absolute top-2 right-2 w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
@@ -436,10 +439,10 @@ export function AssociadoForm({ associate, onBack, onSave }: AssociadoFormProps)
                       <p className="text-sm font-medium">{doc.name}</p>
                       <p className="text-xs text-muted-foreground mt-0.5">{doc.date} · {doc.size}</p>
                       <div className="flex items-center gap-2 mt-2">
-                        <span className="text-xs text-green-600 bg-green-500/10 px-2 py-0.5 rounded-full flex items-center gap-1">
+                        <Badge variant="secondary" className="text-green-600 bg-green-500/10 gap-1">
                           <CheckCircle className="w-3 h-3" /> Enviado
-                        </span>
-                        <button className="text-xs text-muted-foreground hover:text-foreground">Substituir</button>
+                        </Badge>
+                        <Button variant="ghost" size="sm" className="text-xs h-auto p-0">Substituir</Button>
                       </div>
                     </div>
                   </>
@@ -463,7 +466,6 @@ export function AssociadoForm({ associate, onBack, onSave }: AssociadoFormProps)
         </div>
       );
 
-      // ─ Indication ────────────────────────────────────────────────────────────
       case 'indication': return (
         <div className="space-y-4">
           <div className="bg-blue-500/5 border border-blue-500/15 rounded-xl p-4 text-sm text-blue-600">
@@ -471,57 +473,59 @@ export function AssociadoForm({ associate, onBack, onSave }: AssociadoFormProps)
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <Label text="Nome do membro indicante" />
-              <input className={inp} placeholder="Nome completo" value={indication.memberName} onChange={e => setInd(i => ({ ...i, memberName: e.target.value }))} />
+              <Label>Nome do membro indicante</Label>
+              <Input placeholder="Nome completo" value={indication.memberName} onChange={e => setInd(i => ({ ...i, memberName: e.target.value }))} />
             </div>
             <div>
-              <Label text="CRM do indicante" />
-              <input className={inp} placeholder="CRM SP 000000" value={indication.memberCRM} onChange={e => setInd(i => ({ ...i, memberCRM: e.target.value }))} />
+              <Label>CRM do indicante</Label>
+              <Input placeholder="CRM SP 000000" value={indication.memberCRM} onChange={e => setInd(i => ({ ...i, memberCRM: e.target.value }))} />
             </div>
             <div>
-              <Label text="Nº de registro na associação" />
-              <input className={inp} placeholder="Nº de associado" value={indication.registryNumber} onChange={e => setInd(i => ({ ...i, registryNumber: e.target.value }))} />
+              <Label>Nº de registro na associação</Label>
+              <Input placeholder="Nº de associado" value={indication.registryNumber} onChange={e => setInd(i => ({ ...i, registryNumber: e.target.value }))} />
             </div>
             <div>
-              <Label text="Data da indicação" />
-              <input className={inp} type="date" value={indication.date} onChange={e => setInd(i => ({ ...i, date: e.target.value }))} />
+              <Label>Data da indicação</Label>
+              <Input type="date" value={indication.date} onChange={e => setInd(i => ({ ...i, date: e.target.value }))} />
             </div>
             <div className="md:col-span-2">
-              <Label text="Observações" />
-              <textarea className={`${inp} resize-none`} rows={3} placeholder="Informações adicionais sobre a indicação..." value={indication.notes} onChange={e => setInd(i => ({ ...i, notes: e.target.value }))} />
+              <Label>Observações</Label>
+              <Textarea rows={3} className="resize-none" placeholder="Informações adicionais sobre a indicação..." value={indication.notes} onChange={e => setInd(i => ({ ...i, notes: e.target.value }))} />
             </div>
           </div>
         </div>
       );
 
-      // ─ Professional ──────────────────────────────────────────────────────────
       case 'professional': return (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="md:col-span-2">
-            <Label text="Instituição / Empresa" required />
-            <input className={inp} placeholder="Hospital, clínica, universidade, etc." value={professional.institution} onChange={e => setPro(p => ({ ...p, institution: e.target.value }))} />
+            <Label>Instituição / Empresa <span className="text-red-500">*</span></Label>
+            <Input placeholder="Hospital, clínica, universidade, etc." value={professional.institution} onChange={e => setPro(p => ({ ...p, institution: e.target.value }))} />
           </div>
           <div>
-            <Label text="Cargo / Função" required />
-            <input className={inp} placeholder="Ex: Cardiologista Clínico" value={professional.role} onChange={e => setPro(p => ({ ...p, role: e.target.value }))} />
+            <Label>Cargo / Função <span className="text-red-500">*</span></Label>
+            <Input placeholder="Ex: Cardiologista Clínico" value={professional.role} onChange={e => setPro(p => ({ ...p, role: e.target.value }))} />
           </div>
           <div>
-            <Label text="Departamento / Setor" />
-            <input className={inp} placeholder="Ex: UTI Cardíaca" value={professional.department} onChange={e => setPro(p => ({ ...p, department: e.target.value }))} />
+            <Label>Departamento / Setor</Label>
+            <Input placeholder="Ex: UTI Cardíaca" value={professional.department} onChange={e => setPro(p => ({ ...p, department: e.target.value }))} />
           </div>
           <div>
-            <Label text="Tipo de vínculo" />
-            <select className={selClass} value={professional.type} onChange={e => setPro(p => ({ ...p, type: e.target.value }))}>
-              {['Privado', 'Público', 'Autônomo', 'Acadêmico', 'Misto'].map(o => <option key={o}>{o}</option>)}
-            </select>
+            <Label>Tipo de vínculo</Label>
+            <Select value={professional.type} onValueChange={v => setPro(p => ({ ...p, type: v }))}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                {['Privado', 'Público', 'Autônomo', 'Acadêmico', 'Misto'].map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}
+              </SelectContent>
+            </Select>
           </div>
           <div>
-            <Label text="Data de início" />
-            <input className={inp} type="date" value={professional.startDate} onChange={e => setPro(p => ({ ...p, startDate: e.target.value }))} />
+            <Label>Data de início</Label>
+            <Input type="date" value={professional.startDate} onChange={e => setPro(p => ({ ...p, startDate: e.target.value }))} />
           </div>
           <div className="md:col-span-2">
-            <Label text="Website / LinkedIn" />
-            <input className={inp} placeholder="https://" value={professional.website} onChange={e => setPro(p => ({ ...p, website: e.target.value }))} />
+            <Label>Website / LinkedIn</Label>
+            <Input placeholder="https://" value={professional.website} onChange={e => setPro(p => ({ ...p, website: e.target.value }))} />
           </div>
         </div>
       );
@@ -530,14 +534,13 @@ export function AssociadoForm({ associate, onBack, onSave }: AssociadoFormProps)
     }
   };
 
-  // ── Layout renderers ─────────────────────────────────────────────────────────
   const renderAccordion = () => (
     <div className="space-y-3">
       {SECTIONS.map(sec => {
         const Icon = sec.icon;
         const isOpen = expanded.has(sec.id);
         return (
-          <div key={sec.id} className={`bg-card border rounded-xl overflow-hidden transition-all ${isOpen ? 'border-border shadow-sm' : 'border-border/60'}`}>
+          <Card key={sec.id} className={`overflow-hidden transition-all ${isOpen ? 'shadow-sm' : ''}`}>
             <button
               onClick={() => toggleExpand(sec.id)}
               className="w-full flex items-center justify-between px-5 py-4 hover:bg-muted/30 transition-colors"
@@ -555,14 +558,14 @@ export function AssociadoForm({ associate, onBack, onSave }: AssociadoFormProps)
                 {renderSection(sec.id)}
               </div>
             )}
-          </div>
+          </Card>
         );
       })}
     </div>
   );
 
   const renderTabs = () => (
-    <div className="bg-card border border-border rounded-xl overflow-hidden">
+    <Card className="overflow-hidden">
       <div className="flex overflow-x-auto border-b border-border">
         {SECTIONS.map(sec => {
           const Icon = sec.icon;
@@ -580,16 +583,16 @@ export function AssociadoForm({ associate, onBack, onSave }: AssociadoFormProps)
           );
         })}
       </div>
-      <div className="p-6">
+      <CardContent className="p-6">
         {renderSection(activeSection)}
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 
   const renderSidebar = () => (
     <div className="flex gap-5">
       <div className="w-56 flex-shrink-0">
-        <div className="bg-card border border-border rounded-xl overflow-hidden">
+        <Card className="overflow-hidden">
           {SECTIONS.map((sec, i) => {
             const Icon = sec.icon;
             const isActive = activeSection === sec.id;
@@ -608,23 +611,26 @@ export function AssociadoForm({ associate, onBack, onSave }: AssociadoFormProps)
               </button>
             );
           })}
-        </div>
+        </Card>
       </div>
-      <div className="flex-1 min-w-0 bg-card border border-border rounded-xl p-6">
-        {(() => { const s = SECTIONS.find(x => x.id === activeSection); const Icon = s!.icon; return (
-          <div className="flex items-center gap-3 mb-6 pb-4 border-b border-border">
-            <div className={`w-9 h-9 rounded-xl ${s!.bg} flex items-center justify-center`}>
-              <Icon className={`w-4.5 h-4.5 ${s!.color}`} />
-            </div>
-            <h2 className="text-lg font-semibold">{s!.label}</h2>
-          </div>
-        ); })()}
-        {renderSection(activeSection)}
+      <div className="flex-1 min-w-0">
+        <Card>
+          <CardContent className="p-6">
+            {(() => { const s = SECTIONS.find(x => x.id === activeSection); const Icon = s!.icon; return (
+              <div className="flex items-center gap-3 mb-6 pb-4 border-b border-border">
+                <div className={`w-9 h-9 rounded-xl ${s!.bg} flex items-center justify-center`}>
+                  <Icon className={`w-4.5 h-4.5 ${s!.color}`} />
+                </div>
+                <h2 className="text-lg font-semibold">{s!.label}</h2>
+              </div>
+            ); })()}
+            {renderSection(activeSection)}
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
 
-  // ── Main render ──────────────────────────────────────────────────────────────
   return (
     <div className="min-h-screen bg-background">
       <div className="px-8 py-8">
@@ -633,9 +639,9 @@ export function AssociadoForm({ associate, onBack, onSave }: AssociadoFormProps)
           {/* Header */}
           <div className="flex items-center justify-between gap-4 mb-8 flex-wrap">
             <div className="flex items-center gap-4">
-              <button onClick={onBack} className="p-2 hover:bg-muted rounded-xl transition-colors group">
-                <ArrowLeft className="w-5 h-5 group-hover:-translate-x-0.5 transition-transform" />
-              </button>
+              <Button variant="ghost" size="icon" onClick={onBack} className="h-10 w-10">
+                <ArrowLeft className="w-5 h-5" />
+              </Button>
               <div>
                 <h1 className="text-2xl">{associate ? 'Editar Associado' : 'Novo Associado'}</h1>
                 <p className="text-sm text-muted-foreground">
@@ -651,16 +657,16 @@ export function AssociadoForm({ associate, onBack, onSave }: AssociadoFormProps)
                 { mode: 'tabs' as LayoutMode, label: 'Abas', Icon: LayoutTemplate },
                 { mode: 'sidebar' as LayoutMode, label: 'Menu Lateral', Icon: PanelLeft },
               ]).map(({ mode, label, Icon }) => (
-                <button
+                <Button
                   key={mode}
+                  variant={layoutMode === mode ? 'background' : 'ghost'}
+                  size="sm"
                   onClick={() => setLayoutMode(mode)}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm transition-colors ${
-                    layoutMode === mode ? 'bg-background shadow-sm font-medium text-foreground' : 'text-muted-foreground hover:text-foreground hover:bg-background/50'
-                  }`}
+                  className="gap-1.5"
                 >
                   <Icon className="w-3.5 h-3.5" />
                   <span className="hidden sm:inline">{label}</span>
-                </button>
+                </Button>
               ))}
             </div>
           </div>
@@ -672,16 +678,10 @@ export function AssociadoForm({ associate, onBack, onSave }: AssociadoFormProps)
 
           {/* Footer actions */}
           <div className="flex items-center justify-between gap-3 mt-8 pt-6 border-t border-border">
-            <button onClick={onBack} className="px-5 py-2.5 border border-border rounded-xl hover:bg-accent transition-colors text-sm">
-              Cancelar
-            </button>
+            <Button variant="outline" onClick={onBack}>Cancelar</Button>
             <div className="flex items-center gap-3">
-              <button className="px-5 py-2.5 border border-border rounded-xl hover:bg-accent transition-colors text-sm text-muted-foreground">
-                Salvar rascunho
-              </button>
-              <button onClick={onSave} className="px-6 py-2.5 bg-primary text-primary-foreground rounded-xl hover:bg-primary/90 transition-colors text-sm font-medium shadow-sm">
-                {associate ? 'Salvar alterações' : 'Cadastrar associado'}
-              </button>
+              <Button variant="outline">Salvar rascunho</Button>
+              <Button onClick={onSave}>{associate ? 'Salvar alterações' : 'Cadastrar associado'}</Button>
             </div>
           </div>
         </div>

@@ -2,6 +2,11 @@ import { X, Check, ArrowLeft, ArrowRight, AlertCircle } from 'lucide-react';
 import { useState } from 'react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from './ui/tabs';
 import { Switch } from './ui/switch';
+import { Button } from './ui/button';
+import { Input } from './ui/input';
+import { Label } from './ui/label';
+import { Badge } from './ui/badge';
+import { Separator } from './ui/separator';
 
 interface PaymentMethod {
   id: string;
@@ -24,7 +29,6 @@ export function PaymentMethodWizard({ method, onClose }: WizardProps) {
   const [formData, setFormData] = useState<Record<string, string>>({});
   const [activeTab, setActiveTab] = useState('credentials');
 
-  // Se o método já está ativo, usa o modo de abas
   const isConfigured = method.status === 'active';
 
   const getSteps = () => {
@@ -77,41 +81,36 @@ export function PaymentMethodWizard({ method, onClose }: WizardProps) {
           return (
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-2">Client ID</label>
-                <input
-                  type="text"
+                <Label className="mb-2">Client ID</Label>
+                <Input
                   value={formData.clientId || ''}
                   onChange={(e) => setFormData({ ...formData, clientId: e.target.value })}
                   placeholder="Seu Client ID do Banco do Brasil"
-                  className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2">Client Secret</label>
-                <input
+                <Label className="mb-2">Client Secret</Label>
+                <Input
                   type="password"
                   value={formData.clientSecret || ''}
                   onChange={(e) => setFormData({ ...formData, clientSecret: e.target.value })}
                   placeholder="Seu Client Secret"
-                  className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2">Developer Application Key</label>
-                <input
-                  type="text"
+                <Label className="mb-2">Developer Application Key</Label>
+                <Input
                   value={formData.developerAppKey || ''}
                   onChange={(e) => setFormData({ ...formData, developerAppKey: e.target.value })}
                   placeholder="Chave da aplicação developer"
-                  className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2">Ambiente</label>
+                <Label className="mb-2">Ambiente</Label>
                 <select
                   value={formData.environment || 'sandbox'}
                   onChange={(e) => setFormData({ ...formData, environment: e.target.value })}
-                  className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
+                  className="w-full px-3 py-2 bg-background border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
                 >
                   <option value="sandbox">Sandbox (Testes)</option>
                   <option value="production">Produção</option>
@@ -124,31 +123,28 @@ export function PaymentMethodWizard({ method, onClose }: WizardProps) {
           return (
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-2">MerchantID</label>
-                <input
-                  type="text"
+                <Label className="mb-2">MerchantID</Label>
+                <Input
                   value={formData.merchantId || ''}
                   onChange={(e) => setFormData({ ...formData, merchantId: e.target.value })}
                   placeholder="Seu MerchantID da Cielo"
-                  className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2">MerchantKey</label>
-                <input
+                <Label className="mb-2">MerchantKey</Label>
+                <Input
                   type="password"
                   value={formData.merchantKey || ''}
                   onChange={(e) => setFormData({ ...formData, merchantKey: e.target.value })}
                   placeholder="Sua MerchantKey"
-                  className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2">Ambiente</label>
+                <Label className="mb-2">Ambiente</Label>
                 <select
                   value={formData.environment || 'sandbox'}
                   onChange={(e) => setFormData({ ...formData, environment: e.target.value })}
-                  className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
+                  className="w-full px-3 py-2 bg-background border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
                 >
                   <option value="sandbox">Sandbox (Testes)</option>
                   <option value="production">Produção</option>
@@ -161,31 +157,28 @@ export function PaymentMethodWizard({ method, onClose }: WizardProps) {
           return (
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-2">PV (Número do Estabelecimento)</label>
-                <input
-                  type="text"
+                <Label className="mb-2">PV (Número do Estabelecimento)</Label>
+                <Input
                   value={formData.pv || ''}
                   onChange={(e) => setFormData({ ...formData, pv: e.target.value })}
                   placeholder="Seu PV da Rede"
-                  className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2">Token</label>
-                <input
+                <Label className="mb-2">Token</Label>
+                <Input
                   type="password"
                   value={formData.token || ''}
                   onChange={(e) => setFormData({ ...formData, token: e.target.value })}
                   placeholder="Seu Token de autenticação"
-                  className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2">Ambiente</label>
+                <Label className="mb-2">Ambiente</Label>
                 <select
                   value={formData.environment || 'sandbox'}
                   onChange={(e) => setFormData({ ...formData, environment: e.target.value })}
-                  className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
+                  className="w-full px-3 py-2 bg-background border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
                 >
                   <option value="sandbox">Sandbox (Testes)</option>
                   <option value="production">Produção</option>
@@ -198,24 +191,23 @@ export function PaymentMethodWizard({ method, onClose }: WizardProps) {
           return (
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-2">API Key</label>
-                <input
+                <Label className="mb-2">API Key</Label>
+                <Input
                   type="password"
                   value={formData.apiKey || ''}
                   onChange={(e) => setFormData({ ...formData, apiKey: e.target.value })}
                   placeholder="Sua API Key da Vindi"
-                  className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
                 />
                 <p className="text-xs text-muted-foreground mt-1">
                   Encontre sua API Key em: Configurações → Chaves de API
                 </p>
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2">Ambiente</label>
+                <Label className="mb-2">Ambiente</Label>
                 <select
                   value={formData.environment || 'sandbox'}
                   onChange={(e) => setFormData({ ...formData, environment: e.target.value })}
-                  className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
+                  className="w-full px-3 py-2 bg-background border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
                 >
                   <option value="sandbox">Sandbox (Testes)</option>
                   <option value="production">Produção</option>
@@ -228,31 +220,29 @@ export function PaymentMethodWizard({ method, onClose }: WizardProps) {
           return (
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-2">Email da Conta</label>
-                <input
+                <Label className="mb-2">Email da Conta</Label>
+                <Input
                   type="email"
                   value={formData.email || ''}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   placeholder="seu@email.com"
-                  className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2">Token</label>
-                <input
+                <Label className="mb-2">Token</Label>
+                <Input
                   type="password"
                   value={formData.token || ''}
                   onChange={(e) => setFormData({ ...formData, token: e.target.value })}
                   placeholder="Seu Token do PagSeguro"
-                  className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2">Ambiente</label>
+                <Label className="mb-2">Ambiente</Label>
                 <select
                   value={formData.environment || 'sandbox'}
                   onChange={(e) => setFormData({ ...formData, environment: e.target.value })}
-                  className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
+                  className="w-full px-3 py-2 bg-background border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
                 >
                   <option value="sandbox">Sandbox (Testes)</option>
                   <option value="production">Produção</option>
@@ -265,23 +255,21 @@ export function PaymentMethodWizard({ method, onClose }: WizardProps) {
           return (
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-2">API Key</label>
-                <input
+                <Label className="mb-2">API Key</Label>
+                <Input
                   type="password"
                   value={formData.apiKey || ''}
                   onChange={(e) => setFormData({ ...formData, apiKey: e.target.value })}
                   placeholder="sk_test_..."
-                  className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2">Encryption Key</label>
-                <input
+                <Label className="mb-2">Encryption Key</Label>
+                <Input
                   type="password"
                   value={formData.encryptionKey || ''}
                   onChange={(e) => setFormData({ ...formData, encryptionKey: e.target.value })}
                   placeholder="ek_test_..."
-                  className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
                 />
               </div>
             </div>
@@ -309,12 +297,11 @@ export function PaymentMethodWizard({ method, onClose }: WizardProps) {
               <Switch defaultChecked />
             </div>
             <div className="mt-4">
-              <label className="block text-sm font-medium mb-2">Prazo de vencimento do boleto (dias)</label>
-              <input
+              <Label className="mb-2">Prazo de vencimento do boleto (dias)</Label>
+              <Input
                 type="number"
                 value={formData.boletoDays || '3'}
                 onChange={(e) => setFormData({ ...formData, boletoDays: e.target.value })}
-                className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
               />
             </div>
           </div>
@@ -325,11 +312,11 @@ export function PaymentMethodWizard({ method, onClose }: WizardProps) {
         return (
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium mb-2">Parcelamento Máximo</label>
+              <Label className="mb-2">Parcelamento Máximo</Label>
               <select
                 value={formData.maxInstallments || '12'}
                 onChange={(e) => setFormData({ ...formData, maxInstallments: e.target.value })}
-                className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
+                className="w-full px-3 py-2 bg-background border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
               >
                 {Array.from({ length: 12 }, (_, i) => i + 1).map(n => (
                   <option key={n} value={n}>{n}x</option>
@@ -337,13 +324,12 @@ export function PaymentMethodWizard({ method, onClose }: WizardProps) {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium mb-2">Valor mínimo de parcela</label>
-              <input
+              <Label className="mb-2">Valor mínimo de parcela</Label>
+              <Input
                 type="number"
                 value={formData.minInstallmentValue || '50'}
                 onChange={(e) => setFormData({ ...formData, minInstallmentValue: e.target.value })}
                 placeholder="R$ 50,00"
-                className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
               />
             </div>
             <div className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
@@ -430,15 +416,12 @@ export function PaymentMethodWizard({ method, onClose }: WizardProps) {
     onClose();
   };
 
-  // Renderiza as credenciais específicas de cada método
   const renderCredentialsTab = () => {
     return renderStepContent();
   };
 
-  // Renderiza a aba de configurações
   const renderSettingsTab = () => {
     if (method.id === 'bb' || method.id === 'cielo') {
-      // Renderiza conteúdo do step 2 para esses métodos
       if (method.id === 'bb') {
         return (
           <div className="space-y-4">
@@ -458,12 +441,11 @@ export function PaymentMethodWizard({ method, onClose }: WizardProps) {
               <Switch defaultChecked />
             </div>
             <div className="mt-4">
-              <label className="block text-sm font-medium mb-2">Prazo de vencimento do boleto (dias)</label>
-              <input
+              <Label className="mb-2">Prazo de vencimento do boleto (dias)</Label>
+              <Input
                 type="number"
                 value={formData.boletoDays || '3'}
                 onChange={(e) => setFormData({ ...formData, boletoDays: e.target.value })}
-                className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
               />
             </div>
           </div>
@@ -474,11 +456,11 @@ export function PaymentMethodWizard({ method, onClose }: WizardProps) {
         return (
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium mb-2">Parcelamento Máximo</label>
+              <Label className="mb-2">Parcelamento Máximo</Label>
               <select
                 value={formData.maxInstallments || '12'}
                 onChange={(e) => setFormData({ ...formData, maxInstallments: e.target.value })}
-                className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
+                className="w-full px-3 py-2 bg-background border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
               >
                 {Array.from({ length: 12 }, (_, i) => i + 1).map(n => (
                   <option key={n} value={n}>{n}x</option>
@@ -486,13 +468,12 @@ export function PaymentMethodWizard({ method, onClose }: WizardProps) {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium mb-2">Valor mínimo de parcela</label>
-              <input
+              <Label className="mb-2">Valor mínimo de parcela</Label>
+              <Input
                 type="number"
                 value={formData.minInstallmentValue || '50'}
                 onChange={(e) => setFormData({ ...formData, minInstallmentValue: e.target.value })}
                 placeholder="R$ 50,00"
-                className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
               />
             </div>
             <div className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
@@ -511,13 +492,11 @@ export function PaymentMethodWizard({ method, onClose }: WizardProps) {
     return (
       <div className="space-y-4">
         <div>
-          <label className="block text-sm font-medium mb-2">Webhook URL</label>
-          <input
-            type="text"
+          <Label className="mb-2">Webhook URL</Label>
+          <Input
             value={formData.webhookUrl || ''}
             onChange={(e) => setFormData({ ...formData, webhookUrl: e.target.value })}
             placeholder="https://seu-site.com/webhook"
-            className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
           />
           <p className="text-xs text-muted-foreground mt-1">
             URL para receber notificações de pagamento
@@ -558,12 +537,9 @@ export function PaymentMethodWizard({ method, onClose }: WizardProps) {
                 <p className="text-sm text-muted-foreground">{method.description}</p>
               </div>
             </div>
-            <button
-              onClick={onClose}
-              className="p-2 hover:bg-muted rounded-lg transition-colors"
-            >
+            <Button variant="ghost" size="icon" onClick={onClose}>
               <X className="w-5 h-5" />
-            </button>
+            </Button>
           </div>
 
           <Tabs value={activeTab} onValueChange={setActiveTab} className="p-6">
@@ -608,7 +584,7 @@ export function PaymentMethodWizard({ method, onClose }: WizardProps) {
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Status:</span>
-                      <span className="font-medium text-green-600">Ativo</span>
+                      <Badge variant="default" className="bg-green-500/10 text-green-600 border-green-500/30 hover:bg-green-500/10">Ativo</Badge>
                     </div>
                   </div>
                 </div>
@@ -618,27 +594,15 @@ export function PaymentMethodWizard({ method, onClose }: WizardProps) {
                     <p className="font-medium">Desativar método</p>
                     <p className="text-sm text-muted-foreground">Parar de aceitar pagamentos por este método</p>
                   </div>
-                  <button className="px-4 py-2 text-sm bg-red-500/10 text-red-600 rounded-lg hover:bg-red-500/20 transition-colors">
-                    Desativar
-                  </button>
+                  <Button variant="destructive" size="sm">Desativar</Button>
                 </div>
               </div>
             </TabsContent>
           </Tabs>
 
           <div className="p-6 border-t border-border flex justify-end gap-3 sticky bottom-0 bg-card">
-            <button
-              onClick={onClose}
-              className="px-4 py-2 border border-border rounded-lg hover:bg-accent transition-colors"
-            >
-              Cancelar
-            </button>
-            <button
-              onClick={handleSave}
-              className="px-6 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
-            >
-              Salvar Alterações
-            </button>
+            <Button variant="outline" onClick={onClose}>Cancelar</Button>
+            <Button onClick={handleSave}>Salvar Alterações</Button>
           </div>
         </div>
       </div>
@@ -654,12 +618,9 @@ export function PaymentMethodWizard({ method, onClose }: WizardProps) {
             <h3 className="text-xl font-semibold">Configurar {method.name}</h3>
             <p className="text-sm text-muted-foreground">{steps[currentStep - 1]?.description}</p>
           </div>
-          <button
-            onClick={onClose}
-            className="p-2 hover:bg-muted rounded-lg transition-colors"
-          >
+          <Button variant="ghost" size="icon" onClick={onClose}>
             <X className="w-5 h-5" />
-          </button>
+          </Button>
         </div>
 
         <div className="p-6 border-b border-border">
@@ -697,31 +658,26 @@ export function PaymentMethodWizard({ method, onClose }: WizardProps) {
         </div>
 
         <div className="p-6 border-t border-border flex justify-between sticky bottom-0 bg-card">
-          <button
+          <Button
+            variant="outline"
             onClick={handleBack}
             disabled={currentStep === 1}
-            className="flex items-center gap-2 px-4 py-2 border border-border rounded-lg hover:bg-accent transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
             Voltar
-          </button>
+          </Button>
 
           {currentStep < steps.length ? (
-            <button
-              onClick={handleNext}
-              className="flex items-center gap-2 px-6 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
-            >
+            <Button onClick={handleNext} className="gap-2">
               Próximo
               <ArrowRight className="w-4 h-4" />
-            </button>
+            </Button>
           ) : (
-            <button
-              onClick={handleFinish}
-              className="flex items-center gap-2 px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-            >
+            <Button onClick={handleFinish} className="gap-2 bg-green-600 text-white hover:bg-green-700">
               <Check className="w-4 h-4" />
               Concluir
-            </button>
+            </Button>
           )}
         </div>
       </div>

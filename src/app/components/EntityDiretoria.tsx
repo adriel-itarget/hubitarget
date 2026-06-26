@@ -1,5 +1,12 @@
 import { useState } from 'react';
 import { Plus, Pencil, Trash2, X, Save, Search, Users, ChevronDown } from 'lucide-react';
+import { Button } from './ui/button';
+import { Input } from './ui/input';
+import { Label } from './ui/label';
+import { Badge } from './ui/badge';
+import { Avatar, AvatarFallback } from './ui/avatar';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
+import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction } from './ui/alert-dialog';
 
 interface DiretorMembro {
   id: string;
@@ -41,14 +48,17 @@ function getInitials(nome: string) {
 
 function StatusBadge({ status }: { status: 'ativo' | 'inativo' }) {
   return (
-    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${
-      status === 'ativo'
-        ? 'bg-green-500/10 text-green-600'
-        : 'bg-muted text-muted-foreground'
-    }`}>
+    <Badge
+      variant="default"
+      className={`gap-1 ${
+        status === 'ativo'
+          ? 'bg-green-500/10 text-green-600 border-green-500/30 hover:bg-green-500/10'
+          : 'bg-muted text-muted-foreground hover:bg-muted'
+      }`}
+    >
       <span className={`w-1.5 h-1.5 rounded-full ${status === 'ativo' ? 'bg-green-500' : 'bg-muted-foreground'}`} />
       {status === 'ativo' ? 'Ativo' : 'Inativo'}
-    </span>
+    </Badge>
   );
 }
 
@@ -65,29 +75,24 @@ function MembroModal({ membro, isEdit, onSave, onClose }: ModalProps) {
     setForm(prev => ({ ...prev, [field]: e.target.value }));
 
   return (
-    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
-      <div className="bg-card border border-border rounded-xl w-full max-w-lg shadow-xl">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-border">
-          <h3 className="font-semibold">{isEdit ? 'Editar membro' : 'Adicionar membro'}</h3>
-          <button onClick={onClose} className="p-1.5 hover:bg-muted rounded-lg transition-colors">
-            <X className="w-4 h-4" />
-          </button>
-        </div>
+    <Dialog open onOpenChange={onClose}>
+      <DialogContent className="max-w-lg">
+        <DialogHeader>
+          <DialogTitle>{isEdit ? 'Editar membro' : 'Adicionar membro'}</DialogTitle>
+        </DialogHeader>
 
-        <div className="p-6 space-y-4">
+        <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium mb-1.5">Nome Completo</label>
-            <input value={form.nome} onChange={set('nome')} placeholder="Dr. Nome Sobrenome"
-              className="w-full px-3 py-2 bg-background border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none" />
+            <Label className="mb-1.5">Nome Completo</Label>
+            <Input value={form.nome} onChange={set('nome')} placeholder="Dr. Nome Sobrenome" />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-medium mb-1.5">CRM</label>
-              <input value={form.crm} onChange={set('crm')} placeholder="CRM-SP 000000"
-                className="w-full px-3 py-2 bg-background border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none" />
+              <Label className="mb-1.5">CRM</Label>
+              <Input value={form.crm} onChange={set('crm')} placeholder="CRM-SP 000000" />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1.5">Cargo</label>
+              <Label className="mb-1.5">Cargo</Label>
               <select value={form.cargo} onChange={set('cargo')}
                 className="w-full px-3 py-2 bg-background border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none">
                 {cargos.map(c => <option key={c}>{c}</option>)}
@@ -96,29 +101,25 @@ function MembroModal({ membro, isEdit, onSave, onClose }: ModalProps) {
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-medium mb-1.5">Início do Mandato</label>
-              <input type="date" value={form.inicio} onChange={set('inicio')}
-                className="w-full px-3 py-2 bg-background border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none" />
+              <Label className="mb-1.5">Início do Mandato</Label>
+              <Input type="date" value={form.inicio} onChange={set('inicio')} />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1.5">Fim do Mandato</label>
-              <input type="date" value={form.fim} onChange={set('fim')}
-                className="w-full px-3 py-2 bg-background border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none" />
+              <Label className="mb-1.5">Fim do Mandato</Label>
+              <Input type="date" value={form.fim} onChange={set('fim')} />
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1.5">E-mail</label>
-            <input type="email" value={form.email} onChange={set('email')} placeholder="email@entidade.com"
-              className="w-full px-3 py-2 bg-background border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none" />
+            <Label className="mb-1.5">E-mail</Label>
+            <Input type="email" value={form.email} onChange={set('email')} placeholder="email@entidade.com" />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-medium mb-1.5">Telefone</label>
-              <input value={form.telefone} onChange={set('telefone')} placeholder="(00) 00000-0000"
-                className="w-full px-3 py-2 bg-background border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none" />
+              <Label className="mb-1.5">Telefone</Label>
+              <Input value={form.telefone} onChange={set('telefone')} placeholder="(00) 00000-0000" />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1.5">Status</label>
+              <Label className="mb-1.5">Status</Label>
               <select value={form.status} onChange={set('status')}
                 className="w-full px-3 py-2 bg-background border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none">
                 <option value="ativo">Ativo</option>
@@ -128,21 +129,15 @@ function MembroModal({ membro, isEdit, onSave, onClose }: ModalProps) {
           </div>
         </div>
 
-        <div className="flex justify-end gap-3 px-6 py-4 border-t border-border">
-          <button onClick={onClose} className="px-4 py-2 text-sm border border-border rounded-lg hover:bg-accent transition-colors">
-            Cancelar
-          </button>
-          <button
-            onClick={() => onSave(form)}
-            disabled={!form.nome.trim()}
-            className="flex items-center gap-2 px-5 py-2 text-sm bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50"
-          >
+        <div className="flex justify-end gap-3 pt-4">
+          <Button variant="outline" onClick={onClose}>Cancelar</Button>
+          <Button onClick={() => onSave(form)} disabled={!form.nome.trim()} className="gap-2">
             <Save className="w-4 h-4" />
             Salvar
-          </button>
+          </Button>
         </div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }
 
@@ -190,13 +185,10 @@ export function EntityDiretoria() {
             <h1 className="text-2xl mb-1">Gestão de Diretoria</h1>
             <p className="text-sm text-muted-foreground">Membros da diretoria e seus mandatos</p>
           </div>
-          <button
-            onClick={openAdd}
-            className="flex items-center gap-2 px-5 py-2.5 bg-primary text-primary-foreground rounded-lg text-sm hover:bg-primary/90 transition-colors"
-          >
+          <Button onClick={openAdd} className="gap-2">
             <Plus className="w-4 h-4" />
             Adicionar membro
-          </button>
+          </Button>
         </div>
 
         <div className="grid grid-cols-3 gap-4 mb-6">
@@ -218,24 +210,24 @@ export function EntityDiretoria() {
           <div className="flex items-center gap-3 px-5 py-4 border-b border-border">
             <div className="relative flex-1 max-w-sm">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <input
+              <Input
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 placeholder="Buscar por nome, cargo ou CRM..."
-                className="w-full pl-9 pr-4 py-2 bg-background border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none"
+                className="pl-9"
               />
             </div>
             <div className="flex items-center gap-1 border border-border rounded-lg overflow-hidden">
               {(['todos', 'ativo', 'inativo'] as const).map(f => (
-                <button
+                <Button
                   key={f}
+                  variant={filtroStatus === f ? 'default' : 'ghost'}
+                  size="sm"
                   onClick={() => setFiltroStatus(f)}
-                  className={`px-3 py-2 text-xs transition-colors capitalize ${
-                    filtroStatus === f ? 'bg-primary text-primary-foreground' : 'hover:bg-accent'
-                  }`}
+                  className="capitalize"
                 >
                   {f === 'todos' ? 'Todos' : f === 'ativo' ? 'Ativos' : 'Encerrados'}
-                </button>
+                </Button>
               ))}
             </div>
           </div>
@@ -249,9 +241,11 @@ export function EntityDiretoria() {
             ) : (
               filtered.map(membro => (
                 <div key={membro.id} className="flex items-center gap-4 px-5 py-4 hover:bg-muted/20 transition-colors">
-                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                    <span className="text-sm font-medium text-primary">{getInitials(membro.nome)}</span>
-                  </div>
+                  <Avatar className="w-10 h-10 flex-shrink-0">
+                    <AvatarFallback className="bg-primary/10 text-primary text-sm font-medium">
+                      {getInitials(membro.nome)}
+                    </AvatarFallback>
+                  </Avatar>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
                       <p className="text-sm font-medium truncate">{membro.nome}</p>
@@ -272,20 +266,12 @@ export function EntityDiretoria() {
                     <p className="text-xs text-muted-foreground">{membro.telefone}</p>
                   </div>
                   <div className="flex items-center gap-1 flex-shrink-0">
-                    <button
-                      onClick={() => openEdit(membro)}
-                      className="p-2 hover:bg-accent rounded-lg transition-colors"
-                      title="Editar"
-                    >
+                    <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => openEdit(membro)} title="Editar">
                       <Pencil className="w-4 h-4 text-muted-foreground" />
-                    </button>
-                    <button
-                      onClick={() => setConfirmDelete(membro.id)}
-                      className="p-2 hover:bg-destructive/10 rounded-lg transition-colors"
-                      title="Remover"
-                    >
+                    </Button>
+                    <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-destructive/10" onClick={() => setConfirmDelete(membro.id)} title="Remover">
                       <Trash2 className="w-4 h-4 text-destructive" />
-                    </button>
+                    </Button>
                   </div>
                 </div>
               ))
@@ -309,24 +295,22 @@ export function EntityDiretoria() {
         />
       )}
 
-      {confirmDelete && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
-          <div className="bg-card border border-border rounded-xl p-6 max-w-sm w-full shadow-xl">
-            <h3 className="font-semibold mb-2">Remover membro</h3>
-            <p className="text-sm text-muted-foreground mb-5">
+      <AlertDialog open={!!confirmDelete} onOpenChange={() => setConfirmDelete(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Remover membro</AlertDialogTitle>
+            <AlertDialogDescription>
               Esta ação removerá o membro da diretoria. O histórico será mantido nos registros.
-            </p>
-            <div className="flex gap-3 justify-end">
-              <button onClick={() => setConfirmDelete(null)} className="px-4 py-2 text-sm border border-border rounded-lg hover:bg-accent transition-colors">
-                Cancelar
-              </button>
-              <button onClick={() => handleDelete(confirmDelete)} className="px-4 py-2 text-sm bg-destructive text-destructive-foreground rounded-lg hover:bg-destructive/90 transition-colors">
-                Remover
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction onClick={() => handleDelete(confirmDelete!)} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              Remover
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

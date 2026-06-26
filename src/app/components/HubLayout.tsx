@@ -5,6 +5,8 @@ import { TabNavigation } from './TabNavigation';
 import { QuickAccessMenu } from './QuickAccessMenu';
 import { HeaderUserMenu } from './HeaderUserMenu';
 import { ItargetLogo } from './ItargetLogo';
+import { Alert, AlertTitle, AlertDescription, AlertAction } from './ui/alert';
+import { Button } from './ui/button';
 
 interface HubLayoutProps {
   onLogout: () => void;
@@ -76,6 +78,30 @@ export function HubLayout({ onLogout }: HubLayoutProps) {
 
       {/* Content */}
       <main className="flex-1 overflow-y-auto">
+        {/* Alert: return to open tabs */}
+        {isHubRoot && tabs.length > 0 && (
+          <div className="px-8 pt-8">
+            <div className="max-w-7xl mx-auto">
+              <Alert>
+                <AlertTitle>Você tem {tabs.length} {tabs.length === 1 ? 'aba aberta' : 'abas abertas'}</AlertTitle>
+                <AlertDescription>
+                  {tabs.length === 1
+                    ? `Aba "${tabs[0].title}" está aberta. Volte a qualquer momento para continuar de onde parou.`
+                    : `Suas abas estão salvas. Volte a qualquer momento para continuar de onde parou.`
+                  }
+                </AlertDescription>
+                <AlertAction className="justify-end">
+                  <Button size="sm" variant="default" onClick={() => {
+                    const lastTab = tabs[tabs.length - 1];
+                    if (lastTab) handleTabClick(lastTab.id);
+                  }}>
+                    Voltar à página anterior
+                  </Button>
+                </AlertAction>
+              </Alert>
+            </div>
+          </div>
+        )}
         <Outlet />
       </main>
     </div>
