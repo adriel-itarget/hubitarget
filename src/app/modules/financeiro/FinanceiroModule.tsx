@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { DollarSign, Home, List, TrendingDown, TrendingUp, Layers, BarChart3 } from 'lucide-react';
 import { GenericModuleSidebar } from '../../components/GenericModuleSidebar';
+import { CostCenterSelect } from '../../components/CostCenterSelect';
 import { useTabNavigation } from '../../components/TabNavigationContext';
 import { TabNavigation } from '../../components/TabNavigation';
 import { QuickAccessMenu } from '../../components/QuickAccessMenu';
@@ -52,7 +53,7 @@ export function FinanceiroModule({ onLogout }: FinanceiroModuleProps) {
     <div className="flex h-screen bg-background">
       <GenericModuleSidebar
         title="Financeiro"
-        subtitle="Gestão Financeira"
+        subtitleContent={<CostCenterSelect />}
         headerIcon={DollarSign}
         navItems={navItems}
         onLogout={onLogout}

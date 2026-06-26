@@ -10,7 +10,8 @@ export interface NavItem {
 
 interface GenericModuleSidebarProps {
   title: string;
-  subtitle: string;
+  subtitle?: string;
+  subtitleContent?: React.ReactNode;
   headerIcon: LucideIcon;
   navItems: NavItem[];
   onLogout: () => void;
@@ -19,6 +20,7 @@ interface GenericModuleSidebarProps {
 export function GenericModuleSidebar({
   title,
   subtitle,
+  subtitleContent,
   headerIcon: HeaderIcon,
   navItems,
   onLogout,
@@ -58,7 +60,11 @@ export function GenericModuleSidebar({
               <span className="text-sm whitespace-nowrap">Voltar ao Hub</span>
             </button>
             <h2 className="tracking-tight whitespace-nowrap">{title}</h2>
-            <p className="text-sm text-muted-foreground mt-0.5 whitespace-nowrap">{subtitle}</p>
+            {subtitleContent ? (
+              <div className="mt-1.5">{subtitleContent}</div>
+            ) : subtitle ? (
+              <p className="text-sm text-muted-foreground mt-0.5 whitespace-nowrap">{subtitle}</p>
+            ) : null}
           </>
         )}
       </div>

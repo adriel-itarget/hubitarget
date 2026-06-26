@@ -1,6 +1,10 @@
-import { Plus, Check, Settings, CreditCard, Smartphone, Zap, ChevronRight } from 'lucide-react';
+import { Plus, Check, Settings, CreditCard } from 'lucide-react';
 import { useState } from 'react';
 import { PaymentMethodWizard } from './PaymentMethodWizard';
+import { PaymentLogo } from './PaymentLogos';
+import { Button } from './ui/button';
+import { Badge } from './ui/badge';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from './ui/card';
 
 interface PaymentMethod {
   id: string;
@@ -19,8 +23,8 @@ const paymentMethods: PaymentMethod[] = [
     name: 'Banco do Brasil',
     provider: 'Banco do Brasil',
     types: ['Boleto', 'PIX'],
-    color: 'bg-yellow-500',
-    icon: '🏦',
+    color: 'bg-yellow-500/10',
+    icon: 'bb',
     status: 'active',
     description: 'Pagamentos via boleto bancário e PIX'
   },
@@ -29,8 +33,8 @@ const paymentMethods: PaymentMethod[] = [
     name: 'Cielo',
     provider: 'Cielo',
     types: ['Cartão de Crédito', 'Cartão de Débito'],
-    color: 'bg-blue-500',
-    icon: '💳',
+    color: 'bg-blue-500/10',
+    icon: 'cielo',
     status: 'active',
     description: 'Processamento de cartões de crédito e débito'
   },
@@ -39,8 +43,8 @@ const paymentMethods: PaymentMethod[] = [
     name: 'Rede',
     provider: 'Rede',
     types: ['Cartão de Crédito', 'Cartão de Débito'],
-    color: 'bg-red-500',
-    icon: '💳',
+    color: 'bg-red-500/10',
+    icon: 'rede',
     status: 'inactive',
     description: 'Adquirência de cartões de crédito e débito'
   },
@@ -49,8 +53,8 @@ const paymentMethods: PaymentMethod[] = [
     name: 'Vindi',
     provider: 'Vindi',
     types: ['Cartão', 'Boleto', 'PIX'],
-    color: 'bg-purple-500',
-    icon: '⚡',
+    color: 'bg-purple-500/10',
+    icon: 'vindi',
     status: 'inactive',
     description: 'Pagamentos recorrentes e múltiplos métodos'
   },
@@ -59,8 +63,8 @@ const paymentMethods: PaymentMethod[] = [
     name: 'PagSeguro',
     provider: 'PagSeguro',
     types: ['Cartão', 'Boleto', 'PIX'],
-    color: 'bg-green-500',
-    icon: '🔒',
+    color: 'bg-emerald-500/10',
+    icon: 'pagseguro',
     status: 'inactive',
     description: 'Gateway completo com múltiplos métodos'
   },
@@ -69,8 +73,8 @@ const paymentMethods: PaymentMethod[] = [
     name: 'Pagar.me',
     provider: 'Pagar.me',
     types: ['Cartão', 'Boleto', 'PIX'],
-    color: 'bg-indigo-500',
-    icon: '💰',
+    color: 'bg-slate-500/10',
+    icon: 'pagarme',
     status: 'inactive',
     description: 'Processamento de pagamentos online'
   }
@@ -111,47 +115,32 @@ export function PaymentMethods() {
               <h2 className="text-lg font-semibold mb-4">Métodos Ativos</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {activeM.map((method) => (
-                  <div
-                    key={method.id}
-                    className="group bg-card border border-border rounded-xl overflow-hidden hover:shadow-lg transition-all"
-                  >
-                    <div className="p-6">
-                      <div className="flex items-start justify-between mb-4">
-                        <div className={`w-12 h-12 rounded-xl ${method.color} flex items-center justify-center text-2xl`}>
-                          {method.icon}
+                  <Card key={method.id} className="group hover:shadow-lg transition-all">
+                    <CardHeader className="pb-3">
+                      <div className="flex items-start justify-between">
+                        <div className={`w-12 h-12 rounded-xl ${method.color} flex items-center justify-center`}>
+                          <PaymentLogo methodId={method.id} className="w-12 h-12" />
                         </div>
-                        <span className="text-xs px-3 py-1 rounded-full bg-green-500/10 text-green-600 font-medium flex items-center gap-1">
+                        <Badge variant="outline" className="bg-green-500/10 text-green-600 border-green-500/30 hover:bg-green-500/10 gap-1">
                           <Check className="w-3 h-3" />
                           Ativo
-                        </span>
+                        </Badge>
                       </div>
-
-                      <div className="mb-4">
-                        <h3 className="text-lg font-semibold mb-1">{method.name}</h3>
-                        <p className="text-sm text-muted-foreground mb-3">
-                          {method.description}
-                        </p>
-                        <div className="flex flex-wrap gap-2">
-                          {method.types.map((type) => (
-                            <span
-                              key={type}
-                              className="text-xs px-2 py-1 bg-muted rounded-full"
-                            >
-                              {type}
-                            </span>
-                          ))}
-                        </div>
+                    </CardHeader>
+                    <CardContent>
+                      <CardTitle className="text-lg mb-1">{method.name}</CardTitle>
+                      <CardDescription className="mb-3">{method.description}</CardDescription>
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        {method.types.map((type) => (
+                          <Badge key={type} variant="secondary">{type}</Badge>
+                        ))}
                       </div>
-
-                      <button
-                        onClick={() => handleConfigure(method)}
-                        className="w-full flex items-center justify-center gap-2 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
-                      >
+                      <Button className="w-full gap-2" onClick={() => handleConfigure(method)}>
                         <Settings className="w-4 h-4" />
                         Configurar
-                      </button>
-                    </div>
-                  </div>
+                      </Button>
+                    </CardContent>
+                  </Card>
                 ))}
               </div>
             </div>
@@ -164,46 +153,29 @@ export function PaymentMethods() {
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {inactiveMethods.map((method) => (
-                <div
-                  key={method.id}
-                  className="bg-card border border-border rounded-xl overflow-hidden hover:border-primary/50 transition-all"
-                >
-                  <div className="p-6 opacity-75">
-                    <div className="flex items-start justify-between mb-4">
-                      <div className={`w-12 h-12 rounded-xl ${method.color} flex items-center justify-center text-2xl`}>
-                        {method.icon}
+                <Card key={method.id} className="hover:border-primary/50 transition-all">
+                  <CardHeader className="pb-3">
+                    <div className="flex items-start justify-between">
+                      <div className={`w-12 h-12 rounded-xl ${method.color} flex items-center justify-center`}>
+                        <PaymentLogo methodId={method.id} className="w-12 h-12" />
                       </div>
-                      <span className="text-xs px-3 py-1 rounded-full bg-muted text-muted-foreground">
-                        Indisponível
-                      </span>
+                      <Badge variant="secondary">Indisponível</Badge>
                     </div>
-
-                    <div className="mb-4">
-                      <h3 className="text-lg font-semibold mb-1">{method.name}</h3>
-                      <p className="text-sm text-muted-foreground mb-3">
-                        {method.description}
-                      </p>
-                      <div className="flex flex-wrap gap-2">
-                        {method.types.map((type) => (
-                          <span
-                            key={type}
-                            className="text-xs px-2 py-1 bg-muted rounded-full"
-                          >
-                            {type}
-                          </span>
-                        ))}
-                      </div>
+                  </CardHeader>
+                  <CardContent className="opacity-75">
+                    <CardTitle className="text-lg mb-1">{method.name}</CardTitle>
+                    <CardDescription className="mb-3">{method.description}</CardDescription>
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {method.types.map((type) => (
+                        <Badge key={type} variant="secondary">{type}</Badge>
+                      ))}
                     </div>
-
-                    <button
-                      onClick={() => handleConfigure(method)}
-                      className="w-full flex items-center justify-center gap-2 py-2 border border-border rounded-lg hover:bg-accent transition-colors"
-                    >
+                    <Button variant="outline" className="w-full gap-2" onClick={() => handleConfigure(method)}>
                       <Plus className="w-4 h-4" />
                       Ativar Método
-                    </button>
-                  </div>
-                </div>
+                    </Button>
+                  </CardContent>
+                </Card>
               ))}
             </div>
           </div>
