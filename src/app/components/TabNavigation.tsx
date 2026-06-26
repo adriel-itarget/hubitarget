@@ -189,6 +189,7 @@ export function TabNavigation({ tabs, activeTabId, onTabClick, onTabClose, onClo
       {contextMenu && (
         <div
           ref={contextMenuRef}
+          onMouseDown={e => e.stopPropagation()}
           className="fixed z-50 w-52 bg-card border border-border rounded-xl shadow-xl overflow-hidden"
           style={{ left: contextMenu.x, top: contextMenu.y }}
         >
