@@ -48,6 +48,19 @@ import { EventosDashboard } from './modules/eventos/pages/EventosDashboard';
 import { ListaEventos } from './modules/eventos/pages/ListaEventos';
 import { Trabalhos } from './modules/eventos/pages/Trabalhos';
 
+// Módulo Configurações do Hub
+import { ConfiguracoesModule } from './modules/configuracoes/ConfiguracoesModule';
+import { ConfiguracoesDashboard } from './modules/configuracoes/pages/ConfiguracoesDashboard';
+import { CfgMenus } from './modules/configuracoes/pages/CfgMenus';
+import { CfgConfig } from './modules/configuracoes/pages/CfgConfig';
+import { CfgLogos } from './modules/configuracoes/pages/CfgLogos';
+import { CfgNotificacoes } from './modules/configuracoes/pages/CfgNotificacoes';
+import { CfgIdioma } from './modules/configuracoes/pages/CfgIdioma';
+import { CfgModelos } from './modules/configuracoes/pages/CfgModelos';
+import { CfgEspecialidades } from './modules/configuracoes/pages/CfgEspecialidades';
+import { CfgFormularios } from './modules/configuracoes/pages/CfgFormularios';
+import { CfgPerguntas } from './modules/configuracoes/pages/CfgPerguntas';
+
 function AssocPlaceholder({ title }: { title: string }) {
   return (
     <div className="min-h-screen bg-background">
@@ -106,8 +119,8 @@ export default function App() {
             <Route index element={<Navigate to="/hub/modulos" replace />} />
             <Route path="modulos" element={<MyModules />} />
             <Route path="dashboard" element={<MyModules />} />
-            <Route path="usuarios" element={<UsersAccess />} />
-            <Route path="pagamentos" element={<PaymentMethods />} />
+            <Route path="usuarios" element={<Navigate to="/modulo/configuracoes/usuarios-acesso" replace />} />
+            <Route path="pagamentos" element={<Navigate to="/modulo/configuracoes/meios-pagamento" replace />} />
           </Route>
 
           {/* Módulo Associação */}
@@ -239,6 +252,26 @@ export default function App() {
             <Route path="programacao" element={<div className="p-8"><h1 className="text-3xl">Programação Científica</h1></div>} />
             <Route path="trabalhos" element={<Trabalhos />} />
             <Route path="palestrantes" element={<PessoasAssociados />} />
+          </Route>
+
+          {/* Módulo Configurações do Hub */}
+          <Route
+            path="/modulo/configuracoes/*"
+            element={isLoggedIn ? <ConfiguracoesModule onLogout={handleLogout} /> : <Navigate to="/login" replace />}
+          >
+            <Route index element={<Navigate to="/modulo/configuracoes/dashboard" replace />} />
+            <Route path="dashboard" element={<ConfiguracoesDashboard />} />
+            <Route path="usuarios-acesso" element={<UsersAccess />} />
+            <Route path="cfg-menus" element={<CfgMenus />} />
+            <Route path="cfg-config" element={<CfgConfig />} />
+            <Route path="cfg-logos" element={<CfgLogos />} />
+            <Route path="cfg-notificacoes" element={<CfgNotificacoes />} />
+            <Route path="cfg-idioma" element={<CfgIdioma />} />
+            <Route path="meios-pagamento" element={<PaymentMethods />} />
+            <Route path="cfg-modelos" element={<CfgModelos />} />
+            <Route path="cfg-especialidades" element={<CfgEspecialidades />} />
+            <Route path="cfg-formularios" element={<CfgFormularios />} />
+            <Route path="cfg-perguntas" element={<CfgPerguntas />} />
           </Route>
 
           {/* 404 */}

@@ -39,23 +39,25 @@ const ALL_AVAILABLE_ITEMS = [
   { id: 'identidade', label: 'Identidade Visual', icon: <Tags className="w-4 h-4" />, iconKey: 'Tags', route: '/modulo/associacao/entidade/identidade', group: 'entidade' },
   { id: 'diretoria', label: 'Diretoria', icon: <Briefcase className="w-4 h-4" />, iconKey: 'Briefcase', route: '/modulo/associacao/entidade/diretoria', group: 'entidade' },
   { id: 'textos-regras', label: 'Textos e Regras', icon: <FileCheck className="w-4 h-4" />, iconKey: 'FileCheck', route: '/modulo/associacao/entidade/textos-regras', group: 'entidade' },
-  { id: 'usuarios', label: 'Usuários e Acesso', icon: <UserPlus className="w-4 h-4" />, iconKey: 'UserPlus', route: '/hub/usuarios', group: 'entidade' },
+  { id: 'usuarios', label: 'Usuários e Acesso', icon: <UserPlus className="w-4 h-4" />, iconKey: 'UserPlus', route: '/modulo/configuracoes/usuarios-acesso', group: 'entidade' },
   { id: 'pagamentos', label: 'Meios de Pagamento', icon: <CreditCard className="w-4 h-4" />, iconKey: 'CreditCard', route: '/hub/pagamentos', group: 'entidade' },
   // Criar
   { id: 'novo-associado', label: 'Novo Associado', icon: <UserPlus className="w-4 h-4" />, iconKey: 'UserPlus', route: '/modulo/associacao/pessoas-pf', group: 'criar' },
   { id: 'novo-evento', label: 'Novo Evento', icon: <Calendar className="w-4 h-4" />, iconKey: 'Calendar', route: '/modulo/eventos/dashboard', group: 'criar' },
   { id: 'novo-lancamento', label: 'Novo Lançamento', icon: <DollarSign className="w-4 h-4" />, iconKey: 'DollarSign', route: '/modulo/financeiro/dashboard', group: 'criar' },
   { id: 'novo-curso', label: 'Novo Curso', icon: <BookOpen className="w-4 h-4" />, iconKey: 'BookOpen', route: '/modulo/cursos/dashboard', group: 'criar' },
-  // Configurações - Acesso
-  { id: 'cfg-usuarios', label: 'Gerenciar Usuários', icon: <Users className="w-4 h-4" />, iconKey: 'Users', route: '', group: 'config' },
-  { id: 'cfg-grupos', label: 'Grupos de acesso', icon: <Shield className="w-4 h-4" />, iconKey: 'Shield', route: '', group: 'config' },
-  { id: 'cfg-permissoes', label: 'Permissões do Sistema', icon: <Lock className="w-4 h-4" />, iconKey: 'Lock', route: '', group: 'config' },
   // Configurações - Sistema
-  { id: 'cfg-menus', label: 'Menus', icon: <LayoutGrid className="w-4 h-4" />, iconKey: 'LayoutGrid', route: '', group: 'config' },
-  { id: 'cfg-config', label: 'Configurações', icon: <Settings className="w-4 h-4" />, iconKey: 'Settings', route: '', group: 'config' },
-  { id: 'cfg-logos', label: 'Logos', icon: <Upload className="w-4 h-4" />, iconKey: 'Upload', route: '', group: 'config' },
-  { id: 'cfg-notificacoes', label: 'Notificações', icon: <MessageSquare className="w-4 h-4" />, iconKey: 'MessageSquare', route: '', group: 'config' },
-  { id: 'cfg-idioma', label: 'Idioma', icon: <Languages className="w-4 h-4" />, iconKey: 'Languages', route: '', group: 'config' },
+  { id: 'cfg-menus', label: 'Menus', icon: <LayoutGrid className="w-4 h-4" />, iconKey: 'LayoutGrid', route: '/modulo/configuracoes/cfg-menus', group: 'config' },
+  { id: 'cfg-config', label: 'Configurações', icon: <Settings className="w-4 h-4" />, iconKey: 'Settings', route: '/modulo/configuracoes/cfg-config', group: 'config' },
+  { id: 'cfg-logos', label: 'Logos', icon: <Upload className="w-4 h-4" />, iconKey: 'Upload', route: '/modulo/configuracoes/cfg-logos', group: 'config' },
+  { id: 'cfg-notificacoes', label: 'Notificações', icon: <MessageSquare className="w-4 h-4" />, iconKey: 'MessageSquare', route: '/modulo/configuracoes/cfg-notificacoes', group: 'config' },
+  { id: 'cfg-idioma', label: 'Idioma', icon: <Languages className="w-4 h-4" />, iconKey: 'Languages', route: '/modulo/configuracoes/cfg-idioma', group: 'config' },
+  // Configurações - Documentos
+  { id: 'cfg-modelos', label: 'Modelos de Documentos', icon: <FileText className="w-4 h-4" />, iconKey: 'FileText', route: '/modulo/configuracoes/cfg-modelos', group: 'config' },
+  { id: 'cfg-especialidades', label: 'Config. Especialidades', icon: <BookOpen className="w-4 h-4" />, iconKey: 'BookOpen', route: '/modulo/configuracoes/cfg-especialidades', group: 'config' },
+  // Configurações - Forms
+  { id: 'cfg-formularios', label: 'Formulários', icon: <ClipboardList className="w-4 h-4" />, iconKey: 'ClipboardList', route: '/modulo/configuracoes/cfg-formularios', group: 'config' },
+  { id: 'cfg-perguntas', label: 'Perguntas', icon: <BookOpen className="w-4 h-4" />, iconKey: 'BookOpen', route: '/modulo/configuracoes/cfg-perguntas', group: 'config' },
   // Módulos
   { id: 'mod-associacao', label: 'Associação', icon: <Users className="w-4 h-4" />, iconKey: 'Users', route: '/modulo/associacao/dashboard', group: 'modulos' },
   { id: 'mod-financeiro', label: 'Financeiro', icon: <DollarSign className="w-4 h-4" />, iconKey: 'DollarSign', route: '/modulo/financeiro/dashboard', group: 'modulos' },
@@ -86,8 +88,8 @@ const DEFAULT_BLOCKS: Block[] = [
       { id: 'identidade', label: 'Identidade Visual', icon: <Tags className="w-4 h-4" />, iconKey: 'Tags', route: '/modulo/associacao/entidade/identidade' },
       { id: 'diretoria', label: 'Diretoria', icon: <Briefcase className="w-4 h-4" />, iconKey: 'Briefcase', route: '/modulo/associacao/entidade/diretoria' },
       { id: 'textos-regras', label: 'Textos e Regras', icon: <FileCheck className="w-4 h-4" />, iconKey: 'FileCheck', route: '/modulo/associacao/entidade/textos-regras' },
-      { id: 'usuarios', label: 'Usuários e Acesso', icon: <UserPlus className="w-4 h-4" />, iconKey: 'UserPlus', route: '/hub/usuarios' },
-      { id: 'pagamentos', label: 'Meios de Pagamento', icon: <CreditCard className="w-4 h-4" />, iconKey: 'CreditCard', route: '/hub/pagamentos' },
+      { id: 'usuarios', label: 'Usuários e Acesso', icon: <UserPlus className="w-4 h-4" />, iconKey: 'UserPlus', route: '/modulo/configuracoes/usuarios-acesso' },
+      { id: 'pagamentos', label: 'Meios de Pagamento', icon: <CreditCard className="w-4 h-4" />, iconKey: 'CreditCard', route: '/modulo/configuracoes/meios-pagamento' },
     ],
   },
   {
@@ -219,33 +221,31 @@ const SETTINGS_CATEGORIES = [
   {
     id: 'acesso', label: 'Acesso', Icon: Lock, color: '#60a5fa',
     items: [
-      { id: 'cfg-usuarios', label: 'Gerenciar Usuários', description: 'Adicionar, editar e remover usuários do sistema' },
-      { id: 'cfg-grupos', label: 'Grupos de acesso', description: 'Organizar usuários em grupos com permissões' },
-      { id: 'cfg-permissoes', label: 'Permissões do Sistema', description: 'Controle de acesso a funcionalidades' },
+      { id: 'usuarios-acesso', label: 'Usuários e Níveis de Acesso', description: 'Gerenciar usuários, grupos e permissões do sistema', route: '/modulo/configuracoes/usuarios-acesso' },
     ]
   },
   {
     id: 'sistema', label: 'Sistema', Icon: Monitor, color: '#34d399',
     items: [
-      { id: 'cfg-menus', label: 'Menus', description: 'Personalizar menus de navegação' },
-      { id: 'cfg-config', label: 'Configurações', description: 'Configurações gerais do sistema' },
-      { id: 'cfg-logos', label: 'Logos', description: 'Gerenciar logotipos da plataforma' },
-      { id: 'cfg-notificacoes', label: 'Notificações', description: 'Configurar alertas e notificações' },
-      { id: 'cfg-idioma', label: 'Idioma', description: 'Alterar idioma do sistema' },
+      { id: 'cfg-menus', label: 'Menus', description: 'Personalizar menus de navegação', route: '/modulo/configuracoes/cfg-menus' },
+      { id: 'cfg-config', label: 'Configurações', description: 'Configurações gerais do sistema', route: '/modulo/configuracoes/cfg-config' },
+      { id: 'cfg-logos', label: 'Logos', description: 'Gerenciar logotipos da plataforma', route: '/modulo/configuracoes/cfg-logos' },
+      { id: 'cfg-notificacoes', label: 'Notificações', description: 'Configurar alertas e notificações', route: '/modulo/configuracoes/cfg-notificacoes' },
+      { id: 'cfg-idioma', label: 'Idioma', description: 'Alterar idioma do sistema', route: '/modulo/configuracoes/cfg-idioma' },
     ]
   },
   {
     id: 'documentos', label: 'Documentos', Icon: FileText, color: '#818cf8',
     items: [
-      { id: 'cfg-modelos', label: 'Modelos de Documentos', description: 'Criar e editar templates de documentos' },
-      { id: 'cfg-especialidades', label: 'Configurações Especialidades', description: 'Gerenciar especialidades médicas' },
+      { id: 'cfg-modelos', label: 'Modelos de Documentos', description: 'Criar e editar templates de documentos', route: '/modulo/configuracoes/cfg-modelos' },
+      { id: 'cfg-especialidades', label: 'Configurações Especialidades', description: 'Gerenciar especialidades médicas', route: '/modulo/configuracoes/cfg-especialidades' },
     ]
   },
   {
     id: 'forms', label: 'Forms', Icon: ClipboardList, color: '#a78bfa',
     items: [
-      { id: 'cfg-formularios', label: 'Formulários', description: 'Criar e gerenciar formulários' },
-      { id: 'cfg-perguntas', label: 'Perguntas', description: 'Banco de perguntas para formulários' },
+      { id: 'cfg-formularios', label: 'Formulários', description: 'Criar e gerenciar formulários', route: '/modulo/configuracoes/cfg-formularios' },
+      { id: 'cfg-perguntas', label: 'Perguntas', description: 'Banco de perguntas para formulários', route: '/modulo/configuracoes/cfg-perguntas' },
     ]
   },
 ];
@@ -1089,7 +1089,8 @@ export function QuickAccessMenu({ currentModule }: QuickAccessMenuProps) {
                                 <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{cat.label}</span>
                               </div>
                               {filteredItems.map(item => (
-                                <div key={item.id} className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-muted transition-colors group">
+                                <div key={item.id} onClick={() => { navigate(item.route); setIsOpen(false); }}
+                                  className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-muted transition-colors group cursor-pointer">
                                   <div className="w-2 h-2 rounded-full flex-shrink-0 ml-1" style={{ backgroundColor: cat.color }} />
                                   <span className="text-sm flex-1">{item.label}</span>
                                   <div className="relative">
@@ -1151,7 +1152,8 @@ export function QuickAccessMenu({ currentModule }: QuickAccessMenuProps) {
                   ) : (
                     <div className="space-y-0.5">
                       {currentCategory?.items.map(item => (
-                        <div key={item.id} className="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-muted transition-colors group">
+                        <div key={item.id} onClick={() => { navigate(item.route); setIsOpen(false); }}
+                          className="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-muted transition-colors group cursor-pointer">
                           <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: currentCategory.color }} />
                           <span className="text-sm flex-1">{item.label}</span>
                           <div className="relative">

@@ -75,13 +75,13 @@ export function Sidebar({ onLogout }: SidebarProps) {
             <span className={labelClass}>Departamentos</span>
           </NavLink>
 
-          <NavLink to="/hub/usuarios" title={isCollapsed ? 'Usuários e Acesso' : undefined}
+          <NavLink to="/modulo/configuracoes/usuarios-acesso" title={isCollapsed ? 'Usuários e Acesso' : undefined}
             className={({ isActive }) => navLinkClass(isActive)}>
             <Users className="w-[18px] h-[18px] flex-shrink-0" />
             <span className={labelClass}>Usuários e Acesso</span>
           </NavLink>
 
-          <NavLink to="/hub/pagamentos" title={isCollapsed ? 'Meios de Pagamento' : undefined}
+          <NavLink to="/modulo/configuracoes/meios-pagamento" title={isCollapsed ? 'Meios de Pagamento' : undefined}
             className={({ isActive }) => navLinkClass(isActive)}>
             <Wallet className="w-[18px] h-[18px] flex-shrink-0" />
             <span className={labelClass}>Meios de Pagamento</span>
