@@ -22,7 +22,7 @@ const routeTitles: Record<string, string> = {
 export function HubLayout({ onLogout }: HubLayoutProps) {
   const location = useLocation();
   const navigate = useNavigate();
-  const { tabs, activeTabId, addTab, removeTab, setActiveTab, clearTabs } = useTabNavigation();
+  const { tabs, activeTabId, addTab, removeTab, setActiveTab } = useTabNavigation();
 
   const isHubRoot = location.pathname === '/hub/modulos' || location.pathname === '/hub';
 
@@ -49,11 +49,6 @@ export function HubLayout({ onLogout }: HubLayoutProps) {
     }
   };
 
-  const handleCloseAll = () => {
-    clearTabs();
-    navigate('/hub/modulos');
-  };
-
   return (
     <div className="flex flex-col h-screen bg-background">
       {/* Header */}
@@ -76,7 +71,6 @@ export function HubLayout({ onLogout }: HubLayoutProps) {
               activeTabId={activeTabId || ''}
               onTabClick={handleTabClick}
               onTabClose={handleTabClose}
-              onCloseAll={handleCloseAll}
             />
           </div>
         </div>

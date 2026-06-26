@@ -1,5 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, X, Users, DollarSign, ClipboardList, BookOpen, Gift, Calendar, LayoutGrid, Layers, Columns3 } from 'lucide-react';
+import { useTabNavigation } from './TabNavigationContext';
 
 interface Tab {
   id: string;
@@ -13,7 +15,6 @@ interface TabNavigationProps {
   activeTabId: string;
   onTabClick: (tabId: string) => void;
   onTabClose: (e: React.MouseEvent, tabId: string) => void;
-  onCloseAll: () => void;
 }
 
 const MODULE_COLORS: Record<string, string> = {
@@ -46,13 +47,15 @@ const MODULE_ICONS: Record<string, React.ComponentType<{ className?: string; sty
   hub:        LayoutGrid,
 };
 
-export function TabNavigation({ tabs, activeTabId, onTabClick, onTabClose, onCloseAll }: TabNavigationProps) {
+export function TabNavigation({ tabs, activeTabId, onTabClick, onTabClose }: TabNavigationProps) {
+  const navigate = useNavigate();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const tabRefs = useRef<Map<string, HTMLDivElement>>(new Map());
   const prevTabCountRef = useRef(tabs.length);
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(false);
+  const { clearTabs } = useTabNavigation();
 
   // Context menu state
   const [contextMenu, setContextMenu] = useState<{ x: number; y: number } | null>(null);
@@ -131,8 +134,14 @@ export function TabNavigation({ tabs, activeTabId, onTabClick, onTabClose, onClo
         setContextMenu(null);
       }
     };
-    document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
+    // Use setTimeout to avoid closing on the same mousedown that opened the menu
+    const timer = setTimeout(() => {
+      document.addEventListener('mousedown', handler);
+    }, 0);
+    return () => {
+      clearTimeout(timer);
+      document.removeEventListener('mousedown', handler);
+    };
   }, [contextMenu]);
 
   const scroll = (direction: 'left' | 'right') => {
@@ -164,7 +173,8 @@ export function TabNavigation({ tabs, activeTabId, onTabClick, onTabClose, onClo
 
   const handleCloseAll = () => {
     setContextMenu(null);
-    onCloseAll();
+    clearTabs();
+    navigate('/hub/modulos');
   };
 
   const handleToggleGrouping = () => {
@@ -189,7 +199,6 @@ export function TabNavigation({ tabs, activeTabId, onTabClick, onTabClose, onClo
       {contextMenu && (
         <div
           ref={contextMenuRef}
-          onMouseDown={e => e.stopPropagation()}
           className="fixed z-50 w-52 bg-card border border-border rounded-xl shadow-xl overflow-hidden"
           style={{ left: contextMenu.x, top: contextMenu.y }}
         >
