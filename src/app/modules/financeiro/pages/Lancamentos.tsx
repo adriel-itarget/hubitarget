@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Search, Plus, TrendingUp, TrendingDown, Filter } from 'lucide-react';
+import { Search, Plus, TrendingUp, TrendingDown } from 'lucide-react';
 import { Card, CardContent } from '@/app/components/ui/card';
 import { Button } from '@/app/components/ui/button';
 import { Input } from '@/app/components/ui/input';
@@ -157,7 +157,7 @@ export function Lancamentos() {
 
           <Card className="mb-6">
             <CardContent className="pt-6">
-              <div className="flex items-center gap-3 flex-wrap">
+              <div className="flex items-center gap-3">
                 <div className="relative flex-1 min-w-[200px]">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <Input
@@ -167,31 +167,26 @@ export function Lancamentos() {
                     className="pl-9"
                   />
                 </div>
-                <div className="flex items-center gap-2">
-                  <Filter className="w-4 h-4 text-muted-foreground" />
-                  {costCenters.map(c => (
-                    <Button
-                      key={c}
-                      variant={centerFilter === c ? 'default' : 'outline'}
-                      size="sm"
-                      onClick={() => setCenterFilter(c)}
-                    >
-                      {c}
-                    </Button>
-                  ))}
-                </div>
-                <div className="flex items-center gap-1">
-                  {tipos.map(t => (
-                    <Button
-                      key={t}
-                      variant={tipoFilter === t ? 'default' : 'outline'}
-                      size="sm"
-                      onClick={() => setTipoFilter(t)}
-                    >
-                      {t}
-                    </Button>
-                  ))}
-                </div>
+                <Select value={centerFilter} onValueChange={setCenterFilter}>
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Centro de Custo" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {costCenters.map(c => (
+                      <SelectItem key={c} value={c}>{c}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Select value={tipoFilter} onValueChange={setTipoFilter}>
+                  <SelectTrigger className="w-[150px]">
+                    <SelectValue placeholder="Tipo" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {tipos.map(t => (
+                      <SelectItem key={t} value={t}>{t}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             </CardContent>
           </Card>
