@@ -4,16 +4,55 @@ import { useNavigate } from 'react-router-dom';
 
 function WidgetsIcon({ className, active }: { className?: string; active?: boolean }) {
   return (
-    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-      <path d="M3 3h8v8H3V3zm0 10h8v8H3v-8zm10-10h8v8h-8V3zm0 10h8v8h-8v-8z" />
-      {active && (
-        <>
-          <circle cx="7" cy="7" r="1.5" className="fill-primary animate-[glow_1.5s_ease-in-out_infinite]" />
-          <circle cx="17" cy="7" r="1.5" className="fill-primary animate-[glow_1.5s_ease-in-out_infinite_0.3s]" />
-          <circle cx="7" cy="17" r="1.5" className="fill-primary animate-[glow_1.5s_ease-in-out_infinite_0.6s]" />
-          <circle cx="17" cy="17" r="1.5" className="fill-primary animate-[glow_1.5s_ease-in-out_infinite_0.9s]" />
-        </>
-      )}
+    <svg className={className} viewBox="0 0 24 24">
+      <defs>
+        <mask id="iconMask" maskContentUnits="userSpaceOnUse">
+          <path d="M3 3h8v8H3V3zm0 10h8v8H3v-8zm10-10h8v8h-8V3zm0 10h8v8h-8v-8z" fill="white" />
+        </mask>
+      </defs>
+      <g mask="url(#iconMask)">
+        <rect width="24" height="24" fill="currentColor" />
+        {active && (
+          <g>
+            <defs>
+              <linearGradient id="wa" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stopColor="#1e40af">
+                  <animate attributeName="stop-color" values="#1e40af;#60a5fa;#1e40af" dur="3s" repeatCount="indefinite" />
+                </stop>
+                <stop offset="50%" stopColor="#93c5fd">
+                  <animate attributeName="stop-color" values="#93c5fd;#dbebf9;#93c5fd" dur="3s" repeatCount="indefinite" />
+                </stop>
+                <stop offset="100%" stopColor="#3b82f6">
+                  <animate attributeName="stop-color" values="#3b82f6;#bfdbfe;#3b82f6" dur="3s" repeatCount="indefinite" />
+                </stop>
+              </linearGradient>
+              <linearGradient id="wb" x1="1" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#2563eb">
+                  <animate attributeName="stop-color" values="#2563eb;#93c5fd;#2563eb" dur="3s" repeatCount="indefinite" />
+                </stop>
+                <stop offset="50%" stopColor="#bfdbfe">
+                  <animate attributeName="stop-color" values="#bfdbfe;#1e3a8a;#bfdbfe" dur="3s" repeatCount="indefinite" />
+                </stop>
+                <stop offset="100%" stopColor="#1d4ed8">
+                  <animate attributeName="stop-color" values="#1d4ed8;#60a5fa;#1d4ed8" dur="3s" repeatCount="indefinite" />
+                </stop>
+              </linearGradient>
+            </defs>
+            <rect x="-2" y="-2" width="14" height="14" fill="url(#wa)" opacity="0.7">
+              <animateTransform attributeName="transform" type="translate" values="0,0;10,10;0,0" dur="3s" repeatCount="indefinite" />
+            </rect>
+            <rect x="12" y="12" width="14" height="14" fill="url(#wb)" opacity="0.7">
+              <animateTransform attributeName="transform" type="translate" values="0,0;-10,-10;0,0" dur="3s" repeatCount="indefinite" />
+            </rect>
+            <rect x="12" y="-2" width="14" height="14" fill="url(#wa)" opacity="0.5">
+              <animateTransform attributeName="transform" type="translate" values="0,0;-10,10;0,0" dur="3s" repeatCount="indefinite" begin="0.8s" />
+            </rect>
+            <rect x="-2" y="12" width="14" height="14" fill="url(#wb)" opacity="0.5">
+              <animateTransform attributeName="transform" type="translate" values="0,0;10,-10;0,0" dur="3s" repeatCount="indefinite" begin="0.8s" />
+            </rect>
+          </g>
+        )}
+      </g>
     </svg>
   );
 }
