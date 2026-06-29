@@ -15,40 +15,26 @@ function WidgetsIcon({ className, active }: { className?: string; active?: boole
         {active && (
           <g>
             <defs>
-              <linearGradient id="wa" x1="0" y1="0" x2="1" y2="1">
+              <linearGradient id="wg" x1="0" y1="0" x2="1" y2="1">
                 <stop offset="0%" stopColor="#1e40af">
-                  <animate attributeName="stop-color" values="#1e40af;#60a5fa;#1e40af" dur="3s" repeatCount="indefinite" />
+                  <animate attributeName="stop-color" values="#1e40af;#60a5fa;#1e40af" dur="4s" repeatCount="indefinite" />
                 </stop>
-                <stop offset="50%" stopColor="#93c5fd">
-                  <animate attributeName="stop-color" values="#93c5fd;#dbebf9;#93c5fd" dur="3s" repeatCount="indefinite" />
-                </stop>
-                <stop offset="100%" stopColor="#3b82f6">
-                  <animate attributeName="stop-color" values="#3b82f6;#bfdbfe;#3b82f6" dur="3s" repeatCount="indefinite" />
-                </stop>
-              </linearGradient>
-              <linearGradient id="wb" x1="1" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#2563eb">
-                  <animate attributeName="stop-color" values="#2563eb;#93c5fd;#2563eb" dur="3s" repeatCount="indefinite" />
-                </stop>
-                <stop offset="50%" stopColor="#bfdbfe">
-                  <animate attributeName="stop-color" values="#bfdbfe;#1e3a8a;#bfdbfe" dur="3s" repeatCount="indefinite" />
-                </stop>
-                <stop offset="100%" stopColor="#1d4ed8">
-                  <animate attributeName="stop-color" values="#1d4ed8;#60a5fa;#1d4ed8" dur="3s" repeatCount="indefinite" />
+                <stop offset="100%" stopColor="#93c5fd">
+                  <animate attributeName="stop-color" values="#93c5fd;#1e40af;#93c5fd" dur="4s" repeatCount="indefinite" />
                 </stop>
               </linearGradient>
             </defs>
-            <rect x="-2" y="-2" width="14" height="14" fill="url(#wa)" opacity="0.7">
-              <animateTransform attributeName="transform" type="translate" values="0,0;10,10;0,0" dur="3s" repeatCount="indefinite" />
+            <rect x="0" y="0" width="24" height="24" fill="url(#wg)" opacity="0">
+              <animate attributeName="opacity" values="0;0.45;0" dur="4s" repeatCount="indefinite" />
+              <animateTransform attributeName="transform" type="translate" values="-4,-4;4,4;-4,-4" dur="4s" repeatCount="indefinite" />
             </rect>
-            <rect x="12" y="12" width="14" height="14" fill="url(#wb)" opacity="0.7">
-              <animateTransform attributeName="transform" type="translate" values="0,0;-10,-10;0,0" dur="3s" repeatCount="indefinite" />
+            <rect x="0" y="0" width="24" height="24" fill="url(#wg)" opacity="0">
+              <animate attributeName="opacity" values="0;0.35;0" dur="4s" repeatCount="indefinite" begin="1.3s" />
+              <animateTransform attributeName="transform" type="translate" values="4,-4;-4,4;4,-4" dur="4s" repeatCount="indefinite" begin="1.3s" />
             </rect>
-            <rect x="12" y="-2" width="14" height="14" fill="url(#wa)" opacity="0.5">
-              <animateTransform attributeName="transform" type="translate" values="0,0;-10,10;0,0" dur="3s" repeatCount="indefinite" begin="0.8s" />
-            </rect>
-            <rect x="-2" y="12" width="14" height="14" fill="url(#wb)" opacity="0.5">
-              <animateTransform attributeName="transform" type="translate" values="0,0;10,-10;0,0" dur="3s" repeatCount="indefinite" begin="0.8s" />
+            <rect x="0" y="0" width="24" height="24" fill="url(#wg)" opacity="0">
+              <animate attributeName="opacity" values="0;0.25;0" dur="4s" repeatCount="indefinite" begin="2.6s" />
+              <animateTransform attributeName="transform" type="translate" values="0,-3;0,3;0,-3" dur="4s" repeatCount="indefinite" begin="2.6s" />
             </rect>
           </g>
         )}
