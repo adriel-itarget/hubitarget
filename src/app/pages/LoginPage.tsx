@@ -83,7 +83,7 @@ const THEMES: Record<Theme, {
 const FEATURES = [
   'Gestão de associados e anuidades',
   'Eventos, cursos e certificações',
-  'Financeiro integrado a todos os módulos',
+  'Financeiro integrado a todos os departamentos',
 ];
 
 export function LoginPage({ onLogin }: LoginPageProps) {

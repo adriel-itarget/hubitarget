@@ -96,7 +96,7 @@ export function TestimonialsSection() {
               </svg>
             </div>
             <p className="text-gray-700 mb-6 leading-relaxed">
-              "O módulo de eventos é excepcional. Conseguimos organizar nosso congresso anual com 2000 participantes de forma totalmente digital e sem problemas."
+              "O departamento de eventos é excepcional. Conseguimos organizar nosso congresso anual com 2000 participantes de forma totalmente digital e sem problemas."
             </p>
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 bg-slate-200 rounded-full"></div>
@@ -114,7 +114,7 @@ export function TestimonialsSection() {
               </svg>
             </div>
             <p className="text-gray-700 mb-6 leading-relaxed">
-              "A integração entre todos os módulos é perfeita. Nossa taxa de renovação de associados aumentou 40% no primeiro ano usando a plataforma."
+              "A integração entre todos os departamentos é perfeita. Nossa taxa de renovação de associados aumentou 40% no primeiro ano usando a plataforma."
             </p>
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 bg-slate-200 rounded-full"></div>

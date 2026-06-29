@@ -107,7 +107,7 @@ export function ModuleDetailPage() {
       const alreadyPurchased = users[userIndex].modules.some((m: any) => m.id === module.id);
 
       if (alreadyPurchased) {
-        alert('Você já possui este módulo!');
+        alert('Você já possui este departamento!');
         return;
       }
 
@@ -121,7 +121,7 @@ export function ModuleDetailPage() {
       localStorage.setItem('currentUser', JSON.stringify(users[userIndex]));
       setUser(users[userIndex]);
 
-      alert('Módulo contratado com sucesso!');
+      alert('Departamento contratado com sucesso!');
       navigate('/dashboard');
     }
   };
@@ -193,7 +193,7 @@ export function ModuleDetailPage() {
 
             <div className="bg-blue-50 rounded-2xl p-8 border border-blue-100">
               <h3 className="text-2xl font-semibold text-slate-900 mb-4">
-                Por que escolher este módulo?
+                Por que escolher este departamento?
               </h3>
               <ul className="space-y-3">
                 <li className="flex items-start gap-3">
@@ -229,7 +229,7 @@ export function ModuleDetailPage() {
                 <div className="mb-6">
                   <div className="flex items-center gap-2 text-green-600 mb-4">
                     <Check className="w-5 h-5" strokeWidth={2.5} />
-                    <span className="font-semibold">Módulo ativo</span>
+                    <span className="font-semibold">Departamento ativo</span>
                   </div>
                   <Button
                     variant="outlined"

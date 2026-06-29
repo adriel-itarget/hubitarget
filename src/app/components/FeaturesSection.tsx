@@ -69,7 +69,7 @@ export function FeaturesSection() {
           <div className="order-2 lg:order-1">
             <div className="bg-white rounded-2xl shadow-2xl border border-gray-100 p-8">
               <div className="mb-6">
-                <div className="text-sm text-gray-500 mb-2">Engajamento por módulo</div>
+                <div className="text-sm text-gray-500 mb-2">Engajamento por departamento</div>
                 <div className="space-y-4">
                   <div>
                     <div className="flex justify-between text-sm mb-2">

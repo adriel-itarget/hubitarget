@@ -121,10 +121,10 @@ export function MarketplacePage() {
       <div className="max-w-7xl mx-auto px-8 py-12">
         <div className="mb-12">
           <h1 className="text-4xl font-semibold text-slate-900 mb-4">
-            Marketplace de Módulos
+            Marketplace de Departamentos
           </h1>
           <p className="text-xl text-gray-600">
-            Expanda sua plataforma com módulos profissionais
+            Expanda sua plataforma com departamentos profissionais
           </p>
         </div>
 

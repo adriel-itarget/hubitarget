@@ -59,10 +59,10 @@ const ALL_AVAILABLE_ITEMS = [
   { id: 'cfg-formularios', label: 'Formulários', icon: <ClipboardList className="w-4 h-4" />, iconKey: 'ClipboardList', route: '/modulo/configuracoes/cfg-formularios', group: 'config' },
   { id: 'cfg-perguntas', label: 'Perguntas', icon: <BookOpen className="w-4 h-4" />, iconKey: 'BookOpen', route: '/modulo/configuracoes/cfg-perguntas', group: 'config' },
   // Módulos
-  { id: 'mod-associacao', label: 'Associação', icon: <Users className="w-4 h-4" />, iconKey: 'Users', route: '/modulo/associacao/dashboard', group: 'modulos' },
-  { id: 'mod-financeiro', label: 'Financeiro', icon: <DollarSign className="w-4 h-4" />, iconKey: 'DollarSign', route: '/modulo/financeiro/dashboard', group: 'modulos' },
-  { id: 'mod-exames', label: 'Exames', icon: <ClipboardList className="w-4 h-4" />, iconKey: 'ClipboardList', route: '/modulo/exames/dashboard', group: 'modulos' },
-  { id: 'mod-cursos', label: 'Cursos/EAD', icon: <BookOpen className="w-4 h-4" />, iconKey: 'BookOpen', route: '/modulo/cursos/dashboard', group: 'modulos' },
+  { id: 'mod-associacao', label: 'Associação', icon: <Users className="w-4 h-4" />, iconKey: 'Users', route: '/modulo/associacao/dashboard', group: 'departamentos' },
+  { id: 'mod-financeiro', label: 'Financeiro', icon: <DollarSign className="w-4 h-4" />, iconKey: 'DollarSign', route: '/modulo/financeiro/dashboard', group: 'departamentos' },
+  { id: 'mod-exames', label: 'Exames', icon: <ClipboardList className="w-4 h-4" />, iconKey: 'ClipboardList', route: '/modulo/exames/dashboard', group: 'departamentos' },
+  { id: 'mod-cursos', label: 'Cursos/EAD', icon: <BookOpen className="w-4 h-4" />, iconKey: 'BookOpen', route: '/modulo/cursos/dashboard', group: 'departamentos' },
 ];
 
 // ── Shield icon (missing from lucide imports) ─────────────────────────────
@@ -411,8 +411,8 @@ function CustomizePanel({
       items: ALL_AVAILABLE_ITEMS.filter(i => i.group === 'config' && !items.find(x => x.id === i.id)),
     },
     {
-      id: 'modulos', label: 'Módulos',
-      items: ALL_AVAILABLE_ITEMS.filter(i => i.group === 'modulos' && !items.find(x => x.id === i.id)),
+      id: 'departamentos', label: 'Departamentos',
+      items: ALL_AVAILABLE_ITEMS.filter(i => i.group === 'departamentos' && !items.find(x => x.id === i.id)),
     },
   ];
 
@@ -813,7 +813,7 @@ export function QuickAccessMenu({ currentModule }: QuickAccessMenuProps) {
                         entidade: { label: 'Entidade', icon: <Building2 className="w-3.5 h-3.5" />, color: '#60a5fa' },
                         criar: { label: 'Criar', icon: <Plus className="w-3.5 h-3.5" />, color: '#34d399' },
                         config: { label: 'Configurações', icon: <Settings className="w-3.5 h-3.5" />, color: '#a78bfa' },
-                        modulos: { label: 'Módulos', icon: <Package className="w-3.5 h-3.5" />, color: '#fbbf24' },
+                        departamentos: { label: 'Departamentos', icon: <Package className="w-3.5 h-3.5" />, color: '#fbbf24' },
                       };
                       Object.entries(groupMap).forEach(([g, items]) => {
                         const meta = groupLabels[g] || { label: g, icon: <Settings className="w-3.5 h-3.5" />, color: '#94a3b8' };

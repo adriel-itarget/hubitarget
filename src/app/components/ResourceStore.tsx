@@ -58,16 +58,16 @@ export function ResourceStore() {
     <div className="min-h-screen pb-24">
       <div className="bg-card border-b border-border px-8 py-12">
         <div className="max-w-6xl mx-auto">
-          <h1 className="mb-2">Módulos Disponíveis</h1>
+          <h1 className="mb-2">Departamentos Disponíveis</h1>
           <p className="text-muted-foreground mb-8">
-            Expanda as capacidades da sua entidade com módulos especializados
+            Expanda as capacidades da sua entidade com departamentos especializados
           </p>
 
           <div className="relative max-w-md">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <input
               type="text"
-              placeholder="Buscar módulos..."
+              placeholder="Buscar departamentos..."
               className="w-full pl-11 pr-4 py-3 rounded-lg bg-background border border-border text-sm focus:outline-none focus:ring-2 focus:ring-ring"
             />
           </div>
@@ -121,7 +121,7 @@ export function ResourceStore() {
           <div className="max-w-2xl">
             <h3 className="mb-2">Precisa de algo específico?</h3>
             <p className="text-muted-foreground mb-6">
-              Nossa equipe desenvolve módulos personalizados sob medida para as necessidades da sua entidade
+              Nossa equipe desenvolve departamentos personalizados sob medida para as necessidades da sua entidade
             </p>
             <button className="px-6 py-2.5 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors">
               Falar com Especialista

@@ -470,7 +470,7 @@ export function MyModules() {
                 <h3 className="text-2xl mb-2 group-hover:text-primary transition-colors">{m1.name}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed max-w-xs">{m1.description}</p>
                 <div className={`mt-5 inline-flex items-center gap-2 text-sm font-medium ${ac.text} group-hover:gap-3 transition-all`}>
-                  Acessar módulo <ArrowRight className="w-4 h-4" />
+                  Acessar departamento <ArrowRight className="w-4 h-4" />
                 </div>
               </div>
             </div>
@@ -657,7 +657,7 @@ export function MyModules() {
                   <button
                     className={`w-full py-1.5 rounded-lg text-xs font-medium ${ac.bg} ${ac.text} border ${ac.border} flex items-center justify-center gap-1.5 hover:opacity-80 transition-opacity`}
                   >
-                    Acessar módulo <ArrowRight className="w-3 h-3" />
+                    Acessar departamento <ArrowRight className="w-3 h-3" />
                   </button>
                 </div>
               )}

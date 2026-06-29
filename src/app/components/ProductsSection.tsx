@@ -69,7 +69,7 @@ const products = [
         id: 'caex',
         icon: MapPin,
         title: 'CAEX - Gestão de Expositores',
-        description: 'Módulo completo para gestão de estandes, expositores e patrocinadores. Controle de espaços, contratos e benefícios de cada categoria.',
+        description: 'Departamento completo para gestão de estandes, expositores e patrocinadores. Controle de espaços, contratos e benefícios de cada categoria.',
         features: ['Gestão de estandes', 'Controle de contratos', 'Benefícios por categoria', 'Relatório de expositores']
       },
       {
@@ -302,7 +302,7 @@ export function ProductsSection() {
       <div className="max-w-7xl mx-auto px-8">
         <div className="text-center mb-20">
           <h2 className="text-5xl lg:text-6xl text-slate-900 mb-6 tracking-tight" style={{ fontWeight: 600 }}>
-            Módulos integrados
+            Departamentos integrados
           </h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
             Soluções modulares e escaláveis para sua entidade médica
@@ -386,7 +386,7 @@ export function ProductsSection() {
                       onClick={handleExplore}
                       className="w-full px-8 py-4 bg-slate-900 text-white rounded-xl hover:bg-slate-800 transition-all font-medium text-lg shadow-lg hover:shadow-xl"
                     >
-                      Explorar módulo
+                      Explorar departamento
                     </button>
                     <button className="w-full px-8 py-4 bg-white text-slate-900 rounded-xl hover:bg-gray-50 transition-all font-medium text-lg border border-gray-200">
                       Ver demonstração
@@ -510,7 +510,7 @@ export function ProductsSection() {
 
                               <div className="flex gap-4">
                                 <button className="flex-1 px-6 py-4 bg-slate-900 text-white rounded-xl hover:bg-slate-800 transition-all font-semibold shadow-lg hover:shadow-xl">
-                                  Agendar demo deste módulo
+                                  Agendar demo deste departamento
                                 </button>
                                 <button className="px-6 py-4 bg-white text-slate-900 rounded-xl hover:bg-gray-50 transition-all font-semibold border-2 border-gray-200">
                                   Documentação

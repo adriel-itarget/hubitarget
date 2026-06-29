@@ -646,7 +646,7 @@ export function DesignSystemPage() {
           <div className="bg-card border border-border rounded-2xl overflow-hidden divide-y divide-border">
             {[
               {tag:'H1 / Título 1',size:'2rem',weight:'600',lh:'1.2',ls:'-0.02em',sample:'Gestão Inteligente'},
-              {tag:'H2 / Título 2',size:'1.5rem',weight:'600',lh:'1.3',ls:'-0.015em',sample:'Módulos do Hub'},
+              {tag:'H2 / Título 2',size:'1.5rem',weight:'600',lh:'1.3',ls:'-0.015em',sample:'Departamentos do Hub'},
               {tag:'H3 / Título 3',size:'1.25rem',weight:'600',lh:'1.35',ls:'-0.01em',sample:'Configurações Gerais'},
               {tag:'H4 / Título 4',size:'1.125rem',weight:'500',lh:'1.4',ls:'0',sample:'Dados da Entidade'},
               {tag:'Body',size:'1rem',weight:'400',lh:'1.5',ls:'0',sample:'Plataforma completa para associações, sociedades médicas e entidades de classe.'},
@@ -1220,7 +1220,7 @@ export function DesignSystemPage() {
             </ComponentBlock>
 
             {/* ── Module Icon ── */}
-            <ComponentBlock title="Ícone de Módulo" description="Badge colorido por módulo" code={CODES.moduleIcon}>
+            <ComponentBlock title="Ícone de Departamento" description="Badge colorido por departamento" code={CODES.moduleIcon}>
               <div className="space-y-4 w-full">
                 <div className="flex flex-wrap gap-3 items-center">
                   {MODULE_COLORS.map(m=>(

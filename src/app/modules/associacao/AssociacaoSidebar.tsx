@@ -179,7 +179,7 @@ export function AssociacaoSidebar({ onLogout }: AssociacaoSidebarProps) {
               <span className="text-sm whitespace-nowrap">Voltar ao Hub</span>
             </button>
             <h2 className="tracking-tight whitespace-nowrap text-base">Gestão de Membros</h2>
-            <p className="text-xs text-muted-foreground mt-0.5 whitespace-nowrap">Módulo Associativo</p>
+            <p className="text-xs text-muted-foreground mt-0.5 whitespace-nowrap">Departamento Associativo</p>
           </>
         )}
       </div>

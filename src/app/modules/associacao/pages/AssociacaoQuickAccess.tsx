@@ -83,7 +83,7 @@ export function AssociacaoQuickAccess() {
           <div className="mb-8">
             <h1 className="text-3xl mb-2">Acesso Rápido</h1>
             <p className="text-muted-foreground">
-              Gerencie rapidamente os principais recursos do módulo
+              Gerencie rapidamente os principais recursos do departamento
             </p>
           </div>
 

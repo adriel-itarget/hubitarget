@@ -74,7 +74,7 @@ export function DashboardPage() {
             Bem-vindo ao painel de gestão
           </h2>
           <p className="text-gray-600">
-            Gerencie seus módulos e configure sua plataforma
+            Gerencie seus departamentos e configure sua plataforma
           </p>
         </div>
 
@@ -82,7 +82,7 @@ export function DashboardPage() {
           <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-8 text-white">
             <div className="flex items-start justify-between mb-6">
               <div>
-                <p className="text-blue-100 mb-2">Módulos ativos</p>
+                <p className="text-blue-100 mb-2">Departamentos ativos</p>
                 <p className="text-5xl font-bold">{user.modules?.length || 0}</p>
               </div>
               <div className="p-3 bg-white/20 rounded-xl">
@@ -91,8 +91,8 @@ export function DashboardPage() {
             </div>
             <p className="text-blue-100">
               {user.modules?.length > 0
-                ? 'Seus módulos estão funcionando perfeitamente'
-                : 'Comece adquirindo módulos no marketplace'}
+                ? 'Seus departamentos estão funcionando perfeitamente'
+                : 'Comece adquirindo departamentos no marketplace'}
             </p>
           </div>
 
@@ -104,7 +104,7 @@ export function DashboardPage() {
               Explorar Marketplace
             </h3>
             <p className="text-gray-600 mb-6">
-              Adicione novos módulos para expandir as funcionalidades da sua plataforma
+              Adicione novos departamentos para expandir as funcionalidades da sua plataforma
             </p>
             <Button
               variant="contained"
@@ -129,7 +129,7 @@ export function DashboardPage() {
         {user.modules?.length > 0 && (
           <div>
             <h3 className="text-2xl font-semibold text-slate-900 mb-6">
-              Meus módulos
+              Meus departamentos
             </h3>
             <div className="grid md:grid-cols-3 gap-6">
               {user.modules.map((module: any) => (
@@ -156,7 +156,7 @@ export function DashboardPage() {
                       }
                     }}
                   >
-                    Acessar módulo
+                    Acessar departamento
                   </Button>
                 </div>
               ))}

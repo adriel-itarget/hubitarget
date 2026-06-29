@@ -66,7 +66,7 @@ export function ConfiguracoesDashboard() {
         </div>
         <div>
           <h1 className="text-2xl font-bold">Configurações do Hub</h1>
-          <p className="text-muted-foreground text-sm">Departamento de Configurações — ajustes que afetam todos os módulos</p>
+          <p className="text-muted-foreground text-sm">Departamento de Configurações — ajustes que afetam todos os departamentos</p>
         </div>
       </div>
 

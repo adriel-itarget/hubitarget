@@ -213,7 +213,7 @@ export function ModuleDetail() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <p className="text-muted-foreground mb-4">Módulo não encontrado</p>
+          <p className="text-muted-foreground mb-4">Departamento não encontrado</p>
           <button onClick={() => navigate('/hub/loja')} className="px-4 py-2 bg-primary text-primary-foreground rounded-lg">
             Voltar
           </button>
