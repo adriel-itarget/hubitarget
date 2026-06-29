@@ -2,10 +2,18 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import { Search, Users, Calendar, DollarSign, FileText, Settings, BarChart3, Building2, Tags, CreditCard, UserPlus, FileCheck, Briefcase, X, Zap, ClipboardList, BookOpen, Gift, LayoutGrid, Package, ChevronRight, ChevronLeft, Lock, Monitor, Languages, MessageSquare, Upload, ToggleRight, Vote, Layers, Info, FlaskConical, Store, Megaphone, UserCheck, MoreVertical, Plus, Pencil, Trash2, GripVertical, Check } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
-function WidgetsIcon({ className }: { className?: string }) {
+function WidgetsIcon({ className, active }: { className?: string; active?: boolean }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="currentColor">
       <path d="M3 3h8v8H3V3zm0 10h8v8H3v-8zm10-10h8v8h-8V3zm0 10h8v8h-8v-8z" />
+      {active && (
+        <>
+          <circle cx="7" cy="7" r="1.5" className="fill-primary animate-[glow_1.5s_ease-in-out_infinite]" />
+          <circle cx="17" cy="7" r="1.5" className="fill-primary animate-[glow_1.5s_ease-in-out_infinite_0.3s]" />
+          <circle cx="7" cy="17" r="1.5" className="fill-primary animate-[glow_1.5s_ease-in-out_infinite_0.6s]" />
+          <circle cx="17" cy="17" r="1.5" className="fill-primary animate-[glow_1.5s_ease-in-out_infinite_0.9s]" />
+        </>
+      )}
     </svg>
   );
 }
@@ -703,7 +711,7 @@ export function QuickAccessMenu({ currentModule }: QuickAccessMenuProps) {
           className={`p-2 rounded-lg transition-colors ${isOpen ? 'bg-accent' : 'hover:bg-accent'}`}
           title="Menu de Acesso Rápido"
         >
-          <WidgetsIcon className="w-5 h-5" />
+          <WidgetsIcon className="w-5 h-5" active={isOpen} />
         </button>
 
         {isOpen && (
