@@ -11,7 +11,7 @@ function WidgetsIcon({ className, active }: { className?: string; active?: boole
         </mask>
       </defs>
       <g mask="url(#iconMask)">
-        <rect width="24" height="24" fill="currentColor" />
+        {!active && <rect width="24" height="24" fill="currentColor" />}
         {active && (
           <g>
             <defs>
